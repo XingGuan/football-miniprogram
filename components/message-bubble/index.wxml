@@ -1,0 +1,43 @@
+<!-- components/message-bubble/index.wxml -->
+<view class="message-bubble {{type}}" bindlongpress="onLongPress">
+  <!-- 头像 -->
+  <view class="avatar-wrapper" wx:if="{{showAvatar}}">
+    <image class="avatar" src="{{avatarUrl}}" mode="aspectFill" />
+  </view>
+
+  <!-- 消息内容 -->
+  <view class="bubble-content">
+    <!-- 用户消息：纯文本 -->
+    <block wx:if="{{type === 'user'}}">
+      <text class="text-content" selectable="true">{{content}}</text>
+    </block>
+
+    <!-- AI 消息：支持 Markdown 和打字效果 -->
+    <block wx:else>
+      <!-- Markdown 渲染 -->
+      <block wx:if="{{markdown && !typing}}">
+        <markdown-viewer content="{{content}}" />
+      </block>
+
+      <!-- 打字效果 -->
+      <block wx:elif="{{typing}}">
+        <typing-text
+          text="{{content}}"
+          typing="{{true}}"
+          show-cursor="{{true}}"
+          bind:complete="onTypingComplete"
+        />
+      </block>
+
+      <!-- 普通文本 -->
+      <block wx:else>
+        <text class="text-content" selectable="true">{{content}}</text>
+      </block>
+    </block>
+  </view>
+
+  <!-- 时间戳 -->
+  <view class="timestamp" wx:if="{{timestamp}}">
+    <text class="time-text">{{timestamp}}</text>
+  </view>
+</view>

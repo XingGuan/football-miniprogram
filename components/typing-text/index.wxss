@@ -1,0 +1,20 @@
+/* components/typing-text/index.wxss */
+.typing-text {
+  display: inline;
+}
+
+.text-content {
+  line-height: 1.7;
+}
+
+.cursor {
+  display: inline;
+  color: #1890ff;
+  font-weight: 300;
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+.cursor.visible {
+  opacity: 1;
+}

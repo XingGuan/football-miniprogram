@@ -1,0 +1,75 @@
+<!-- components/match-card/index.wxml -->
+<view class="match-card">
+  <!-- 单场角标 -->
+  <view class="single-badge" wx:if="{{match.isSingleMatch}}">单</view>
+
+  <!-- 顶部信息 -->
+  <view class="card-header">
+    <view class="header-left">
+      <text class="match-num">{{match.matchNumStr}}</text>
+      <text class="league-name">{{match.league}}</text>
+    </view>
+    <view class="header-right">
+      <text class="match-time">{{formattedTime}}</text>
+    </view>
+  </view>
+
+  <!-- 球队信息 -->
+  <view class="teams-row">
+    <view class="team-info home">
+      <text class="team-name">{{match.homeTeam}}</text>
+      <text class="team-rank" wx:if="{{match.homeTeamRank}}">[{{match.homeTeamRank}}]</text>
+    </view>
+    <text class="vs">VS</text>
+    <view class="team-info away">
+      <text class="team-name">{{match.awayTeam}}</text>
+      <text class="team-rank" wx:if="{{match.awayTeamRank}}">[{{match.awayTeamRank}}]</text>
+    </view>
+  </view>
+
+  <!-- AI分析 + 欧赔 (4列) -->
+  <view class="odds-row">
+    <view class="odds-cell action-cell" catchtap="onAnalyze">
+      <text class="action-tag">AI</text>
+      <text class="action-text">分析</text>
+    </view>
+    <view class="odds-cell">
+      <text class="odds-label">主胜</text>
+      <text class="odds-num">{{match.odds.home || '-'}}</text>
+    </view>
+    <view class="odds-cell">
+      <text class="odds-label">平局</text>
+      <text class="odds-num">{{match.odds.draw || '-'}}</text>
+    </view>
+    <view class="odds-cell">
+      <text class="odds-label">客胜</text>
+      <text class="odds-num">{{match.odds.away || '-'}}</text>
+    </view>
+  </view>
+
+  <!-- 查看详情 + 让球赔率 (4列) -->
+  <view class="odds-row handicap-row" wx:if="{{match.odds.goalLine}}">
+    <view class="odds-cell detail-cell" catchtap="onTap">
+      <text class="detail-text">分析</text>
+    </view>
+    <view class="odds-cell goalline">
+      <text class="goalline-label">让{{match.odds.goalLine}}</text>
+      <text class="odds-num">{{match.odds.hhome || '-'}}</text>
+    </view>
+    <view class="odds-cell">
+      <text class="odds-label">让平</text>
+      <text class="odds-num">{{match.odds.hdraw || '-'}}</text>
+    </view>
+    <view class="odds-cell">
+      <text class="odds-label">让客</text>
+      <text class="odds-num">{{match.odds.haway || '-'}}</text>
+    </view>
+  </view>
+
+  <!-- 无让球时的详情入口 -->
+  <view class="odds-row" wx:else>
+    <view class="odds-cell detail-cell full" catchtap="onTap">
+      <text class="detail-text">分析</text>
+    </view>
+  </view>
+</view>

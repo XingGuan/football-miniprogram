@@ -1,0 +1,208 @@
+/* components/history-card/index.wxss */
+.history-card {
+  background-color: #ffffff;
+  border-radius: 16rpx;
+  padding: 28rpx;
+  margin-bottom: 24rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+}
+
+.card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+/* 顶部 */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.match-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.status-tag {
+  padding: 4rpx 12rpx;
+  border-radius: 6rpx;
+  background-color: #f5f5f5;
+}
+
+.status-tag.finished {
+  background-color: #f6ffed;
+}
+
+.status-tag.pending {
+  background-color: #fff7e6;
+}
+
+.status-text {
+  font-size: 22rpx;
+  color: #666;
+}
+
+.status-tag.finished .status-text {
+  color: #52c41a;
+}
+
+.status-tag.pending .status-text {
+  color: #fa8c16;
+}
+
+/* 比赛对阵 */
+.match-teams {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 0;
+}
+
+.team {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.team.home {
+  align-items: flex-start;
+}
+
+.team.away {
+  align-items: flex-end;
+}
+
+.team-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1e293b;
+  max-width: 200rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.vs-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8rpx;
+  padding: 0 24rpx;
+}
+
+.vs {
+  font-size: 24rpx;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.match-result {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #3b82f6;
+}
+
+/* 赔率 */
+.odds-row {
+  display: flex;
+  justify-content: space-around;
+  padding: 16rpx 0;
+  background-color: #f8fafc;
+  border-radius: 12rpx;
+}
+
+.odds-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.odds-label {
+  font-size: 22rpx;
+  color: #94a3b8;
+}
+
+.odds-value {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* AI 预测 */
+.ai-section {
+  padding: 16rpx 20rpx;
+  background: linear-gradient(135deg, #eff6ff 0%, #f0fdf4 100%);
+  border-radius: 12rpx;
+}
+
+.ai-prediction {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.ai-label {
+  font-size: 24rpx;
+  color: #64748b;
+}
+
+.ai-result {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #3b82f6;
+}
+
+.ai-score {
+  font-size: 26rpx;
+  color: #10b981;
+  font-weight: 500;
+}
+
+/* 预览内容 */
+.preview {
+  padding-top: 8rpx;
+}
+
+.preview-text {
+  font-size: 26rpx;
+  color: #64748b;
+  line-height: 1.6;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 底部 */
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16rpx;
+  border-top: 1rpx solid #f1f5f9;
+}
+
+.time {
+  font-size: 24rpx;
+  color: #94a3b8;
+}
+
+.action-area {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+}
+
+.detail-text {
+  font-size: 24rpx;
+  color: #3b82f6;
+}
+
+.arrow {
+  font-size: 28rpx;
+  color: #3b82f6;
+}

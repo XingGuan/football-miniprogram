@@ -1,0 +1,6 @@
+{
+  "navigationBarTitleText": "比赛分析",
+  "usingComponents": {
+    "empty-state": "/components/empty-state/index"
+  }
+}

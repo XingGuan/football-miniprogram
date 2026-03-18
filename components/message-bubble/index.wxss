@@ -1,0 +1,70 @@
+/* components/message-bubble/index.wxss */
+.message-bubble {
+  display: flex;
+  padding: 16rpx 24rpx;
+  gap: 16rpx;
+}
+
+/* 用户消息 - 右对齐 */
+.message-bubble.user {
+  flex-direction: row-reverse;
+}
+
+/* AI 消息 - 左对齐 */
+.message-bubble.assistant {
+  flex-direction: row;
+}
+
+/* 头像 */
+.avatar-wrapper {
+  flex-shrink: 0;
+}
+
+.avatar {
+  width: 72rpx;
+  height: 72rpx;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+}
+
+/* 气泡内容 */
+.bubble-content {
+  max-width: calc(100% - 120rpx);
+  padding: 20rpx 24rpx;
+  border-radius: 16rpx;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+/* 用户消息样式 */
+.message-bubble.user .bubble-content {
+  background: linear-gradient(135deg, #1890ff, #36cfc9);
+  color: #ffffff;
+  border-top-right-radius: 4rpx;
+}
+
+/* AI 消息样式 */
+.message-bubble.assistant .bubble-content {
+  background-color: #ffffff;
+  color: #333333;
+  border-top-left-radius: 4rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.05);
+}
+
+/* 文本内容 */
+.text-content {
+  font-size: 28rpx;
+  line-height: 1.7;
+}
+
+/* 时间戳 */
+.timestamp {
+  display: flex;
+  align-items: flex-end;
+  flex-shrink: 0;
+}
+
+.time-text {
+  font-size: 22rpx;
+  color: #999;
+}

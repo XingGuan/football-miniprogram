@@ -1,0 +1,73 @@
+<!-- pages/profile/index.wxml -->
+<view class="profile-page">
+  <!-- 用户信息区域 -->
+  <view class="user-section">
+    <!-- 已登录 -->
+    <view class="user-info" wx:if="{{isLoggedIn && userInfo}}">
+      <image
+        class="avatar"
+        src="{{userInfo.avatar || '/images/icons/user-avatar.png'}}"
+        mode="aspectFill"
+        bindtap="onEditProfile"
+      />
+      <view class="info">
+        <text class="name">{{userInfo.userName || '用户'}}</text>
+        <text class="phone">{{userInfo.phone}}</text>
+      </view>
+     
+    </view>
+
+    <!-- 未登录 -->
+    <view class="login-prompt" wx:else bindtap="onLogin">
+      <image class="avatar default" src="/images/icons/user-avatar.png" mode="aspectFill" />
+      <view class="info">
+        <text class="login-text">点击登录</text>
+        <text class="login-desc">登录后享受更多服务</text>
+      </view>
+      <view class="arrow">›</view>
+    </view>
+  </view>
+
+  <!-- 功能菜单 -->
+  <view class="menu-section">
+    <view
+      class="menu-item"
+      wx:for="{{menuList}}"
+      wx:key="title"
+      data-path="{{item.path}}"
+      data-action="{{item.action}}"
+      bindtap="onMenuTap"
+    >
+      <view class="menu-left">
+        <text class="menu-icon">{{item.icon}}</text>
+        <view class="menu-info">
+          <text class="menu-title">{{item.title}}</text>
+          <text class="menu-desc">{{item.desc}}</text>
+        </view>
+      </view>
+      <text class="menu-arrow">›</text>
+    </view>
+  </view>
+
+  <!-- 其他操作 -->
+  <view class="action-section">
+    <view class="action-item" bindtap="onClearCache">
+      <text class="action-text">清除缓存</text>
+    </view>
+  </view>
+
+  <!-- 退出登录 -->
+  <view class="logout-section" wx:if="{{isLoggedIn}}">
+    <view class="logout-btn" bindtap="onLogout">
+      <text class="logout-text">退出登录</text>
+    </view>
+  </view>
+
+  <!-- 版本信息 -->
+  <view class="version-section">
+    <text class="version-text">Version {{version}}</text>
+  </view>
+
+  <!-- 底部安全区域 -->
+  <view class="safe-area-bottom"></view>
+</view>

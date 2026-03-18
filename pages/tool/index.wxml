@@ -1,0 +1,87 @@
+<!-- pages/tool/index.wxml -->
+<view class="tool-page">
+  <!-- 数据概览 -->
+  <view class="data-section">
+    <view class="section-title">本地数据</view>
+    <view class="data-list">
+      <view class="data-item">
+        <text class="data-label">对话消息</text>
+        <text class="data-value">{{dataInfo.messages}} 条</text>
+      </view>
+      <view class="data-item">
+        <text class="data-label">用户设置</text>
+        <text class="data-value">{{dataInfo.settings}} 项</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 同步状态 -->
+  <view class="sync-section">
+    <view class="section-title">云端同步</view>
+    <view class="sync-status">
+      <view class="status-icon {{syncStatus}}">
+        <text wx:if="{{syncStatus === 'idle'}}">☁️</text>
+        <text wx:elif="{{syncStatus === 'syncing'}}">🔄</text>
+        <text wx:elif="{{syncStatus === 'success'}}">✅</text>
+        <text wx:else>❌</text>
+      </view>
+      <view class="status-info">
+        <text class="status-text" wx:if="{{syncStatus === 'idle'}}">点击下方按钮开始同步</text>
+        <text class="status-text" wx:elif="{{syncStatus === 'syncing'}}">正在同步...</text>
+        <text class="status-text" wx:elif="{{syncStatus === 'success'}}">同步成功</text>
+        <text class="status-text" wx:else>同步失败</text>
+        <text class="last-sync" wx:if="{{lastSyncTime}}">上次同步：{{lastSyncTime}}</text>
+      </view>
+    </view>
+    <view class="sync-btn {{syncStatus === 'syncing' ? 'disabled' : ''}}" bindtap="onSync">
+      <text class="sync-btn-text">{{syncStatus === 'syncing' ? '同步中...' : '立即同步'}}</text>
+    </view>
+  </view>
+
+  <!-- 数据管理 -->
+  <view class="manage-section">
+    <view class="section-title">数据管理</view>
+    <view class="manage-list">
+      <view class="manage-item" bindtap="onExport">
+        <view class="manage-left">
+          <text class="manage-icon">📤</text>
+          <view class="manage-info">
+            <text class="manage-title">导出数据</text>
+            <text class="manage-desc">将数据复制到剪贴板</text>
+          </view>
+        </view>
+        <text class="manage-arrow">›</text>
+      </view>
+      <view class="manage-item" bindtap="onImport">
+        <view class="manage-left">
+          <text class="manage-icon">📥</text>
+          <view class="manage-info">
+            <text class="manage-title">导入数据</text>
+            <text class="manage-desc">从剪贴板导入数据</text>
+          </view>
+        </view>
+        <text class="manage-arrow">›</text>
+      </view>
+      <view class="manage-item danger" bindtap="onClearLocal">
+        <view class="manage-left">
+          <text class="manage-icon">🗑️</text>
+          <view class="manage-info">
+            <text class="manage-title">清除本地数据</text>
+            <text class="manage-desc">删除所有本地存储的数据</text>
+          </view>
+        </view>
+        <text class="manage-arrow">›</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 提示信息 -->
+  <view class="tips-section">
+    <view class="tips-title">温馨提示</view>
+    <view class="tips-content">
+      <text class="tips-text">• 同步功能需要登录后使用</text>
+      <text class="tips-text">• 导出的数据可用于设备迁移</text>
+      <text class="tips-text">• 清除数据后无法恢复，请谨慎操作</text>
+    </view>
+  </view>
+</view>

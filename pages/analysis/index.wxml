@@ -1,0 +1,226 @@
+<!-- pages/analysis/index.wxml -->
+<view class="analysis-page">
+  <!-- 加载状态 -->
+  <view class="loading-wrapper" wx:if="{{loading}}">
+    <view class="loading-content">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+  </view>
+
+  <!-- 错误状态 -->
+  <empty-state
+    wx:elif="{{error}}"
+    type="error"
+    title="加载失败"
+    description="{{error}}"
+    button-text="重试"
+    bind:buttonTap="onRetry"
+  />
+
+  <!-- 主内容 -->
+  <block wx:elif="{{match}}">
+    <!-- 比赛信息头部 -->
+    <view class="match-header">
+      <view class="league-row">
+        <text class="league">{{match.league}}</text>
+        <text class="time">{{match.fullMatchTime}}</text>
+      </view>
+      <view class="teams-row">
+        <view class="team-info">
+          <text class="team-name">{{match.homeTeam}}</text>
+          <text class="team-rank" wx:if="{{match.homeTeamRank}}">[{{match.homeTeamRank}}]</text>
+        </view>
+        <view class="vs-info">
+          <text class="vs">VS</text>
+        </view>
+        <view class="team-info">
+          <text class="team-name">{{match.awayTeam}}</text>
+          <text class="team-rank" wx:if="{{match.awayTeamRank}}">[{{match.awayTeamRank}}]</text>
+        </view>
+      </view>
+
+      <!-- 赔率信息 -->
+      <view class="odds-row" wx:if="{{match.odds}}">
+        <view class="odds-item">
+          <text class="odds-label">主胜</text>
+          <text class="odds-value">{{match.odds.home || '-'}}</text>
+        </view>
+        <view class="odds-item">
+          <text class="odds-label">平局</text>
+          <text class="odds-value">{{match.odds.draw || '-'}}</text>
+        </view>
+        <view class="odds-item">
+          <text class="odds-label">客胜</text>
+          <text class="odds-value">{{match.odds.away || '-'}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 标签页导航 -->
+    <view class="tabs-nav">
+      <view
+        class="tab-item {{activeTab === item.key ? 'active' : ''}}"
+        wx:for="{{tabs}}"
+        wx:key="key"
+        data-key="{{item.key}}"
+        bindtap="onTabChange"
+      >
+        <text class="tab-text">{{item.name}}</text>
+      </view>
+    </view>
+
+    <!-- 标签页内容 -->
+    <view class="tabs-content">
+      <!-- 历史交锋 -->
+      <view class="tab-panel" wx:if="{{activeTab === 'history'}}">
+        <view class="loading-tip" wx:if="{{tabLoading.history}}">
+          <view class="loading-spinner small"></view>
+          <text>加载中...</text>
+        </view>
+        <view class="empty-tip" wx:elif="{{historyData.length === 0}}">
+          <text>暂无历史交锋数据</text>
+        </view>
+        <view class="history-list" wx:else>
+          <view class="history-item" wx:for="{{historyData}}" wx:key="id">
+            <view class="item-header">
+              <text class="item-date">{{item.matchDate}}</text>
+            </view>
+            <view class="item-teams">
+              <text class="item-team">{{item.homeTeam}}</text>
+              <text class="item-score">{{item.score}}</text>
+              <text class="item-team">{{item.awayTeam}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- xG 数据 -->
+      <view class="tab-panel" wx:elif="{{activeTab === 'xg'}}">
+        <view class="loading-tip" wx:if="{{tabLoading.xg}}">
+          <view class="loading-spinner small"></view>
+          <text>加载中...</text>
+        </view>
+        <view class="empty-tip" wx:elif="{{!xgData}}">
+          <text>暂无 xG 数据</text>
+        </view>
+        <view class="xg-content" wx:else>
+          <!-- 主队 xG -->
+          <view class="xg-team" wx:if="{{xgData.home}}">
+            <view class="xg-header">
+              <text class="xg-team-name">{{xgData.home.teamName}}</text>
+            </view>
+            <view class="xg-stats">
+              <view class="stat-row">
+                <text class="stat-label">比赛场次</text>
+                <text class="stat-value">{{xgData.home.matches}}</text>
+              </view>
+              <view class="stat-row">
+                <text class="stat-label">胜/平/负</text>
+                <text class="stat-value">{{xgData.home.wins}}/{{xgData.home.draws}}/{{xgData.home.loses}}</text>
+              </view>
+              <view class="stat-row">
+                <text class="stat-label">进球/失球</text>
+                <text class="stat-value">{{xgData.home.goals}}/{{xgData.home.ga}}</text>
+              </view>
+              <view class="stat-row">
+                <text class="stat-label">预期进球 (xG)</text>
+                <text class="stat-value highlight">{{xgData.home.xg}}</text>
+              </view>
+              <view class="stat-row">
+                <text class="stat-label">预期失球 (xGA)</text>
+                <text class="stat-value">{{xgData.home.xga}}</text>
+              </view>
+            </view>
+          </view>
+
+          <!-- 客队 xG -->
+          <view class="xg-team" wx:if="{{xgData.away}}">
+            <view class="xg-header">
+              <text class="xg-team-name">{{xgData.away.teamName}}</text>
+            </view>
+            <view class="xg-stats">
+              <view class="stat-row">
+                <text class="stat-label">比赛场次</text>
+                <text class="stat-value">{{xgData.away.matches}}</text>
+              </view>
+              <view class="stat-row">
+                <text class="stat-label">胜/平/负</text>
+                <text class="stat-value">{{xgData.away.wins}}/{{xgData.away.draws}}/{{xgData.away.loses}}</text>
+              </view>
+              <view class="stat-row">
+                <text class="stat-label">进球/失球</text>
+                <text class="stat-value">{{xgData.away.goals}}/{{xgData.away.ga}}</text>
+              </view>
+              <view class="stat-row">
+                <text class="stat-label">预期进球 (xG)</text>
+                <text class="stat-value highlight">{{xgData.away.xg}}</text>
+              </view>
+              <view class="stat-row">
+                <text class="stat-label">预期失球 (xGA)</text>
+                <text class="stat-value">{{xgData.away.xga}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 相似比赛 -->
+      <view class="tab-panel" wx:elif="{{activeTab === 'similar'}}">
+        <view class="loading-tip" wx:if="{{tabLoading.similar}}">
+          <view class="loading-spinner small"></view>
+          <text>加载中...</text>
+        </view>
+        <view class="empty-tip" wx:elif="{{similarData.length === 0}}">
+          <text>暂无相似比赛数据</text>
+        </view>
+        <view class="similar-list" wx:else>
+          <view class="similar-item" wx:for="{{similarData}}" wx:key="id">
+            <view class="item-header">
+              <text class="item-league">{{item.league}}</text>
+              <text class="item-date">{{item.matchDate}}</text>
+            </view>
+            <view class="item-teams">
+              <text class="item-team">{{item.homeTeam}}</text>
+              <text class="item-score">{{item.score}}</text>
+              <text class="item-team">{{item.awayTeam}}</text>
+            </view>
+            <view class="item-odds">
+              <text class="odds">{{item.h}}</text>
+              <text class="odds">{{item.d}}</text>
+              <text class="odds">{{item.a}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 赔率变化 -->
+      <view class="tab-panel" wx:elif="{{activeTab === 'odds'}}">
+        <view class="loading-tip" wx:if="{{tabLoading.odds}}">
+          <view class="loading-spinner small"></view>
+          <text>加载中...</text>
+        </view>
+        <view class="empty-tip" wx:elif="{{oddsData.length === 0}}">
+          <text>暂无赔率变化数据</text>
+        </view>
+        <view class="odds-list" wx:else>
+          <view class="odds-table-header">
+            <text class="col">时间</text>
+            <text class="col">主胜</text>
+            <text class="col">平局</text>
+            <text class="col">客胜</text>
+          </view>
+          <view class="odds-table-row" wx:for="{{oddsData}}" wx:key="id">
+            <text class="col time">{{item.updateTime}}</text>
+            <text class="col">{{item.h}}</text>
+            <text class="col">{{item.d}}</text>
+            <text class="col">{{item.a}}</text>
+          </view>
+        </view>
+      </view>
+    </view>
+  </block>
+
+  <!-- 底部安全区域 -->
+  <view class="safe-area-bottom"></view>
+</view>

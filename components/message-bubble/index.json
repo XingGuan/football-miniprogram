@@ -1,0 +1,7 @@
+{
+  "component": true,
+  "usingComponents": {
+    "typing-text": "../typing-text/index",
+    "markdown-viewer": "../markdown-viewer/index"
+  }
+}
