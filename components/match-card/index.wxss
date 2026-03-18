@@ -1,0 +1,191 @@
+/* components/match-card/index.wxss */
+.match-card {
+  background: #fff;
+  border-radius: 12rpx;
+  overflow: hidden;
+  position: relative;
+}
+
+/* 单场角标 */
+.single-badge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: linear-gradient(135deg, #ff6b6b, #ee5a5a);
+  color: #fff;
+  font-size: 20rpx;
+  font-weight: 600;
+  padding: 4rpx 16rpx 4rpx 12rpx;
+  border-radius: 12rpx 0 12rpx 0;
+  z-index: 1;
+}
+
+/* 头部 */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 20rpx;
+  background: #f8f9fc;
+  border-bottom: 1rpx solid #eee;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.match-num {
+  font-size: 26rpx;
+  color: #667eea;
+  font-weight: 600;
+}
+
+.league-name {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.match-time {
+  font-size: 26rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+/* 球队行 */
+.teams-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20rpx;
+}
+
+.team-info {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.team-info.home {
+  justify-content: flex-start;
+}
+
+.team-info.away {
+  justify-content: flex-end;
+}
+
+.team-name {
+  font-size: 32rpx;
+  color: #222;
+  font-weight: 600;
+}
+
+.team-rank {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.vs {
+  font-size: 24rpx;
+  color: #ccc;
+  font-weight: 500;
+  padding: 0 20rpx;
+}
+
+/* 赔率行 - 4列 */
+.odds-row {
+  display: flex;
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.odds-cell {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16rpx 8rpx;
+  gap: 4rpx;
+}
+
+.odds-cell + .odds-cell {
+  border-left: 1rpx solid #f0f0f0;
+}
+
+/* AI分析按钮 */
+.odds-cell.action-cell {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  flex-direction: row;
+  gap: 6rpx;
+}
+
+.odds-cell.action-cell:active {
+  opacity: 0.85;
+}
+
+.action-tag {
+  font-size: 20rpx;
+  font-weight: 700;
+  color: #fff;
+  background: rgba(255,255,255,0.25);
+  padding: 4rpx 8rpx;
+  border-radius: 4rpx;
+}
+
+.action-text {
+  font-size: 26rpx;
+  color: #fff;
+  font-weight: 500;
+}
+
+/* 赔率文字 */
+.odds-label {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.odds-num {
+  font-size: 30rpx;
+  color: #333;
+  font-weight: 600;
+  font-family: -apple-system, 'Helvetica Neue', sans-serif;
+}
+
+/* 让球行 */
+.handicap-row {
+  background: #fafafa;
+}
+
+/* 分析按钮 */
+.odds-cell.detail-cell {
+  background: linear-gradient(135deg, #52c41a, #389e0d);
+  flex-direction: row;
+  gap: 4rpx;
+}
+
+.odds-cell.detail-cell:active {
+  opacity: 0.85;
+}
+
+.odds-cell.detail-cell.full {
+  flex: 1;
+}
+
+.detail-text {
+  font-size: 26rpx;
+  color: #fff;
+  font-weight: 500;
+}
+
+/* 让球格 */
+.odds-cell.goalline {
+  background: rgba(102, 126, 234, 0.06);
+}
+
+.goalline-label {
+  font-size: 22rpx;
+  color: #667eea;
+  font-weight: 500;
+}

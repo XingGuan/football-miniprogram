@@ -1,0 +1,130 @@
+<!-- pages/history-detail/index.wxml -->
+<view class="detail-page">
+  <!-- 加载状态 -->
+  <view class="loading-wrapper" wx:if="{{loading}}">
+    <view class="loading-content">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+  </view>
+
+  <!-- 错误状态 -->
+  <empty-state
+    wx:elif="{{error}}"
+    type="error"
+    title="加载失败"
+    description="{{error}}"
+    button-text="重试"
+    bind:buttonTap="onRetry"
+  />
+
+  <!-- 详情内容 -->
+  <scroll-view class="detail-scroll" scroll-y wx:elif="{{record}}">
+    <!-- 比赛信息卡片 -->
+    <view class="match-card">
+      <view class="match-header">
+        <text class="match-time">{{record.matchTime}}</text>
+        <view class="status-tag {{record.matchResult ? 'finished' : 'pending'}}">
+          <text class="status-text">{{record.matchResult ? '已结束' : '待开赛'}}</text>
+        </view>
+      </view>
+
+      <!-- 对阵信息 -->
+      <view class="match-teams">
+        <view class="team home">
+          <text class="team-name">{{record.homeTeam}}</text>
+        </view>
+        <view class="vs-section">
+          <text class="vs">VS</text>
+          <text class="match-result" wx:if="{{record.matchResult}}">{{record.matchResult}}</text>
+        </view>
+        <view class="team away">
+          <text class="team-name">{{record.awayTeam}}</text>
+        </view>
+      </view>
+
+      <!-- 赔率信息 -->
+      <view class="odds-section" wx:if="{{record.homeWin}}">
+        <view class="odds-item">
+          <text class="odds-label">主胜</text>
+          <text class="odds-value">{{record.homeWin}}</text>
+        </view>
+        <view class="odds-item">
+          <text class="odds-label">平局</text>
+          <text class="odds-value">{{record.draw}}</text>
+        </view>
+        <view class="odds-item">
+          <text class="odds-label">客胜</text>
+          <text class="odds-value">{{record.awayWin}}</text>
+        </view>
+      </view>
+
+      <!-- AI 预测结果 -->
+      <view class="prediction-section" wx:if="{{record.aiResult || record.aiScore}}">
+        <view class="prediction-row">
+          <text class="prediction-label">AI 预测结果</text>
+          <text class="prediction-value">{{record.aiResult}}</text>
+        </view>
+        <view class="prediction-row" wx:if="{{record.aiScore}}">
+          <text class="prediction-label">预测比分</text>
+          <text class="prediction-value highlight">{{record.aiScore}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- Tab 切换 -->
+    <view class="tab-section" wx:if="{{record.afterMatchAnalysis}}">
+      <view
+        class="tab-item {{activeTab === 'analysis' ? 'active' : ''}}"
+        data-tab="analysis"
+        bindtap="onTabChange"
+      >
+        <text class="tab-text">赛前分析</text>
+      </view>
+      <view
+        class="tab-item {{activeTab === 'afterMatch' ? 'active' : ''}}"
+        data-tab="afterMatch"
+        bindtap="onTabChange"
+      >
+        <text class="tab-text">赛后复盘</text>
+      </view>
+    </view>
+
+    <!-- 分析内容 -->
+    <view class="content-section">
+      <view class="content-header">
+        <text class="content-title">{{activeTab === 'analysis' ? 'AI 赛前分析' : 'AI 赛后复盘'}}</text>
+      </view>
+      <view class="content-body">
+        <markdown-viewer
+          content="{{activeTab === 'analysis' ? record.aiAnalysis : record.afterMatchAnalysis}}"
+          wx:if="{{(activeTab === 'analysis' && record.aiAnalysis) || (activeTab === 'afterMatch' && record.afterMatchAnalysis)}}"
+        />
+        <view class="empty-content" wx:else>
+          <text class="empty-text">暂无分析内容</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 时间信息 -->
+    <view class="meta-section">
+      <text class="meta-text">创建于 {{record.createTime}}</text>
+    </view>
+
+    <!-- 底部占位 -->
+    <view class="bottom-placeholder"></view>
+  </scroll-view>
+
+  <!-- 底部操作栏 -->
+  <view class="action-bar safe-area-bottom" wx:if="{{record}}">
+    <view class="action-btn" bindtap="onCopy">
+      <text class="action-icon">📋</text>
+      <text class="action-text">复制</text>
+    </view>
+    <view class="action-btn" bindtap="onShare">
+      <text class="action-icon">📤</text>
+      <text class="action-text">分享</text>
+    </view>
+   
+  </view>
+</view>

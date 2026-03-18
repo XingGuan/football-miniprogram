@@ -1,0 +1,68 @@
+<!-- pages/ai-analysis/index.wxml -->
+<view class="page">
+  <!-- 比赛信息头部 -->
+  <view class="match-header" wx:if="{{matchInfo}}">
+    <view class="header-top">
+      <text class="league">{{matchInfo.league}}</text>
+    </view>
+    <view class="teams">
+      <text class="team">{{matchInfo.homeTeam}}</text>
+      <text class="vs">VS</text>
+      <text class="team">{{matchInfo.awayTeam}}</text>
+    </view>
+  </view>
+
+  <!-- 加载状态 -->
+  <view class="loading-wrapper" wx:if="{{loading}}">
+    <view class="loading-animation">
+      <view class="loading-dot"></view>
+      <view class="loading-dot"></view>
+      <view class="loading-dot"></view>
+    </view>
+    <text class="loading-text">AI 正在分析中...</text>
+    <text class="loading-tip">请稍候，这可能需要几秒钟</text>
+  </view>
+
+  <!-- 错误状态 -->
+  <view class="error-wrapper" wx:elif="{{error}}">
+    <view class="error-icon">!</view>
+    <text class="error-text">{{error}}</text>
+    <view class="retry-btn" bindtap="onRetry">重新分析</view>
+  </view>
+
+  <!-- 分析结果 -->
+  <view class="result-wrapper" wx:elif="{{parsedContent.length > 0}}">
+    <!-- 操作栏 -->
+    <view class="action-bar">
+      <view class="action-btn" bindtap="onCopy">
+        <text>复制</text>
+      </view>
+      <button class="action-btn" open-type="share">
+        <text>分享</text>
+      </button>
+    </view>
+
+    <!-- 内容区域 -->
+    <view class="content-card">
+      <block wx:for="{{parsedContent}}" wx:key="index">
+        <!-- 标题 -->
+        <view class="md-h1" wx:if="{{item.type === 'h1'}}">{{item.text}}</view>
+        <view class="md-h2" wx:elif="{{item.type === 'h2'}}">{{item.text}}</view>
+        <view class="md-h3" wx:elif="{{item.type === 'h3'}}">{{item.text}}</view>
+        <!-- 列表 -->
+        <view class="md-list" wx:elif="{{item.type === 'list'}}">
+          <text class="list-dot">•</text>
+          <text class="list-text">{{item.text}}</text>
+        </view>
+        <!-- 分隔线 -->
+        <view class="md-hr" wx:elif="{{item.type === 'hr'}}"></view>
+        <!-- 空行 -->
+        <view class="md-space" wx:elif="{{item.type === 'space'}}"></view>
+        <!-- 段落 -->
+        <view class="md-p" wx:elif="{{item.type === 'p'}}">{{item.text}}</view>
+      </block>
+    </view>
+
+    <view class="safe-bottom"></view>
+  </view>
+</view>

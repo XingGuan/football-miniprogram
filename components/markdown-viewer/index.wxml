@@ -1,0 +1,77 @@
+<!-- components/markdown-viewer/index.wxml -->
+<view class="markdown-viewer">
+  <block wx:for="{{parsedNodes}}" wx:key="index">
+    <!-- 标题 -->
+    <view wx:if="{{item.type === 'heading'}}" class="md-heading md-h{{item.level}}">
+      <block wx:for="{{item.children}}" wx:for-item="child" wx:key="index">
+        <text wx:if="{{child.type === 'text'}}">{{child.text}}</text>
+        <text wx:elif="{{child.type === 'strong'}}" class="md-strong">{{child.text}}</text>
+        <text wx:elif="{{child.type === 'em'}}" class="md-em">{{child.text}}</text>
+        <text wx:elif="{{child.type === 'code-inline'}}" class="md-code-inline">{{child.text}}</text>
+      </block>
+    </view>
+
+    <!-- 段落 -->
+    <view wx:elif="{{item.type === 'paragraph'}}" class="md-paragraph">
+      <block wx:for="{{item.children}}" wx:for-item="child" wx:key="index">
+        <text wx:if="{{child.type === 'text'}}" selectable="{{selectable}}">{{child.text}}</text>
+        <text wx:elif="{{child.type === 'strong'}}" class="md-strong" selectable="{{selectable}}">{{child.text}}</text>
+        <text wx:elif="{{child.type === 'em'}}" class="md-em" selectable="{{selectable}}">{{child.text}}</text>
+        <text wx:elif="{{child.type === 'code-inline'}}" class="md-code-inline" selectable="{{selectable}}">{{child.text}}</text>
+        <text wx:elif="{{child.type === 'link'}}" class="md-link" data-url="{{child.url}}" bindtap="onLinkTap">{{child.text}}</text>
+      </block>
+    </view>
+
+    <!-- 代码块 -->
+    <view wx:elif="{{item.type === 'code'}}" class="md-code-block">
+      <view class="code-header">
+        <text class="code-language">{{item.language || 'code'}}</text>
+        <view class="copy-btn" data-index="{{index}}" bindtap="copyCode">
+          <text class="copy-text">复制</text>
+        </view>
+      </view>
+      <scroll-view class="code-content" scroll-x="true" enhanced="true" show-scrollbar="false">
+        <text class="code-text" selectable="true" user-select="true">{{item.content}}</text>
+      </scroll-view>
+    </view>
+
+    <!-- 引用 -->
+    <view wx:elif="{{item.type === 'blockquote'}}" class="md-blockquote">
+      <block wx:for="{{item.children}}" wx:for-item="child" wx:key="index">
+        <text wx:if="{{child.type === 'text'}}" selectable="{{selectable}}">{{child.text}}</text>
+        <text wx:elif="{{child.type === 'strong'}}" class="md-strong" selectable="{{selectable}}">{{child.text}}</text>
+      </block>
+    </view>
+
+    <!-- 无序列表 -->
+    <view wx:elif="{{item.type === 'ul'}}" class="md-list md-ul">
+      <view wx:for="{{item.items}}" wx:for-item="li" wx:key="index" class="md-li">
+        <text class="li-marker">•</text>
+        <view class="li-content">
+          <block wx:for="{{li.children}}" wx:for-item="child" wx:key="index">
+            <text wx:if="{{child.type === 'text'}}" selectable="{{selectable}}">{{child.text}}</text>
+            <text wx:elif="{{child.type === 'strong'}}" class="md-strong" selectable="{{selectable}}">{{child.text}}</text>
+            <text wx:elif="{{child.type === 'code-inline'}}" class="md-code-inline" selectable="{{selectable}}">{{child.text}}</text>
+          </block>
+        </view>
+      </view>
+    </view>
+
+    <!-- 有序列表 -->
+    <view wx:elif="{{item.type === 'ol'}}" class="md-list md-ol">
+      <view wx:for="{{item.items}}" wx:for-item="li" wx:for-index="liIndex" wx:key="index" class="md-li">
+        <text class="li-marker">{{liIndex + 1}}.</text>
+        <view class="li-content">
+          <block wx:for="{{li.children}}" wx:for-item="child" wx:key="index">
+            <text wx:if="{{child.type === 'text'}}" selectable="{{selectable}}">{{child.text}}</text>
+            <text wx:elif="{{child.type === 'strong'}}" class="md-strong" selectable="{{selectable}}">{{child.text}}</text>
+            <text wx:elif="{{child.type === 'code-inline'}}" class="md-code-inline" selectable="{{selectable}}">{{child.text}}</text>
+          </block>
+        </view>
+      </view>
+    </view>
+
+    <!-- 分隔线 -->
+    <view wx:elif="{{item.type === 'hr'}}" class="md-hr"></view>
+  </block>
+</view>

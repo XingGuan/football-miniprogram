@@ -1,0 +1,155 @@
+/* components/markdown-viewer/index.wxss */
+.markdown-viewer {
+  font-size: 28rpx;
+  line-height: 1.7;
+  color: #333;
+  word-wrap: break-word;
+}
+
+/* 标题 */
+.md-heading {
+  font-weight: 600;
+  color: #1a1a1a;
+  margin: 24rpx 0 16rpx;
+}
+
+.md-h1 {
+  font-size: 40rpx;
+}
+
+.md-h2 {
+  font-size: 36rpx;
+}
+
+.md-h3 {
+  font-size: 32rpx;
+}
+
+.md-h4,
+.md-h5,
+.md-h6 {
+  font-size: 30rpx;
+}
+
+/* 段落 */
+.md-paragraph {
+  margin: 16rpx 0;
+  line-height: 1.8;
+}
+
+/* 粗体 */
+.md-strong {
+  font-weight: 600;
+  color: #1a1a1a;
+}
+
+/* 斜体 */
+.md-em {
+  font-style: italic;
+}
+
+/* 行内代码 */
+.md-code-inline {
+  background-color: #f5f5f5;
+  color: #e83e8c;
+  padding: 4rpx 12rpx;
+  border-radius: 6rpx;
+  font-family: Menlo, Monaco, Consolas, monospace;
+  font-size: 26rpx;
+}
+
+/* 代码块 */
+.md-code-block {
+  background-color: #282c34;
+  border-radius: 12rpx;
+  margin: 16rpx 0;
+  overflow: hidden;
+}
+
+.code-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12rpx 20rpx;
+  background-color: #21252b;
+  border-bottom: 1rpx solid #3a3f4b;
+}
+
+.code-language {
+  font-size: 24rpx;
+  color: #98c379;
+}
+
+.copy-btn {
+  padding: 4rpx 16rpx;
+  background-color: #3a3f4b;
+  border-radius: 6rpx;
+}
+
+.copy-text {
+  font-size: 22rpx;
+  color: #abb2bf;
+}
+
+.copy-btn:active {
+  opacity: 0.7;
+}
+
+.code-content {
+  padding: 20rpx;
+  white-space: pre;
+}
+
+.code-text {
+  font-family: Menlo, Monaco, Consolas, monospace;
+  font-size: 24rpx;
+  color: #abb2bf;
+  line-height: 1.6;
+}
+
+/* 引用 */
+.md-blockquote {
+  margin: 16rpx 0;
+  padding: 16rpx 24rpx;
+  background-color: #f6f8fa;
+  border-left: 6rpx solid #1890ff;
+  border-radius: 0 8rpx 8rpx 0;
+  color: #666;
+  font-style: italic;
+}
+
+/* 列表 */
+.md-list {
+  margin: 16rpx 0;
+  padding-left: 8rpx;
+}
+
+.md-li {
+  display: flex;
+  align-items: flex-start;
+  margin: 8rpx 0;
+}
+
+.li-marker {
+  flex-shrink: 0;
+  width: 40rpx;
+  color: #1890ff;
+  font-weight: 500;
+}
+
+.li-content {
+  flex: 1;
+}
+
+/* 链接 */
+.md-link {
+  color: #1890ff;
+  text-decoration: underline;
+}
+
+/* 分隔线 */
+.md-hr {
+  margin: 32rpx 0;
+  border: none;
+  border-top: 2rpx solid #e8e8e8;
+}

@@ -1,0 +1,160 @@
+<!-- pages/agreement/index.wxml -->
+<scroll-view class="agreement-page" scroll-y>
+  <!-- 用户协议 -->
+  <view class="content" wx:if="{{type === 'user'}}">
+    <view class="section">
+      <text class="title">AI足球智能体小程序用户协议</text>
+      <text class="paragraph">欢迎使用本AI足球智能体小程序（以下简称"本程序"）。本程序由足球分析助手运营团队（以下简称"我们"）提供。请您仔细阅读本用户协议（以下简称"本协议"），在确认充分理解并同意后使用本程序。如果您不同意本协议的任何条款，请立即停止使用本程序。</text>
+    </view>
+
+    <view class="section">
+      <text class="subtitle">1. 协议接受与修改</text>
+      <text class="paragraph">1.1 您通过点击确认或以其他方式选择接受本协议，即表示您与我们达成协议，自愿接受本协议的全部内容。</text>
+      <text class="paragraph">1.2 我们有权根据法律法规、业务环境变化等需要，不时修改本协议。修改后的协议将在本程序内公布，若您继续使用本程序，视为您接受修改后的协议。</text>
+    </view>
+
+    <view class="section">
+      <text class="subtitle">2. 服务内容</text>
+      <text class="paragraph">2.1 本程序提供足球比赛信息展示、预测分析、社区讨论等服务，具体以实际提供为准。</text>
+      <text class="paragraph">2.2 本程序中所展示的预测结果、分析内容仅供参考，不构成任何保证或承诺。您应当独立判断并自行承担使用预测结果的风险。</text>
+      <text class="paragraph">2.3 我们保留根据实际情况随时调整、中断或终止部分或全部服务的权利，无需对任何用户或第三方承担责任。</text>
+    </view>
+
+    <view class="section">
+      <text class="subtitle">3. 用户账号与行为规范</text>
+      <text class="paragraph">3.1 您在使用本程序时可能需要注册账号，您应提供真实、准确、完整的个人信息，并及时更新。</text>
+      <text class="paragraph">3.2 您应对自己账号下的所有行为负责，妥善保管账号及密码，因您保管不善造成的损失由您自行承担。</text>
+      <text class="paragraph">3.3 您不得利用本程序从事任何违法、违规或侵犯他人合法权益的行为，包括但不限于：</text>
+      <text class="paragraph list-item">• 发布、传播虚假、骚扰、侮辱、诽谤、暴力、赌博等不良信息；</text>
+      <text class="paragraph list-item">• 侵害他人知识产权、隐私权等合法权益；</text>
+      <text class="paragraph list-item">• 进行任何形式的刷屏、恶意灌水、广告或垃圾信息；</text>
+      <text class="paragraph list-item">• 尝试未经授权访问本程序系统或干扰其正常运行；</text>
+      <text class="paragraph list-item">• 其他违反法律法规或本协议的行为。</text>
+      <text class="paragraph">3.4 如我们发现您存在上述行为，有权采取警告、删除内容、暂停或终止服务、封禁账号等措施，并保留追究法律责任的权利。</text>
+    </view>
+
+    <view class="section">
+      <text class="subtitle">4. 知识产权</text>
+      <text class="paragraph">4.1 本程序所有内容（包括但不限于文字、图片、图表、界面设计、数据、代码等）的知识产权归我们或相关权利人所有。</text>
+      <text class="paragraph">4.2 未经我们书面许可，您不得复制、修改、传播、出版、销售或用于任何商业目的。</text>
+    </view>
+
+    <view class="section">
+      <text class="subtitle">5. 免责声明</text>
+      <text class="paragraph">5.1 本程序按"现状"提供服务，不保证服务完全无错误、不间断、安全可靠，也不对预测结果的准确性、实用性做任何承诺。</text>
+      <text class="paragraph">5.2 您理解并同意：您基于本程序预测结果所做的任何决策（如投注、交易等）均属个人行为，风险自负，我们不对任何直接或间接损失承担责任。</text>
+      <text class="paragraph">5.3 在法律允许范围内，我们不对因以下原因造成的损害承担责任：</text>
+      <text class="paragraph list-item">• 不可抗力（如自然灾害、战争、政府行为等）；</text>
+      <text class="paragraph list-item">• 网络服务异常、系统维护、设备故障等；</text>
+      <text class="paragraph list-item">• 第三方原因导致的数据丢失、服务中断；</text>
+      <text class="paragraph list-item">• 您操作不当或违反本协议。</text>
+    </view>
+
+    <view class="section">
+      <text class="subtitle">6. 第三方链接</text>
+      <text class="paragraph">本程序可能包含指向第三方网站或资源的链接，这些链接仅为方便您使用提供。我们对第三方内容、产品或服务不作任何保证，也不承担任何责任。</text>
+    </view>
+
+    <view class="section">
+      <text class="subtitle">7. 未成年人使用</text>
+      <text class="paragraph">若您未满18周岁，请在监护人指导下使用本程序，且不得进行任何涉及资金的操作。监护人应对未成年人的使用行为进行监督。</text>
+    </view>
+
+    <view class="section">
+      <text class="subtitle">8. 协议终止</text>
+      <text class="paragraph">8.1 您可以随时停止使用本程序并注销账号。</text>
+      <text class="paragraph">8.2 我们有权在任何时候因任何原因暂停或终止您的服务，包括但不限于您违反本协议的情形。终止后，您使用本程序的权利立即停止。</text>
+    </view>
+
+    <view class="section">
+      <text class="subtitle">9. 法律适用与争议解决</text>
+      <text class="paragraph">9.1 本协议的订立、执行和解释均适用中华人民共和国法律。</text>
+      <text class="paragraph">9.2 因本协议引起的或与本协议有关的任何争议，双方应友好协商解决；协商不成的，任何一方均有权将争议提交至有管辖权的人民法院诉讼解决。</text>
+    </view>
+
+    <view class="section">
+      <text class="subtitle">10. 联系方式</text>
+      <text class="paragraph">如您对本协议有任何疑问，可通过小程序内的反馈功能联系我们。</text>
+    </view>
+  </view>
+
+  <!-- 隐私政策 -->
+  <view class="content" wx:else>
+    <view class="section">
+      <text class="title">AI足球智能体小程序隐私政策</text>
+      <text class="paragraph">我们非常重视您的隐私保护。本隐私政策说明了我们在您使用本程序时如何收集、使用、存储和共享您的个人信息。请仔细阅读并了解本政策。</text>
+      <text class="update-time">最近更新日期：2025-01-01</text>
+    </view>
+
+    <view class="section">
+      <text class="subtitle">一、我们收集的信息</text>
+      <text class="paragraph">为了向您提供优质服务，我们可能收集以下类型的信息：</text>
+
+      <text class="paragraph bold">1. 您主动提供的信息</text>
+      <text class="paragraph list-item">• 注册信息：当您注册账号时，您需要提供手机号码、微信昵称、头像等基本信息。</text>
+      <text class="paragraph list-item">• 反馈信息：您在使用过程中向我们提交的意见、建议、问卷等。</text>
+
+      <text class="paragraph bold">2. 我们在您使用过程中收集的信息</text>
+      <text class="paragraph list-item">• 设备信息：包括设备型号、操作系统版本、唯一设备标识符、IP地址、网络状态等。</text>
+      <text class="paragraph list-item">• 日志信息：您使用本程序时的操作记录、浏览记录、点击记录等。</text>
+      <text class="paragraph list-item">• 位置信息：经您授权后，我们可能收集您的位置信息以提供本地化服务。</text>
+      <text class="paragraph list-item">• 预测行为信息：您关注的球队、参与的预测、评论等互动信息。</text>
+
+      <text class="paragraph bold">3. 第三方共享的信息</text>
+      <text class="paragraph">当您通过第三方平台（如微信）登录时，我们可能从该平台获取您的公开信息（如昵称、头像），具体以第三方平台的说明为准。</text>
+    </view>
+
+    <view class="section">
+      <text class="subtitle">二、我们如何使用信息</text>
+      <text class="paragraph">我们可能将收集的信息用于以下用途：</text>
+      <text class="paragraph list-item">• 提供、维护、优化本程序的服务，如进行用户身份验证、记录偏好设置；</text>
+      <text class="paragraph list-item">• 向您推送比赛资讯、预测分析、活动通知等（您可随时退订）；</text>
+      <text class="paragraph list-item">• 分析用户行为，改进产品功能，提升用户体验；</text>
+      <text class="paragraph list-item">• 检测、预防和解决技术问题或违法违规行为；</text>
+      <text class="paragraph list-item">• 履行法律法规规定的义务。</text>
+    </view>
+
+    <view class="section">
+      <text class="subtitle">三、信息的共享与披露</text>
+      <text class="paragraph">我们不会将您的个人信息出售给第三方。但可能在以下情形下共享或披露：</text>
+      <text class="paragraph list-item">• 获得您的明确同意；</text>
+      <text class="paragraph list-item">• 根据法律法规要求、司法或行政机关的强制命令；</text>
+      <text class="paragraph list-item">• 为保护我们、用户或公众的合法权益所必要；</text>
+      <text class="paragraph list-item">• 与为我们提供服务（如数据分析、云存储）的合作伙伴共享必要信息，但要求其严格保密，不得用于其他目的；</text>
+      <text class="paragraph list-item">• 在涉及合并、收购、资产转让等交易时，您的信息可能作为资产的一部分转移，我们会要求接收方继续受本政策约束。</text>
+    </view>
+
+    <view class="section">
+      <text class="subtitle">四、信息的存储与保护</text>
+      <text class="paragraph list-item">• 存储地点：我们将在中华人民共和国境内存储您的个人信息，不会跨境传输。</text>
+      <text class="paragraph list-item">• 存储期限：我们仅在实现本政策所述目的所必需的最短期间内保留您的信息，除非法律另有规定。</text>
+      <text class="paragraph list-item">• 保护措施：我们采用符合行业标准的安全技术（如加密、访问控制）保护您的信息，但无法保证绝对安全。如发生安全事件，我们将及时告知您并采取补救措施。</text>
+    </view>
+
+    <view class="section">
+      <text class="subtitle">五、您的权利</text>
+      <text class="paragraph">您有权：</text>
+      <text class="paragraph list-item">• 访问、更正、删除您的个人信息（通过账号设置或联系我们）；</text>
+      <text class="paragraph list-item">• 撤回同意（如关闭位置权限、退订推送），撤回不影响撤回前基于同意的处理；</text>
+      <text class="paragraph list-item">• 注销账号（联系客服处理），注销后我们将删除您的信息，除非法律法规另有要求。</text>
+    </view>
+
+    <view class="section">
+      <text class="subtitle">六、未成年人保护</text>
+      <text class="paragraph">我们非常重视对未成年人个人信息的保护。若您是未成年人，请在监护人同意下使用本程序。我们不会在明知情况下收集未成年人的个人信息，如发现误收集，将尽快删除。</text>
+    </view>
+
+    <view class="section">
+      <text class="subtitle">七、本政策的更新</text>
+      <text class="paragraph">我们可能适时修订本隐私政策。更新后的政策将在本程序公布，若您继续使用，视为接受更新。重大变更我们将通过弹窗等方式通知您。</text>
+    </view>
+
+    <view class="section">
+      <text class="subtitle">八、联系我们</text>
+      <text class="paragraph">如您对本隐私政策有任何疑问、意见或投诉，请通过小程序内的反馈功能联系我们。</text>
+    </view>
+  </view>
+
+  <!-- 底部占位 -->
+  <view class="footer-space"></view>
+</scroll-view>

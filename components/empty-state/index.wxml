@@ -1,0 +1,30 @@
+<!-- components/empty-state/index.wxml -->
+<view class="empty-state">
+  <!-- 图标 -->
+  <view class="icon-wrapper">
+    <image class="icon" src="{{displayIcon}}" mode="aspectFit" />
+  </view>
+
+  <!-- 标题 -->
+  <view class="title" wx:if="{{displayTitle}}">
+    <text>{{displayTitle}}</text>
+  </view>
+
+  <!-- 描述 -->
+  <view class="description" wx:if="{{displayDescription}}">
+    <text>{{displayDescription}}</text>
+  </view>
+
+  <!-- 按钮 -->
+  <view class="button-wrapper" wx:if="{{buttonText}}">
+    <button
+      class="action-btn {{buttonType}}"
+      bindtap="onButtonTap"
+    >
+      {{buttonText}}
+    </button>
+  </view>
+
+  <!-- 插槽 -->
+  <slot></slot>
+</view>

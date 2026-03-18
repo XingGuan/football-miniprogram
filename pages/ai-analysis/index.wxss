@@ -1,0 +1,250 @@
+/* pages/ai-analysis/index.wxss */
+.page {
+  min-height: 100vh;
+  background: linear-gradient(180deg, #f0f4f8 0%, #e8eef3 100%);
+  box-sizing: border-box;
+}
+
+/* 比赛信息头部 */
+.match-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 32rpx;
+  color: #fff;
+}
+
+.header-top {
+  text-align: center;
+  margin-bottom: 16rpx;
+}
+
+.league {
+  font-size: 26rpx;
+  opacity: 0.9;
+  background: rgba(255,255,255,0.15);
+  padding: 6rpx 20rpx;
+  border-radius: 20rpx;
+  display: inline-block;
+}
+
+.teams {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.team {
+  font-size: 36rpx;
+  font-weight: 600;
+}
+
+.vs {
+  font-size: 26rpx;
+  opacity: 0.7;
+  margin: 0 24rpx;
+}
+
+/* 加载状态 */
+.loading-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 200rpx 40rpx;
+}
+
+.loading-animation {
+  display: flex;
+  margin-bottom: 40rpx;
+}
+
+.loading-dot {
+  width: 24rpx;
+  height: 24rpx;
+  background: #667eea;
+  border-radius: 50%;
+  margin: 0 8rpx;
+  animation: bounce 1.4s ease-in-out infinite both;
+}
+
+.loading-dot:nth-child(1) { animation-delay: -0.32s; }
+.loading-dot:nth-child(2) { animation-delay: -0.16s; }
+.loading-dot:nth-child(3) { animation-delay: 0s; }
+
+@keyframes bounce {
+  0%, 80%, 100% {
+    transform: scale(0.6);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.loading-text {
+  font-size: 34rpx;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+}
+
+.loading-tip {
+  font-size: 26rpx;
+  color: #999;
+}
+
+/* 错误状态 */
+.error-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 200rpx 40rpx;
+}
+
+.error-icon {
+  width: 100rpx;
+  height: 100rpx;
+  background: #ff4d4f;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 56rpx;
+  font-weight: bold;
+  margin-bottom: 32rpx;
+}
+
+.error-text {
+  font-size: 30rpx;
+  color: #666;
+  margin-bottom: 40rpx;
+  text-align: center;
+}
+
+.retry-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  padding: 24rpx 72rpx;
+  border-radius: 44rpx;
+  font-size: 30rpx;
+  font-weight: 500;
+}
+
+/* 分析结果 - 不使用 scroll-view */
+.result-wrapper {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+/* 操作栏 */
+.action-bar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20rpx 24rpx;
+}
+
+.action-btn {
+  background: #fff;
+  padding: 12rpx 28rpx;
+  border-radius: 24rpx;
+  font-size: 26rpx;
+  color: #666;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.06);
+  border: none;
+  line-height: 1.4;
+  margin: 0 0 0 16rpx;
+}
+
+.action-btn::after {
+  display: none;
+}
+
+.action-btn:active {
+  opacity: 0.8;
+}
+
+/* 内容卡片 */
+.content-card {
+  background: #fff;
+  margin: 0 24rpx 24rpx;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.05);
+}
+
+/* Markdown 样式 */
+.md-h1 {
+  font-size: 38rpx;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 24rpx 0 16rpx;
+  padding-bottom: 12rpx;
+  border-bottom: 2rpx solid #667eea;
+}
+
+.md-h1:first-child {
+  margin-top: 0;
+}
+
+.md-h2 {
+  font-size: 34rpx;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin: 28rpx 0 16rpx;
+  padding-left: 16rpx;
+  border-left: 6rpx solid #667eea;
+}
+
+.md-h3 {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+  margin: 24rpx 0 12rpx;
+  padding: 14rpx 16rpx;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.06));
+  border-radius: 10rpx;
+}
+
+.md-p {
+  font-size: 28rpx;
+  color: #444;
+  line-height: 1.9;
+  margin: 10rpx 0;
+  text-align: justify;
+}
+
+.md-list {
+  display: flex;
+  align-items: flex-start;
+  margin: 10rpx 0;
+  padding-left: 4rpx;
+}
+
+.list-dot {
+  color: #667eea;
+  font-size: 28rpx;
+  margin-right: 12rpx;
+  line-height: 1.8;
+}
+
+.list-text {
+  flex: 1;
+  font-size: 28rpx;
+  color: #444;
+  line-height: 1.8;
+}
+
+.md-hr {
+  height: 2rpx;
+  background: linear-gradient(90deg, transparent, #ddd, transparent);
+  margin: 28rpx 0;
+}
+
+.md-space {
+  height: 12rpx;
+}
+
+.safe-bottom {
+  height: calc(env(safe-area-inset-bottom) + 40rpx);
+}

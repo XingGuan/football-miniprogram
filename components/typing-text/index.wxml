@@ -1,0 +1,5 @@
+<!-- components/typing-text/index.wxml -->
+<view class="typing-text">
+  <text class="text-content" selectable="true" user-select="true">{{displayText}}</text>
+  <text class="cursor {{cursorVisible && isTyping ? 'visible' : ''}}" wx:if="{{showCursor && isTyping}}">|</text>
+</view>

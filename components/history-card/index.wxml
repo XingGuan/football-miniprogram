@@ -1,0 +1,65 @@
+<!-- components/history-card/index.wxml -->
+<view class="history-card" bindtap="onTap">
+  <view class="card-content">
+    <!-- 顶部：比赛时间和状态 -->
+    <view class="card-header">
+      <text class="match-time">{{record.matchTime}}</text>
+      <view class="status-tag {{resultTag}}">
+        <text class="status-text">{{record.matchResult !== '' ? '已结束' : '未开奖'}}</text>
+      </view>
+    </view>
+
+    <!-- 比赛对阵 -->
+    <view class="match-teams">
+      <view class="team home">
+        <text class="team-name">{{record.homeTeam}}</text>
+      </view>
+      <view class="vs-section">
+        <text class="vs">VS</text>
+        <text class="match-result" wx:if="{{record.matchResult}}">{{record.matchResult}}</text>
+      </view>
+      <view class="team away">
+        <text class="team-name">{{record.awayTeam}}</text>
+      </view>
+    </view>
+
+    <!-- 赔率信息 -->
+    <view class="odds-row" wx:if="{{record.homeWin}}">
+      <view class="odds-item">
+        <text class="odds-label">主胜</text>
+        <text class="odds-value">{{record.homeWin}}</text>
+      </view>
+      <view class="odds-item">
+        <text class="odds-label">平局</text>
+        <text class="odds-value">{{record.draw}}</text>
+      </view>
+      <view class="odds-item">
+        <text class="odds-label">客胜</text>
+        <text class="odds-value">{{record.awayWin}}</text>
+      </view>
+    </view>
+
+    <!-- AI 预测 -->
+    <view class="ai-section" wx:if="{{record.aiResult || record.aiScore}}">
+      <view class="ai-prediction">
+        <text class="ai-label">AI预测:</text>
+        <text class="ai-result" wx:if="{{record.aiResult}}">{{record.aiResult}}</text>
+        <text class="ai-score" wx:if="{{record.aiScore}}">{{record.aiScore}}</text>
+      </view>
+    </view>
+
+    <!-- 预览内容 -->
+    <view class="preview" wx:if="{{previewText}}">
+      <text class="preview-text">{{previewText}}</text>
+    </view>
+
+    <!-- 底部信息 -->
+    <view class="card-footer">
+      <text class="time">{{record.createTime}}</text>
+      <view class="action-area">
+        <text class="detail-text">查看详情</text>
+        <text class="arrow">›</text>
+      </view>
+    </view>
+  </view>
+</view>
