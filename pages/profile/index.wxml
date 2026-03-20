@@ -14,7 +14,26 @@
         <text class="name">{{userInfo.userName || '用户'}}</text>
         <text class="phone">{{userInfo.phone}}</text>
       </view>
-     
+    </view>
+
+    <!-- 积分卡片 -->
+    <view class="points-card" wx:if="{{isLoggedIn && userInfo}}">
+      <view class="points-bg-decoration"></view>
+      <view class="points-content">
+        <view class="points-left">
+          <view class="points-icon-wrapper">
+            <text class="points-icon">💎</text>
+          </view>
+          <view class="points-info">
+            <text class="points-label">我的积分</text>
+            <text class="points-desc">用于AI分析解锁</text>
+          </view>
+        </view>
+        <view class="points-right">
+          <text class="points-value">{{userInfo.point || 0}}</text>
+          <text class="points-unit">积分</text>
+        </view>
+      </view>
     </view>
 
     <!-- 未登录 -->
@@ -30,10 +49,24 @@
 
   <!-- 功能菜单 -->
   <view class="menu-section">
+    <!-- 联系客服 -->
+    <button class="menu-item" open-type="contact">
+      <view class="menu-left">
+        <text class="menu-icon">👨‍💼</text>
+        <view class="menu-info">
+          <text class="menu-title">联系客服</text>
+          <text class="menu-desc">24小时在线客服</text>
+        </view>
+      </view>
+      <text class="menu-arrow">›</text>
+    </button>
+
+    <!-- 其他菜单 -->
     <view
       class="menu-item"
       wx:for="{{menuList}}"
       wx:key="title"
+      wx:if="{{item.action !== 'contact'}}"
       data-path="{{item.path}}"
       data-action="{{item.action}}"
       bindtap="onMenuTap"

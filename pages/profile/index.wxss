@@ -6,9 +6,10 @@
 
 /* 用户信息区域 */
 .user-section {
-  background-color: #ffffff;
-  padding: 40rpx 24rpx;
+  background: linear-gradient(180deg, #ffffff 0%, #fafbfc 100%);
+  padding: 40rpx 24rpx 32rpx;
   margin-bottom: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.04);
 }
 
 .user-info,
@@ -23,6 +24,8 @@
   border-radius: 50%;
   background-color: #f0f0f0;
   margin-right: 24rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+  border: 4rpx solid #ffffff;
 }
 
 .avatar.default {
@@ -74,6 +77,97 @@
   color: #ccc;
 }
 
+/* 积分卡片 */
+.points-card {
+  position: relative;
+  margin-top: 20rpx;
+  padding: 20rpx 24rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 16rpx rgba(102, 126, 234, 0.2);
+  overflow: hidden;
+}
+
+/* 背景装饰 */
+.points-bg-decoration {
+  position: absolute;
+  top: -40rpx;
+  right: -40rpx;
+  width: 150rpx;
+  height: 150rpx;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.points-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.points-left {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.points-icon-wrapper {
+  width: 60rpx;
+  height: 60rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10rpx);
+}
+
+.points-icon {
+  font-size: 32rpx;
+}
+
+.points-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.points-label {
+  font-size: 26rpx;
+  color: #ffffff;
+  font-weight: 600;
+  letter-spacing: 0.5rpx;
+}
+
+.points-desc {
+  font-size: 20rpx;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.points-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2rpx;
+}
+
+.points-value {
+  font-size: 42rpx;
+  color: #ffffff;
+  font-weight: 700;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1;
+  text-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.1);
+}
+
+.points-unit {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
 /* 菜单区域 */
 .menu-section {
   background-color: #ffffff;
@@ -86,6 +180,13 @@
   align-items: center;
   padding: 28rpx 24rpx;
   border-bottom: 1rpx solid #f5f5f5;
+  width: 100%;
+  background-color: transparent;
+  text-align: left;
+}
+
+.menu-item::after {
+  border: none;
 }
 
 .menu-item:last-child {

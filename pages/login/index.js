@@ -132,8 +132,17 @@ Page({
           icon: 'success'
         })
 
+        // 检查是否有待分析的比赛
+        const app = getApp()
+        const hasPendingAnalysis = !!app.globalData.pendingAnalysisMatch
+
         setTimeout(() => {
-          this.navigateBack()
+          if (hasPendingAnalysis) {
+            // 返回首页，首页会自动处理待分析的比赛
+            wx.switchTab({ url: '/pages/index/index' })
+          } else {
+            this.navigateBack()
+          }
         }, 1500)
       } else {
         wx.showToast({

@@ -6,6 +6,7 @@ Page({
     userInfo: null,
     isLoggedIn: false,
     menuList: [
+      { icon: '👨‍💼', title: '联系客服', desc: '24小时在线客服', action: 'contact' },
       // { icon: '💬', title: '意见反馈', desc: '帮助我们改进产品', action: 'feedback' },
       // { icon: '⭐', title: '给我们评分', desc: '如果喜欢请给个好评', action: 'rate' },
       { icon: '📄', title: '用户协议', desc: '查看用户协议', action: 'agreement' },
