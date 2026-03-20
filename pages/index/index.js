@@ -2,6 +2,8 @@
 const matchApi = require('../../api/match')
 const dateUtils = require('../../utils/date')
 const matchUtils = require('../../utils/match')
+const userStore = require('../../store/user')
+const userApi = require('../../api/user')
 
 Page({
   data: {
@@ -29,6 +31,140 @@ Page({
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ selected: 0 })
     }
+
+    // 如果从登录页返回，且有待分析的比赛
+    const app = getApp()
+    if (app.globalData.pendingAnalysisMatch && userStore.isLoggedIn()) {
+      const pendingMatch = app.globalData.pendingAnalysisMatch
+      // 清除标记
+      app.globalData.pendingAnalysisMatch = null
+
+      // 重新加载比赛列表以获取解锁状态
+      this.loadMatches().then(() => {
+        // 延迟触发分析
+        setTimeout(() => {
+          this.triggerAnalysisForMatch(pendingMatch)
+        }, 500)
+      })
+    }
+  },
+
+  // 触发指定比赛的AI分析
+  triggerAnalysisForMatch(targetMatch) {
+    if (!targetMatch || !targetMatch.id) return
+
+    // 从当前列表中找到对应的比赛（包含最新的解锁状态）
+    const match = this.data.matches.find(m => m.id === targetMatch.id)
+    if (!match) {
+      console.error('未找到对应的比赛')
+      return
+    }
+
+    const userInfo = userStore.getUserInfo()
+    if (!userInfo) return
+
+    // 如果未解锁，弹窗确认
+    if (!match.isUnlocked) {
+      const userPoints = userInfo.point || 0
+      const pointsNeeded = 1
+
+      if (userPoints < pointsNeeded) {
+        wx.showModal({
+          title: '积分不足',
+          content: `AI分析需要消耗 ${pointsNeeded} 积分，您当前积分为 ${userPoints}，请做任务或者联系客服获取积分。`,
+          confirmText: '我的页面',
+          cancelText: '取消',
+          success: (res) => {
+            if (res.confirm) {
+              wx.switchTab({ url: '/pages/profile/index' })
+            }
+          }
+        })
+        return
+      }
+
+      wx.showModal({
+        title: '解锁AI分析',
+        content: `本次分析将消耗 ${pointsNeeded} 积分，是否继续？`,
+        confirmText: '确认',
+        cancelText: '取消',
+        success: async (res) => {
+          if (res.confirm) {
+            await this.unlockAndNavigate(match, userInfo.id, pointsNeeded)
+          }
+        }
+      })
+    } else {
+      // 已解锁，直接跳转
+      this.navigateToAnalysis(match)
+    }
+  },
+
+  // 解锁并跳转
+  async unlockAndNavigate(match, userId, points) {
+    try {
+      wx.showLoading({
+        title: `消耗${points}积分中...`,
+        mask: true
+      })
+
+      const userApi = require('../../api/user')
+      // 调用扣减积分接口
+      await userApi.deductPoint(userId, points, match.id)
+
+      // 重新拉取用户信息
+      const latestUserInfo = await userApi.getUserInfoById(userId)
+      if (latestUserInfo) {
+        const app = getApp()
+        app.globalData.userInfo = latestUserInfo
+        wx.setStorageSync('userInfo', latestUserInfo)
+      }
+
+      wx.hideLoading()
+
+      // 显示成功提示
+      wx.showToast({
+        title: `消耗${points}积分`,
+        icon: 'success',
+        duration: 1500
+      })
+
+      // 更新本地解锁状态
+      const updatedMatches = this.data.matches.map(m =>
+        m.id === match.id ? { ...m, isUnlocked: true } : m
+      )
+      const updatedGroupedMatches = this.groupMatchesByWeekday(updatedMatches)
+      this.setData({
+        matches: updatedMatches,
+        groupedMatches: updatedGroupedMatches
+      })
+
+      // 延迟跳转
+      setTimeout(() => {
+        this.navigateToAnalysis(match)
+      }, 1500)
+    } catch (e) {
+      wx.hideLoading()
+      console.error('解锁失败:', e)
+      wx.showToast({
+        title: '解锁失败',
+        icon: 'error',
+        duration: 2000
+      })
+    }
+  },
+
+  // 跳转到AI分析页面
+  navigateToAnalysis(match) {
+    const matchInfo = encodeURIComponent(JSON.stringify({
+      league: match.league,
+      homeTeam: match.homeTeam,
+      awayTeam: match.awayTeam
+    }))
+
+    wx.navigateTo({
+      url: `/pages/ai-analysis/index?matchId=${match.id}&matchInfo=${matchInfo}`
+    })
   },
 
   onPullDownRefresh() {
@@ -92,12 +228,67 @@ Page({
         groupedMatches,
         loading: false
       })
+
+      // 如果已登录，批量查询解锁状态
+      this.batchCheckUnlockStatus(matches)
     } catch (e) {
       console.error('加载比赛失败:', e)
       this.setData({
         loading: false,
         error: e.message || '加载失败'
       })
+    }
+  },
+
+  // 批量查询解锁状态
+  async batchCheckUnlockStatus(matches) {
+    // 检查登录状态
+    if (!userStore.isLoggedIn()) {
+      return
+    }
+
+    const userInfo = userStore.getUserInfo()
+    if (!userInfo || !userInfo.id) {
+      return
+    }
+
+    try {
+      // 提取所有比赛ID
+      const matchIds = matches.map(m => m.id).filter(id => id)
+      if (matchIds.length === 0) return
+
+      // 批量查询解锁状态
+      const result = await userApi.batchCheckMatchUnlock(matchIds, userInfo.id)
+
+      // 假设接口返回格式：{ matchId1: true, matchId2: false, ... }
+      // 或者 [{ matchId: 'xxx', unlocked: true }, ...]
+      const unlockMap = {}
+
+      if (Array.isArray(result)) {
+        // 数组格式
+        result.forEach(item => {
+          unlockMap[item.matchId] = item.unlocked
+        })
+      } else if (typeof result === 'object') {
+        // 对象格式
+        Object.assign(unlockMap, result)
+      }
+
+      // 更新matches数据
+      const updatedMatches = this.data.matches.map(match => ({
+        ...match,
+        isUnlocked: unlockMap[match.id] || false
+      }))
+
+      // 重新分组
+      const updatedGroupedMatches = this.groupMatchesByWeekday(updatedMatches)
+
+      this.setData({
+        matches: updatedMatches,
+        groupedMatches: updatedGroupedMatches
+      })
+    } catch (e) {
+      console.error('批量查询解锁状态失败:', e)
     }
   },
 

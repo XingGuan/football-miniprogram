@@ -1,6 +1,7 @@
 // pages/ai-analysis/index.js - AI 分析结果页面
 const { post } = require('../../api/index')
 const userStore = require('../../store/user')
+const userApi = require('../../api/user')
 
 Page({
   data: {
@@ -9,7 +10,8 @@ Page({
     loading: true,
     error: null,
     analysisResult: '',
-    parsedContent: []
+    parsedContent: [],
+    pointsPerAnalysis: 1 // 每次分析消耗积分
   },
 
   onLoad(options) {
@@ -34,6 +36,25 @@ Page({
       }
     }
 
+    // 检查登录状态
+    if (!userStore.isLoggedIn()) {
+      this.setData({ loading: false })
+      wx.showModal({
+        title: '请先登录',
+        content: '使用AI分析功能需要先登录',
+        confirmText: '去登录',
+        success: (res) => {
+          if (res.confirm) {
+            wx.redirectTo({ url: '/pages/login/index' })
+          } else {
+            wx.navigateBack()
+          }
+        }
+      })
+      return
+    }
+
+    // 直接加载分析（在match-card组件中已经检查和扣减积分）
     this.loadAnalysis(matchId)
   },
 

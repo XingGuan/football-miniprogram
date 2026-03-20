@@ -178,7 +178,6 @@
           <view class="similar-item" wx:for="{{similarData}}" wx:key="id">
             <view class="item-header">
               <text class="item-league">{{item.league}}</text>
-              <text class="item-date">{{item.matchDate}}</text>
             </view>
             <view class="item-teams">
               <text class="item-team">{{item.homeTeam}}</text>
@@ -211,7 +210,7 @@
             <text class="col">客胜</text>
           </view>
           <view class="odds-table-row" wx:for="{{oddsData}}" wx:key="id">
-            <text class="col time">{{item.updateTime}}</text>
+            <text class="col time">{{item.updateDate}} {{item.updateTime}}</text>
             <text class="col">{{item.h}}</text>
             <text class="col">{{item.d}}</text>
             <text class="col">{{item.a}}</text>
