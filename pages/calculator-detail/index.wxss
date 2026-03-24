@@ -1,0 +1,272 @@
+/* pages/calculator-detail/index.wxss */
+.detail-page {
+  min-height: 100vh;
+  background: #f5f7fa;
+}
+
+.loading-wrapper, .error-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 200rpx 40rpx;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid #f0f0f0;
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loading-text, .error-text {
+  margin-top: 20rpx;
+  font-size: 26rpx;
+  color: #666;
+}
+
+.detail-content {
+  height: 100vh;
+  padding: 16rpx;
+  box-sizing: border-box;
+}
+
+/* 状态卡片 */
+.status-card {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16rpx;
+  padding: 40rpx 32rpx;
+  text-align: center;
+  margin-bottom: 16rpx;
+}
+
+.status-card.win {
+  background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);
+}
+
+.status-card.lose {
+  background: linear-gradient(135deg, #ff4d4f 0%, #ff7875 100%);
+}
+
+.status-icon {
+  font-size: 64rpx;
+  margin-bottom: 12rpx;
+}
+
+.status-text {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8rpx;
+}
+
+.scheme-no {
+  font-size: 22rpx;
+  color: rgba(255,255,255,0.8);
+}
+
+/* 信息卡片 */
+.info-card, .matches-card {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+}
+
+.card-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 20rpx;
+  padding-bottom: 16rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20rpx;
+  margin-bottom: 20rpx;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.info-label {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.info-value {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 600;
+}
+
+.info-value.highlight {
+  color: #667eea;
+}
+
+.info-value.amount {
+  color: #ff6b6b;
+}
+
+.bonus-row, .time-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16rpx;
+  border-top: 1rpx solid #f5f5f5;
+  margin-top: 16rpx;
+}
+
+.bonus-label, .time-label {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.bonus-value {
+  font-size: 28rpx;
+  color: #52c41a;
+  font-weight: 600;
+}
+
+.time-value {
+  font-size: 24rpx;
+  color: #666;
+}
+
+/* 比赛列表 */
+.match-item {
+  padding: 20rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.match-item:last-child {
+  border-bottom: none;
+}
+
+.match-header {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 16rpx;
+}
+
+.match-num {
+  font-size: 22rpx;
+  color: #fff;
+  background: #667eea;
+  padding: 4rpx 12rpx;
+  border-radius: 6rpx;
+  font-weight: 600;
+}
+
+.match-time {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.match-teams {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.team {
+  flex: 1;
+}
+
+.team.away {
+  text-align: right;
+}
+
+.team-name {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.vs-box {
+  padding: 0 20rpx;
+}
+
+.vs {
+  font-size: 24rpx;
+  color: #ccc;
+  font-weight: 500;
+}
+
+.match-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+}
+
+.option-item {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 10rpx 16rpx;
+  background: #f8f9fc;
+  border-radius: 8rpx;
+  border: 2rpx solid transparent;
+}
+
+.option-item.hit {
+  background: rgba(82,196,26,0.1);
+  border-color: #52c41a;
+}
+
+.option-item.miss {
+  background: rgba(255,77,79,0.1);
+  border-color: #ff4d4f;
+}
+
+.opt-type {
+  font-size: 22rpx;
+  color: #999;
+}
+
+.opt-value {
+  font-size: 24rpx;
+  color: #333;
+  font-weight: 600;
+}
+
+.option-item.hit .opt-value {
+  color: #52c41a;
+}
+
+.option-item.miss .opt-value {
+  color: #ff4d4f;
+}
+
+.opt-odds {
+  font-size: 22rpx;
+  color: #ff6b6b;
+  font-weight: 500;
+}
+
+.hit-icon {
+  color: #52c41a;
+  font-weight: 700;
+  font-size: 24rpx;
+}
+
+.miss-icon {
+  color: #ff4d4f;
+  font-weight: 700;
+  font-size: 24rpx;
+}
+
+.safe-bottom {
+  height: calc(32rpx + env(safe-area-inset-bottom));
+}

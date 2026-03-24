@@ -16,22 +16,33 @@
       </view>
     </view>
 
-    <!-- 积分卡片 -->
-    <view class="points-card" wx:if="{{isLoggedIn && userInfo}}">
-      <view class="points-bg-decoration"></view>
-      <view class="points-content">
-        <view class="points-left">
+    <!-- 积分与签到卡片 -->
+    <view class="cards-row" wx:if="{{isLoggedIn && userInfo}}">
+      <!-- 积分卡片 -->
+      <view class="points-card">
+        <view class="points-bg-decoration"></view>
+        <view class="points-content">
           <view class="points-icon-wrapper">
             <text class="points-icon">💎</text>
           </view>
           <view class="points-info">
             <text class="points-label">我的积分</text>
-            <text class="points-desc">用于AI分析解锁</text>
+            <text class="points-value">{{userInfo.point || 0}}</text>
           </view>
         </view>
-        <view class="points-right">
-          <text class="points-value">{{userInfo.point || 0}}</text>
-          <text class="points-unit">积分</text>
+      </view>
+
+      <!-- 签到卡片 -->
+      <view class="sign-card {{userInfo.signToday ? 'signed' : ''}}" bindtap="onSign">
+        <view class="sign-bg-decoration"></view>
+        <view class="sign-content">
+          <view class="sign-icon-wrapper">
+            <text class="sign-icon">{{userInfo.signToday ? '✓' : '📅'}}</text>
+          </view>
+          <view class="sign-info">
+            <text class="sign-label">{{userInfo.signToday ? '今日已签到' : '每日签到'}}</text>
+            <text class="sign-reward">{{userInfo.signToday ? '明天再来' : '+2积分'}}</text>
+          </view>
         </view>
       </view>
     </view>

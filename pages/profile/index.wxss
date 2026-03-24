@@ -77,11 +77,18 @@
   color: #ccc;
 }
 
+/* 卡片行 */
+.cards-row {
+  margin-top: 20rpx;
+  display: flex;
+  gap: 16rpx;
+}
+
 /* 积分卡片 */
 .points-card {
   position: relative;
-  margin-top: 20rpx;
-  padding: 20rpx 24rpx;
+  flex: 1;
+  padding: 24rpx 20rpx;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 16rpx;
   box-shadow: 0 4rpx 16rpx rgba(102, 126, 234, 0.2);
@@ -93,8 +100,8 @@
   position: absolute;
   top: -40rpx;
   right: -40rpx;
-  width: 150rpx;
-  height: 150rpx;
+  width: 120rpx;
+  height: 120rpx;
   background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, transparent 70%);
   border-radius: 50%;
 }
@@ -103,19 +110,14 @@
   position: relative;
   z-index: 1;
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
   align-items: center;
-}
-
-.points-left {
-  display: flex;
-  align-items: center;
-  gap: 16rpx;
+  gap: 12rpx;
 }
 
 .points-icon-wrapper {
-  width: 60rpx;
-  height: 60rpx;
+  width: 56rpx;
+  height: 56rpx;
   background: rgba(255, 255, 255, 0.2);
   border-radius: 50%;
   display: flex;
@@ -125,36 +127,24 @@
 }
 
 .points-icon {
-  font-size: 32rpx;
+  font-size: 28rpx;
 }
 
 .points-info {
   display: flex;
   flex-direction: column;
-  gap: 4rpx;
+  align-items: center;
+  gap: 6rpx;
 }
 
 .points-label {
-  font-size: 26rpx;
-  color: #ffffff;
-  font-weight: 600;
-  letter-spacing: 0.5rpx;
-}
-
-.points-desc {
-  font-size: 20rpx;
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.points-right {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 2rpx;
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
 }
 
 .points-value {
-  font-size: 42rpx;
+  font-size: 40rpx;
   color: #ffffff;
   font-weight: 700;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -162,10 +152,84 @@
   text-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.1);
 }
 
-.points-unit {
-  font-size: 22rpx;
-  color: rgba(255, 255, 255, 0.8);
+/* 签到卡片 */
+.sign-card {
+  position: relative;
+  flex: 1;
+  padding: 24rpx 20rpx;
+  background: linear-gradient(135deg, #ff9a56 0%, #ff6a88 100%);
+  border-radius: 16rpx;
+  box-shadow: 0 4rpx 16rpx rgba(255, 154, 86, 0.2);
+  overflow: hidden;
+  transition: all 0.3s;
+}
+
+.sign-card:active {
+  transform: scale(0.98);
+  opacity: 0.9;
+}
+
+.sign-card.signed {
+  background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+  box-shadow: 0 4rpx 16rpx rgba(127, 140, 141, 0.15);
+}
+
+.sign-card.signed:active {
+  transform: none;
+}
+
+.sign-bg-decoration {
+  position: absolute;
+  top: -40rpx;
+  right: -40rpx;
+  width: 120rpx;
+  height: 120rpx;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.12) 0%, transparent 70%);
+  border-radius: 50%;
+}
+
+.sign-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.sign-icon-wrapper {
+  width: 56rpx;
+  height: 56rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(10rpx);
+}
+
+.sign-icon {
+  font-size: 28rpx;
+}
+
+.sign-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+}
+
+.sign-label {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.9);
   font-weight: 500;
+}
+
+.sign-reward {
+  font-size: 28rpx;
+  color: #ffffff;
+  font-weight: 700;
+  text-shadow: 0 2rpx 6rpx rgba(0, 0, 0, 0.1);
 }
 
 /* 菜单区域 */

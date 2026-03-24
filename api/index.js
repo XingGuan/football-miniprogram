@@ -58,7 +58,7 @@ function request(options) {
           // 业务码检查
           if (responseData.code === 0) {
             resolve(responseData.data)
-          } else if (responseData.code === 401 || responseData.code === 50000) {
+          } else if (responseData.code === 401) {
             // Token 过期或未授权
             handleUnauthorized()
             reject(new Error(responseData.message || '登录已过期'))

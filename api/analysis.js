@@ -41,10 +41,28 @@ function getInformationData(matchId) {
   return post(`/api/match/information/data/${matchId}`, {}, { showLoading: false })
 }
 
+/**
+ * 删除分析数据
+ * @param {string|number} matchId 比赛ID
+ */
+function deleteAnalysis(matchId) {
+  return get(`/api/analysis/delete/${matchId}`)
+}
+
+/**
+ * 获取最近比赛数据
+ * @param {string|number} matchId 比赛ID
+ */
+function getRecentMatches(matchId) {
+  return post(`/api/match/history/${matchId}`, {}, { showLoading: false })
+}
+
 module.exports = {
   getHistoryData,
   getXgData,
   getSimilarData,
   getOddsData,
-  getInformationData
+  getInformationData,
+  deleteAnalysis,
+  getRecentMatches
 }

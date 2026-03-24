@@ -2,6 +2,7 @@
 const { post } = require('../../api/index')
 const userStore = require('../../store/user')
 const userApi = require('../../api/user')
+const analysisApi = require('../../api/analysis')
 
 Page({
   data: {
@@ -11,7 +12,8 @@ Page({
     error: null,
     analysisResult: '',
     parsedContent: [],
-    pointsPerAnalysis: 1 // 每次分析消耗积分
+    pointsPerAnalysis: 1, // 每次分析消耗积分
+    isAdmin: false // 是否是管理员
   },
 
   onLoad(options) {
@@ -54,8 +56,19 @@ Page({
       return
     }
 
+    // 检查管理员状态
+    this.checkAdminStatus()
+
     // 直接加载分析（在match-card组件中已经检查和扣减积分）
     this.loadAnalysis(matchId)
+  },
+
+  // 检查管理员状态
+  checkAdminStatus() {
+    const userInfo = userStore.getUserInfo()
+    if (userInfo && userInfo.isAdmin) {
+      this.setData({ isAdmin: true })
+    }
   },
 
   async loadAnalysis(matchId) {
@@ -156,6 +169,47 @@ Page({
       data: analysisResult,
       success: () => {
         wx.showToast({ title: '已复制', icon: 'success' })
+      }
+    })
+  },
+
+  onDelete() {
+    const { matchId, matchInfo } = this.data
+
+    wx.showModal({
+      title: '确认删除',
+      content: matchInfo
+        ? `确定要删除 ${matchInfo.homeTeam} vs ${matchInfo.awayTeam} 的分析结果吗？`
+        : '确定要删除此分析结果吗？',
+      confirmText: '删除',
+      confirmColor: '#ff4444',
+      success: async (res) => {
+        if (res.confirm) {
+          try {
+            wx.showLoading({ title: '删除中...' })
+            await analysisApi.deleteAnalysis(matchId)
+            wx.hideLoading()
+
+            wx.showToast({
+              title: '删除成功',
+              icon: 'success',
+              duration: 2000
+            })
+
+            // 延迟返回上一页
+            setTimeout(() => {
+              wx.navigateBack()
+            }, 1000)
+          } catch (error) {
+            wx.hideLoading()
+            console.error('删除失败:', error)
+            wx.showToast({
+              title: error.message || '删除失败',
+              icon: 'none',
+              duration: 2000
+            })
+          }
+        }
       }
     })
   },
