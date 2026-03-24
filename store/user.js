@@ -33,6 +33,7 @@ const userStore = {
    */
   getUserInfo() {
     const app = getAppInstance()
+    
     return app && app.globalData && app.globalData.userInfo
   },
 

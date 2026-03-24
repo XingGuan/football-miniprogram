@@ -45,6 +45,46 @@ function getMatchesByLeague(leagueId) {
 }
 
 /**
+ * 获取计算器比赛数据
+ */
+function getCalculatorMatches() {
+  return get('/api/match/calculator')
+}
+
+/**
+ * 保存计算器选择
+ * @param {Object} data 选择数据
+ */
+function saveCalculatorSelection(data) {
+  return post('/api/match/calculator/save', data)
+}
+
+/**
+ * 获取用户的模拟试玩记录
+ * @param {string|number} userId 用户ID
+ */
+function getCalculatorRecords(userId) {
+  // 直接在URL上拼接时间戳避免缓存
+  return get(`/api/match/calculator/get/${userId}?_t=${Date.now()}`)
+}
+
+/**
+ * 删除模拟试玩记录
+ * @param {string|number} id 记录ID
+ */
+function deleteCalculatorRecord(id) {
+  return post(`/api/match/calculator/delete/${id}`)
+}
+
+/**
+ * 获取比赛所有玩法赔率
+ * @param {string|number} matchId 比赛ID
+ */
+function getMatchAllOdds(matchId) {
+  return get(`/api/match/odds/${matchId}`)
+}
+
+/**
  * 格式化日期
  * @param {Date} date 日期对象
  */
@@ -60,5 +100,10 @@ module.exports = {
   getMatchDetail,
   getTodayMatches,
   getMatchesByStatus,
-  getMatchesByLeague
+  getMatchesByLeague,
+  getCalculatorMatches,
+  saveCalculatorSelection,
+  getCalculatorRecords,
+  deleteCalculatorRecord,
+  getMatchAllOdds
 }

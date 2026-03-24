@@ -1,5 +1,6 @@
 // pages/profile/index.js - 个人中心页面
 const userStore = require('../../store/user')
+const userApi = require('../../api/user')
 
 Page({
   data: {
@@ -17,7 +18,7 @@ Page({
   },
 
   onLoad() {
-    this.updateUserState()
+    // 不在这里调用 updateUserState，避免与 onShow 重复调用
   },
 
   onShow() {
@@ -29,9 +30,29 @@ Page({
   },
 
   // 更新用户状态
-  updateUserState() {
+  async updateUserState() {
     const isLoggedIn = userStore.isLoggedIn()
-    const userInfo = userStore.getUserInfo()
+    let userInfo = userStore.getUserInfo()
+
+    // 如果已登录，重新从服务器获取最新用户信息
+    if (isLoggedIn && userInfo && userInfo.id) {
+      try {
+        const latestUserInfo = await userApi.getUserInfoById(userInfo.id)
+        if (latestUserInfo) {
+          // 更新本地存储
+          wx.setStorageSync('userInfo', latestUserInfo)
+          // 更新 app 全局数据
+          const app = getApp()
+          if (app && app.globalData) {
+            app.globalData.userInfo = latestUserInfo
+          }
+          userInfo = latestUserInfo
+        }
+      } catch (error) {
+        console.error('获取用户信息失败:', error)
+        // 获取失败时使用本地缓存的用户信息
+      }
+    }
 
     this.setData({
       isLoggedIn,
@@ -67,6 +88,52 @@ Page({
         }
       }
     })
+  },
+
+  // 签到
+  async onSign() {
+    const { userInfo, isLoggedIn } = this.data
+
+    if (!isLoggedIn) {
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none'
+      })
+      return
+    }
+
+    // 检查是否已签到
+    if (userInfo && userInfo.signToday) {
+      wx.showToast({
+        title: '今日已签到',
+        icon: 'none'
+      })
+      return
+    }
+
+    try {
+      wx.showLoading({ title: '签到中...' })
+      await userApi.userSign(userInfo.id)
+      wx.hideLoading()
+
+      wx.showToast({
+        title: '签到成功，获得2积分',
+        icon: 'success',
+        duration: 2000
+      })
+
+      // 重新获取用户信息
+      setTimeout(() => {
+        this.updateUserState()
+      }, 1500)
+    } catch (error) {
+      wx.hideLoading()
+      console.error('签到失败:', error)
+      wx.showToast({
+        title: error.message || '签到失败',
+        icon: 'none'
+      })
+    }
   },
 
   // 编辑用户信息

@@ -1,0 +1,94 @@
+<!-- pages/calculator-detail/index.wxml -->
+<view class="detail-page">
+  <!-- 加载状态 -->
+  <view class="loading-wrapper" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 错误状态 -->
+  <view class="error-wrapper" wx:elif="{{error}}">
+    <text class="error-text">{{error}}</text>
+  </view>
+
+  <!-- 详情内容 -->
+  <scroll-view class="detail-content" scroll-y wx:else>
+    <!-- 状态卡片 -->
+    <view class="status-card {{record.status === 1 ? 'win' : record.status === 2 ? 'lose' : ''}}">
+      <view class="status-icon">
+        {{record.status === 1 ? '🎉' : record.status === 2 ? '😔' : '⏳'}}
+      </view>
+      <view class="status-text">{{record.statusDesc}}</view>
+      <view class="scheme-no">方案编号: {{record.schemeNo}}</view>
+    </view>
+
+    <!-- 投注信息 -->
+    <view class="info-card">
+      <view class="card-title">投注信息</view>
+      <view class="info-grid">
+        <view class="info-item">
+          <text class="info-label">过关方式</text>
+          <text class="info-value highlight">{{record.passTypesStr}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">投注倍数</text>
+          <text class="info-value">{{record.multiple}}倍</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">总注数</text>
+          <text class="info-value">{{record.totalBets}}注</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">投注金额</text>
+          <text class="info-value amount">¥{{record.totalAmount}}</text>
+        </view>
+      </view>
+      <view class="bonus-row" wx:if="{{record.bonusRange}}">
+        <text class="bonus-label">预计奖金</text>
+        <text class="bonus-value">¥{{record.bonusRange}}</text>
+      </view>
+      <view class="time-row">
+        <text class="time-label">创建时间</text>
+        <text class="time-value">{{record.createTimeStr}}</text>
+      </view>
+    </view>
+
+    <!-- 选择的比赛 -->
+    <view class="matches-card">
+      <view class="card-title">比赛详情 ({{record.matchDetails.length}}场)</view>
+
+      <view class="match-item" wx:for="{{record.matchDetails}}" wx:key="matchId">
+        <view class="match-header">
+          <text class="match-num">{{item.matchNumStr}}</text>
+          <text class="match-time">{{item.matchTime}}</text>
+        </view>
+
+        <view class="match-teams">
+          <view class="team home">
+            <text class="team-name">{{item.homeTeamName}}</text>
+          </view>
+          <view class="vs-box">
+            <text class="vs">VS</text>
+          </view>
+          <view class="team away">
+            <text class="team-name">{{item.awayTeamName}}</text>
+          </view>
+        </view>
+
+        <view class="match-options">
+          <view class="option-item {{opt.isHit === true ? 'hit' : opt.isHit === false ? 'miss' : ''}}"
+                wx:for="{{item.options}}" wx:for-item="opt" wx:key="index">
+            <text class="opt-type">{{opt.optionTypeDesc}}</text>
+            <text class="opt-value">{{opt.displayValue}}</text>
+            <text class="opt-odds">@{{opt.odds}}</text>
+            <text class="hit-icon" wx:if="{{opt.isHit === true}}">✓</text>
+            <text class="miss-icon" wx:if="{{opt.isHit === false}}">✗</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部安全区 -->
+    <view class="safe-bottom"></view>
+  </scroll-view>
+</view>

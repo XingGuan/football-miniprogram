@@ -13,14 +13,16 @@ Page({
     error: null,
     // 标签页
     tabs: [
+      { key: 'recent', name: '最近比赛' },
       { key: 'history', name: '历史交锋' },
       { key: 'xg', name: 'xG数据' },
       { key: 'similar', name: '相似比赛' },
       { key: 'odds', name: '赔率变化' }
     ],
-    activeTab: 'history',
+    activeTab: 'recent',
     loadedTabs: {},
     // 各标签页数据
+    recentData: null,
     historyData: [],
     xgData: null,
     similarData: [],
@@ -34,7 +36,7 @@ Page({
     if (matchId) {
       this.setData({ matchId })
       this.loadMatchDetail(matchId)
-      this.loadTabData('history')
+      this.loadTabData('recent')
     } else {
       this.setData({
         loading: false,
@@ -120,6 +122,11 @@ Page({
       let data = null
 
       switch (key) {
+        case 'recent':
+          data = await analysisApi.getRecentMatches(matchId)
+          this.setData({ recentData: data || null })
+          break
+
         case 'history':
           data = await analysisApi.getHistoryData(matchId)
           this.setData({ historyData: data || [] })
@@ -153,19 +160,7 @@ Page({
     }
   },
 
-  // 跳转 AI 分析
-  onAiAnalyze() {
-    const { match } = this.data
-    if (!match) return
 
-    wx.navigateTo({
-      url: `/pages/ai-chat/index?matchId=${match.id}&matchInfo=${encodeURIComponent(JSON.stringify({
-        league: match.league,
-        homeTeam: match.homeTeam,
-        awayTeam: match.awayTeam
-      }))}`
-    })
-  },
 
   // 格式化日期
   formatDate(date) {
@@ -185,6 +180,18 @@ Page({
   // 获取赔率变化标识
   getOddsChangeFlag(hf) {
     return matchUtils.getOddsChangeFlag(hf)
+  },
+
+  // 点击比赛卡片，跳转到分析页面
+  onMatchTap(e) {
+    const { match } = e.currentTarget.dataset
+
+    if (!match) return
+
+    // 跳转到分析页面
+    wx.navigateTo({
+      url: `/pages/analysis/index?matchId=${match.matchId}`
+    })
   },
 
   // 重试

@@ -19,7 +19,10 @@ Page({
       { value: '2', label: '开放' },
       { value: '4', label: '进行中' },
       { value: '5', label: '已完成' }
-    ]
+    ],
+    // 模拟试玩按钮位置
+    calculatorX: 500,
+    calculatorY: 120
   },
 
   onLoad() {
@@ -267,10 +270,13 @@ Page({
       if (Array.isArray(result)) {
         // 数组格式
         result.forEach(item => {
+
           unlockMap[item.matchId] = item.unlocked
         })
       } else if (typeof result === 'object') {
         // 对象格式
+        console.log(result)
+
         Object.assign(unlockMap, result)
       }
 
@@ -334,6 +340,19 @@ Page({
     wx.navigateTo({
       url: `/pages/ai-chat/index?matchId=${match.id}&matchInfo=${encodeURIComponent(matchInfo)}`
     })
+  },
+
+  // 跳转到模拟试玩
+  onCalculator() {
+    wx.navigateTo({
+      url: '/pages/calculator/index'
+    })
+  },
+
+  // 模拟试玩按钮拖动
+  onCalculatorMove(e) {
+    // 记录最新位置，防止tap事件被误触
+    this._lastMoveTime = Date.now()
   },
 
   // 重试加载

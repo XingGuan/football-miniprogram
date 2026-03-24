@@ -78,6 +78,14 @@ function batchCheckMatchUnlock(matchIds, userId) {
   return post('/api/match/batch/check/unlock', { matchIds, userId }, { showLoading: false })
 }
 
+/**
+ * 用户签到
+ * @param {string} userId 用户ID
+ */
+function userSign(userId) {
+  return post(`/api/user/sign/${userId}`)
+}
+
 module.exports = {
   sendSms,
   login,
@@ -87,5 +95,6 @@ module.exports = {
   updateUserInfo,
   deductPoint,
   checkMatchUnlock,
-  batchCheckMatchUnlock
+  batchCheckMatchUnlock,
+  userSign
 }

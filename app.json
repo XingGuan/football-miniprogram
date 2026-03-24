@@ -1,6 +1,8 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/calculator/index",
+    "pages/calculator-detail/index",
     "pages/login/index",
     "pages/ai-chat/index",
     "pages/history/index",
