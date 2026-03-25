@@ -151,26 +151,259 @@ Page({
     return `${year}-${month}-${day} ${hour}:${minute}`
   },
 
-  // 计算预计奖金范围
+  // 计算预计奖金范围（参考选号页面的计算逻辑）
+  // 最大奖金考虑互斥：同一场比赛同一玩法类型只能命中一个结果
   calculateBonusRange(record) {
     if (!record.matchDetails || record.matchDetails.length === 0) return ''
 
     const multiple = record.multiple || 1
-    let minOdds = 1
-    let maxOdds = 1
+    const passTypes = record.passTypes || []
+    const matchDetails = record.matchDetails
 
-    record.matchDetails.forEach(match => {
-      if (match.options && match.options.length > 0) {
-        const odds = match.options.map(o => o.odds || 1)
-        minOdds *= Math.min(...odds)
-        maxOdds *= Math.max(...odds)
-      }
+    if (passTypes.length === 0) return ''
+
+    // 构建选项数据
+    const selections = {}
+    const matchIds = []
+
+    matchDetails.forEach(match => {
+      const matchId = String(match.matchId)
+      matchIds.push(matchId)
+      selections[matchId] = (match.options || []).map(opt => ({
+        type: opt.optionType,
+        value: opt.optionValue,
+        odds: opt.odds || 1
+      }))
     })
 
-    const minBonus = (minOdds * 2 * multiple).toFixed(2)
-    const maxBonus = (maxOdds * 2 * multiple).toFixed(2)
+    // 计算最小奖金：所有单注组合中最小的
+    let allBonusResults = []
+    passTypes.forEach(passType => {
+      const bonusResults = this.calculatePassTypeBonusResults(passType, matchIds, selections)
+      allBonusResults = allBonusResults.concat(bonusResults)
+    })
+
+    if (allBonusResults.length === 0) return ''
+    const validResults = allBonusResults.filter(r => r > 0)
+    if (validResults.length === 0) return ''
+
+    const minBonus = (Math.min(...validResults) * 2 * multiple).toFixed(2)
+
+    // 计算最大奖金：
+    // 1. 确定最优命中选项：每场比赛取赔率最高的选项作为"命中选项"
+    // 2. 对于每张票（每条玩法路径），计算在这种命中情况下的奖金
+    //    - 票上包含命中选项的组合才算中奖
+    // 3. 所有票的奖金加起来
+
+    // 确定每场的最优命中选项
+    const hitSelections = {}
+    matchIds.forEach(matchId => {
+      const allOpts = selections[matchId] || []
+      if (allOpts.length === 0) return
+      const maxOddsOpt = allOpts.reduce((max, opt) => opt.odds > max.odds ? opt : max, allOpts[0])
+      hitSelections[matchId] = maxOddsOpt
+    })
+
+    // 计算所有票在最优命中情况下的奖金
+    let maxTotalBonus = 0
+    passTypes.forEach(passType => {
+      const bonus = this.calculateMaxBonusForPassType(passType, matchIds, selections, hitSelections)
+      maxTotalBonus += bonus
+    })
+
+    const maxBonus = (maxTotalBonus * 2 * multiple).toFixed(2)
 
     return `${minBonus} ~ ${maxBonus}`
+  },
+
+  // 计算某种过关方式在最优命中情况下的最大奖金
+  calculateMaxBonusForPassType(passType, matchIds, selections, hitSelections) {
+    if (passType === 'single') {
+      // 单关：只有命中选项的那一注中奖，但每场都有一注
+      let bonus = 0
+      matchIds.forEach(matchId => {
+        const hitOpt = hitSelections[matchId]
+        if (hitOpt && hitOpt.odds > 0) {
+          bonus += hitOpt.odds
+        }
+      })
+      return bonus
+    }
+
+    // 串关计算
+    const [m] = passType.split('_').map(Number)
+    if (matchIds.length < m) return 0
+
+    // 按玩法类型分组每场的选项
+    const matchPlayTypes = {}
+    matchIds.forEach(matchId => {
+      matchPlayTypes[matchId] = {}
+      const matchSelections = selections[matchId] || []
+      matchSelections.forEach(sel => {
+        if (!matchPlayTypes[matchId][sel.type]) {
+          matchPlayTypes[matchId][sel.type] = []
+        }
+        matchPlayTypes[matchId][sel.type].push(sel)
+      })
+    })
+
+    // 获取所有玩法路径（每条路径代表一张票）
+    const playTypePaths = this.getPlayTypePaths(matchIds, matchPlayTypes)
+
+    let totalBonus = 0
+
+    // 对于每张票，计算在最优命中情况下的奖金
+    playTypePaths.forEach(path => {
+      // 获取这张票上每场的选项
+      const pathSelections = {}
+      matchIds.forEach(matchId => {
+        const playType = path[matchId]
+        pathSelections[matchId] = matchPlayTypes[matchId][playType]
+      })
+
+      // 判断这张票上每场是否命中（票上的选项是否包含命中选项）
+      const matchHitStatus = {}
+      matchIds.forEach(matchId => {
+        const hitOpt = hitSelections[matchId]
+        const ticketOpts = pathSelections[matchId] || []
+        // 检查票上的选项是否包含命中选项
+        matchHitStatus[matchId] = ticketOpts.some(opt =>
+          opt.type === hitOpt.type && opt.value === hitOpt.value
+        )
+      })
+
+      // 获取m场组合
+      const matchCombinations = this.getCombinations(matchIds, m)
+
+      matchCombinations.forEach(combo => {
+        // 检查这个组合中的所有场次是否都命中
+        const allHit = combo.every(matchId => matchHitStatus[matchId])
+        if (!allHit) return
+
+        // 这个组合命中，计算奖金（使用命中选项的赔率）
+        let product = 1
+        combo.forEach(matchId => {
+          product *= hitSelections[matchId].odds
+        })
+        totalBonus += product
+      })
+    })
+
+    return totalBonus
+  },
+
+  // 计算某种过关方式的奖金结果
+  calculatePassTypeBonusResults(passType, matchIds, selections) {
+    if (passType === 'single') {
+      // 单关：每个选项独立计算
+      let bonusResults = []
+      matchIds.forEach(matchId => {
+        const matchSelections = selections[matchId] || []
+        matchSelections.forEach(sel => {
+          if (sel.odds > 0) bonusResults.push(sel.odds)
+        })
+      })
+      return bonusResults
+    }
+
+    // 串关计算
+    const [m] = passType.split('_').map(Number)
+    if (matchIds.length < m) return []
+
+    // 按玩法类型分组每场的选项
+    const matchPlayTypes = {}
+    matchIds.forEach(matchId => {
+      matchPlayTypes[matchId] = {}
+      const matchSelections = selections[matchId] || []
+      matchSelections.forEach(sel => {
+        if (!matchPlayTypes[matchId][sel.type]) {
+          matchPlayTypes[matchId][sel.type] = []
+        }
+        matchPlayTypes[matchId][sel.type].push(sel)
+      })
+    })
+
+    // 获取所有可能的"玩法路径"
+    const playTypePaths = this.getPlayTypePaths(matchIds, matchPlayTypes)
+
+    let bonusResults = []
+
+    playTypePaths.forEach(path => {
+      const pathSelections = {}
+      matchIds.forEach(matchId => {
+        const playType = path[matchId]
+        pathSelections[matchId] = matchPlayTypes[matchId][playType]
+      })
+
+      // 获取m场组合
+      const matchCombinations = this.getCombinations(matchIds, m)
+
+      matchCombinations.forEach(combo => {
+        const oddsComboList = this.getOddsCombinationsForPath(combo, pathSelections)
+        oddsComboList.forEach(oddsList => {
+          const product = oddsList.reduce((p, o) => p * o, 1)
+          if (product > 0) bonusResults.push(product)
+        })
+      })
+    })
+
+    return bonusResults
+  },
+
+  // 获取所有玩法路径组合
+  getPlayTypePaths(matchIds, matchPlayTypes) {
+    if (matchIds.length === 0) return [{}]
+
+    const [first, ...rest] = matchIds
+    const firstPlayTypes = Object.keys(matchPlayTypes[first])
+    const restPaths = this.getPlayTypePaths(rest, matchPlayTypes)
+
+    const result = []
+    firstPlayTypes.forEach(playType => {
+      restPaths.forEach(restPath => {
+        result.push({
+          ...restPath,
+          [first]: playType
+        })
+      })
+    })
+
+    return result
+  },
+
+  // 获取某条路径下的赔率组合
+  getOddsCombinationsForPath(matchIds, pathSelections) {
+    if (matchIds.length === 0) return [[]]
+
+    const [first, ...rest] = matchIds
+    const firstOdds = pathSelections[first].map(s => s.odds).filter(o => o > 0)
+    if (firstOdds.length === 0) firstOdds.push(1)
+
+    const restCombinations = this.getOddsCombinationsForPath(rest, pathSelections)
+
+    const result = []
+    firstOdds.forEach(odds => {
+      restCombinations.forEach(restOdds => {
+        result.push([odds, ...restOdds])
+      })
+    })
+
+    return result
+  },
+
+  // 获取组合
+  getCombinations(arr, m) {
+    if (m === 1) return arr.map(item => [item])
+    if (m === arr.length) return [arr]
+
+    const result = []
+    for (let i = 0; i <= arr.length - m; i++) {
+      const first = arr[i]
+      const rest = arr.slice(i + 1)
+      const subCombos = this.getCombinations(rest, m - 1)
+      subCombos.forEach(combo => { result.push([first, ...combo]) })
+    }
+    return result
   },
 
   // 获取选项值显示名称
