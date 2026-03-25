@@ -60,7 +60,7 @@ function saveCalculatorSelection(data) {
 }
 
 /**
- * 获取用户的模拟试玩记录
+ * 获取用户的模拟选号记录
  * @param {string|number} userId 用户ID
  */
 function getCalculatorRecords(userId) {
@@ -69,7 +69,7 @@ function getCalculatorRecords(userId) {
 }
 
 /**
- * 删除模拟试玩记录
+ * 删除模拟选号记录
  * @param {string|number} id 记录ID
  */
 function deleteCalculatorRecord(id) {

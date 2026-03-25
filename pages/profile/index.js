@@ -14,7 +14,14 @@ Page({
       { icon: '🔒', title: '隐私政策', desc: '查看隐私政策', action: 'privacy' },
       { icon: 'ℹ️', title: '关于我们', desc: '了解AI足球智能体', action: 'about' }
     ],
-    version: '1.0.0'
+    version: '1.0.0',
+    // 绑定手机号相关
+    showPhonePopup: false,
+    bindPhone: '',
+    bindCode: '',
+    bindCountdown: 0,
+    sendingBindCode: false,
+    bindLoading: false
   },
 
   onLoad() {
@@ -117,7 +124,7 @@ Page({
       wx.hideLoading()
 
       wx.showToast({
-        title: '签到成功，获得2积分',
+        title: '签到成功，获得1积分',
         icon: 'success',
         duration: 2000
       })
@@ -237,5 +244,160 @@ Page({
         }
       }
     })
+  },
+
+  // ========== 绑定手机号相关 ==========
+
+  // 点击绑定手机号任务
+  onBindPhone() {
+    const { userInfo } = this.data
+    if (userInfo && userInfo.phone) {
+      wx.showToast({
+        title: '手机号已绑定',
+        icon: 'none'
+      })
+      return
+    }
+    this.setData({ showPhonePopup: true })
+  },
+
+  // 关闭弹窗
+  onClosePhonePopup() {
+    this.setData({
+      showPhonePopup: false,
+      bindPhone: '',
+      bindCode: '',
+      bindCountdown: 0,
+      sendingBindCode: false,
+      bindLoading: false
+    })
+    if (this._bindCountdownTimer) {
+      clearInterval(this._bindCountdownTimer)
+    }
+  },
+
+  // 阻止冒泡
+  preventTap() {},
+
+  // 手机号输入
+  onBindPhoneInput(e) {
+    this.setData({ bindPhone: e.detail.value })
+  },
+
+  // 验证码输入
+  onBindCodeInput(e) {
+    this.setData({ bindCode: e.detail.value })
+  },
+
+  // 发送验证码
+  async onSendBindCode() {
+    const { bindPhone, sendingBindCode, bindCountdown } = this.data
+
+    if (sendingBindCode || bindCountdown > 0) return
+
+    // 验证手机号
+    if (!/^1[3-9]\d{9}$/.test(bindPhone)) {
+      wx.showToast({
+        title: '请输入正确的手机号',
+        icon: 'none'
+      })
+      return
+    }
+
+    this.setData({ sendingBindCode: true })
+
+    try {
+      await userApi.sendSms(bindPhone)
+      wx.showToast({
+        title: '验证码已发送',
+        icon: 'success'
+      })
+      this.startBindCountdown()
+    } catch (e) {
+      wx.showToast({
+        title: e.message || '发送失败',
+        icon: 'none'
+      })
+    } finally {
+      this.setData({ sendingBindCode: false })
+    }
+  },
+
+  // 开始倒计时
+  startBindCountdown() {
+    this.setData({ bindCountdown: 60 })
+
+    this._bindCountdownTimer = setInterval(() => {
+      const { bindCountdown } = this.data
+      if (bindCountdown <= 1) {
+        clearInterval(this._bindCountdownTimer)
+        this.setData({ bindCountdown: 0 })
+      } else {
+        this.setData({ bindCountdown: bindCountdown - 1 })
+      }
+    }, 1000)
+  },
+
+  // 确认绑定
+  async onConfirmBindPhone() {
+    const { bindPhone, bindCode, bindLoading, userInfo } = this.data
+
+    if (bindLoading) return
+
+    // 验证手机号
+    if (!/^1[3-9]\d{9}$/.test(bindPhone)) {
+      wx.showToast({
+        title: '请输入正确的手机号',
+        icon: 'none'
+      })
+      return
+    }
+
+    // 验证验证码
+    if (!bindCode || bindCode.length < 4) {
+      wx.showToast({
+        title: '请输入验证码',
+        icon: 'none'
+      })
+      return
+    }
+
+    this.setData({ bindLoading: true })
+
+    try {
+      // 调用更新接口
+      await userApi.updateUserInfoWithPhone({
+        userId: userInfo.id,
+        phone: bindPhone,
+        code: bindCode
+      })
+
+      wx.showToast({
+        title: '绑定成功，获得5积分',
+        icon: 'success',
+        duration: 2000
+      })
+
+      // 关闭弹窗
+      this.onClosePhonePopup()
+
+      // 刷新用户信息
+      setTimeout(() => {
+        this.updateUserState()
+      }, 1500)
+    } catch (e) {
+      wx.showToast({
+        title: e.message || '绑定失败',
+        icon: 'none'
+      })
+    } finally {
+      this.setData({ bindLoading: false })
+    }
+  },
+
+  onUnload() {
+    if (this._bindCountdownTimer) {
+      clearInterval(this._bindCountdownTimer)
+    }
   }
 })

@@ -17,7 +17,7 @@
     <!-- 顶部Tab切换 -->
     <view class="tab-header">
       <view class="tab-item {{currentTab === 'play' ? 'active' : ''}}" bindtap="onSwitchTab" data-tab="play">
-        <text class="tab-text">模拟投注</text>
+        <text class="tab-text">模拟选号</text>
       </view>
       <view class="tab-item {{currentTab === 'records' ? 'active' : ''}}" bindtap="onSwitchTab" data-tab="records">
         <text class="tab-text">我的记录</text>
@@ -25,7 +25,7 @@
       </view>
     </view>
 
-    <!-- 模拟投注内容 -->
+    <!-- 模拟选号内容 -->
     <view class="tab-content" wx:if="{{currentTab === 'play'}}">
     <!-- 比赛列表 -->
     <scroll-view class="match-scroll" scroll-y enhanced show-scrollbar="{{false}}">
@@ -36,7 +36,7 @@
           <text class="league-name">{{item.leagueAbbName}}</text>
           <text class="match-time">{{item.matchTime}}</text>
           <!-- 单关标记 -->
-          <text class="single-tag" wx:if="{{item.bettingSingle == 1}}">单</text>
+          <text class="single-tag" wx:if="{{item.bettingSingle == 1 || item.bettingSingle == true}}">单</text>
         </view>
 
         <!-- 对阵信息 -->
@@ -51,7 +51,10 @@
           <view class="odds-left">
             <!-- 胜平负 -->
             <view class="odds-section">
-              <text class="section-title">胜平负</text>
+              <view class="section-title-row">
+                <text class="section-title">胜平负</text>
+                <text class="single-badge" wx:if="{{item.bettingSingle == 1 || item.bettingSingle == true}}">单</text>
+              </view>
               <view class="odds-row">
                 <view class="odds-item {{selectedMap[item.matchId + '_had_H'] ? 'active' : ''}}" data-matchid="{{item.matchId}}" data-type="had" data-value="H" data-odds="{{item.hadH}}" bindtap="onSelectOption">
                   <text class="odds-label">主胜</text>
@@ -70,7 +73,10 @@
 
             <!-- 让球胜平负 -->
             <view class="odds-section last">
-              <text class="section-title">让球({{item.hhadGoalLine}})</text>
+              <view class="section-title-row">
+                <text class="section-title">让球({{item.hhadGoalLine}})</text>
+                <text class="single-badge" wx:if="{{item.bettingAllUp == 1 || item.bettingAllUp == true}}">单</text>
+              </view>
               <view class="odds-row">
                 <view class="odds-item {{selectedMap[item.matchId + '_hhad_H'] ? 'active' : ''}}" data-matchid="{{item.matchId}}" data-type="hhad" data-value="H" data-odds="{{item.hhadH}}" bindtap="onSelectOption">
                   <text class="odds-label">主胜</text>
@@ -115,11 +121,11 @@
       <view class="records-empty" wx:elif="{{records.length === 0}}">
         <text class="empty-icon">📋</text>
         <text class="empty-text">暂无记录</text>
-        <text class="empty-tip">保存模拟投注后记录将显示在这里</text>
+        <text class="empty-tip">保存模拟选号后记录将显示在这里</text>
       </view>
       <scroll-view class="records-scroll" scroll-y wx:else>
         <view class="record-swipe-wrapper" wx:for="{{records}}" wx:key="id">
-          <view class="record-swipe-inner {{item.swiped ? 'swiped' : ''}}"
+          <view class="record-swipe-inner {{item.swiped ? 'swiped' : ''}} {{item.status === 1 ? 'win' : (item.status === 2 ? 'lose' : 'pending')}}"
                 data-index="{{index}}"
                 bindtouchstart="onTouchStart"
                 bindtouchmove="onTouchMove"
@@ -127,7 +133,7 @@
             <view class="record-card" bindtap="onRecordTap" data-record="{{item}}">
               <view class="record-header">
                 <text class="record-time">{{item.createTimeStr}}</text>
-                <text class="record-status {{item.status === 1 ? 'win' : item.status === 2 ? 'lose' : ''}}">
+                <text class="record-status {{item.status === 1 ? 'win' : (item.status === 2 ? 'lose' : 'pending')}}">
                   {{item.statusDesc}}
                 </text>
               </view>
@@ -149,13 +155,16 @@
       </scroll-view>
     </view>
 
-    <!-- 底部操作栏 - 仅在模拟投注tab显示 -->
+    <!-- 底部操作栏 - 仅在模拟选号tab显示 -->
     <view class="bottom-bar" wx:if="{{currentTab === 'play'}}">
       <!-- 过关方式选择 -->
-      <view class="pass-type-row">
-        <view class="pass-btn {{selectedPassTypes.indexOf(item.value) > -1 ? 'active' : ''}} {{item.value == 'single' ? (singleAvailable ? '' : 'disabled') : (selectedCount < item.min ? 'disabled' : '')}}" wx:for="{{passTypes}}" wx:key="value" data-value="{{item.value}}" data-min="{{item.min}}" bindtap="onSelectPassType">
+      <view class="pass-type-row" wx:if="{{availablePassTypes.length > 0}}">
+        <view class="pass-btn {{selectedPassTypesMap[item.value] ? 'active' : ''}}" wx:for="{{availablePassTypes}}" wx:key="value" data-value="{{item.value}}" bindtap="onSelectPassType">
           {{item.label}}
         </view>
+      </view>
+      <view class="pass-type-empty" wx:else>
+        <text class="empty-tip">请先选择比赛</text>
       </view>
 
       <!-- 倍数和金额 -->

@@ -5,7 +5,7 @@
   position: relative;
 }
 
-/* 模拟试玩按钮 - 可拖动区域 */
+/* 模拟选号按钮 - 可拖动区域 */
 .calculator-area {
   position: fixed;
   top: 0;

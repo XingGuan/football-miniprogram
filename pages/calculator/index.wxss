@@ -1,9 +1,10 @@
 /* pages/calculator/index.wxss */
 .calculator-page {
-  min-height: 100vh;
+  height: 100vh;
   background: #f5f7fa;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
 }
 
 .loading-wrapper, .error-wrapper {
@@ -44,7 +45,7 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  overflow: hidden;
 }
 
 /* Tab头部 */
@@ -105,6 +106,7 @@
 
 .match-scroll {
   flex: 1;
+  height: 0;
   padding: 12rpx;
 }
 
@@ -214,10 +216,8 @@
 }
 
 .section-title {
-  display: block;
   font-size: 20rpx;
   color: #666;
-  margin-bottom: 4rpx;
 }
 
 .odds-row {
@@ -293,6 +293,7 @@
 }
 
 .pass-btn {
+  position: relative;
   padding: 8rpx 16rpx;
   background: #f5f7fa;
   border-radius: 6rpx;
@@ -302,13 +303,41 @@
 }
 
 .pass-btn.active {
-  background: rgba(102,126,234,0.1);
-  border-color: #667eea;
-  color: #667eea;
+  background: #e53935;
+  border-color: #e53935;
+  color: #fff;
   font-weight: 600;
+  box-shadow: 0 2rpx 8rpx rgba(229, 57, 53, 0.4);
 }
 
-.pass-btn.disabled { opacity: 0.4; }
+.pass-type-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12rpx 0;
+  margin-bottom: 10rpx;
+}
+
+.pass-type-empty .empty-tip {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.section-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-bottom: 4rpx;
+}
+
+.single-badge {
+  font-size: 16rpx;
+  background: #ff6b6b;
+  color: #fff;
+  padding: 2rpx 8rpx;
+  border-radius: 4rpx;
+  font-weight: 500;
+}
 
 .amount-row {
   display: flex;
@@ -341,7 +370,7 @@
   align-items: center;
   justify-content: center;
   font-size: 28rpx;
-  color: #667eea;
+  color: #ff6b6b;
   font-weight: 600;
 }
 
@@ -371,7 +400,7 @@
 
 .bonus-text {
   font-size: 20rpx;
-  color: #52c41a;
+  color: #ff6b6b;
 }
 
 .submit-btn {
@@ -533,7 +562,7 @@
 
 /* 记录列表样式 */
 .records-content {
-  background: #f5f7fa;
+  background: linear-gradient(180deg, #f8f9fb 0%, #f5f7fa 100%);
 }
 
 .records-loading {
@@ -549,29 +578,33 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 120rpx 40rpx;
+  padding: 100rpx 40rpx;
+  color: #999;
 }
 
 .empty-icon {
-  font-size: 80rpx;
-  margin-bottom: 24rpx;
+  font-size: 100rpx;
+  margin-bottom: 32rpx;
+  opacity: 0.5;
 }
 
 .empty-text {
-  font-size: 30rpx;
-  color: #333;
+  font-size: 32rpx;
+  color: #666;
   font-weight: 500;
-  margin-bottom: 12rpx;
+  margin-bottom: 16rpx;
 }
 
 .empty-tip {
-  font-size: 24rpx;
+  font-size: 26rpx;
   color: #999;
+  text-align: center;
 }
 
 .records-scroll {
   flex: 1;
-  padding: 16rpx;
+  height: 0;
+  padding: 20rpx 16rpx 24rpx 16rpx;
 }
 
 /* 左滑删除容器 */
@@ -599,6 +632,39 @@
   box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04);
   position: relative;
   box-sizing: border-box;
+  transition: all 0.2s ease;
+  border-left: 4rpx solid #e8e8e8;
+}
+
+/* 中奖 - 红色 */
+.record-swipe-inner.win .record-card {
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.06) 0%, rgba(255, 140, 140, 0.04) 100%);
+  border-left-color: #ff6b6b;
+  box-shadow: 0 2rpx 12rpx rgba(255, 107, 107, 0.12);
+}
+
+/* 待开奖 - 绿色 */
+.record-swipe-inner.pending .record-card {
+  background: linear-gradient(135deg, rgba(82, 196, 26, 0.06) 0%, rgba(115, 209, 61, 0.04) 100%);
+  border-left-color: #52c41a;
+  box-shadow: 0 2rpx 12rpx rgba(82, 196, 26, 0.12);
+}
+
+
+/* 未中奖状态 - 灰色主题 */
+.record-swipe-inner.lose .record-card {
+  background: linear-gradient(135deg, rgba(200, 200, 200, 0.06) 0%, rgba(220, 220, 220, 0.04) 100%);
+  border-left-color: #d9d9d9;
+  opacity: 0.8;
+}
+
+.record-swipe-inner.lose .record-matches {
+  color: #999;
+}
+
+.record-swipe-inner.lose .record-pass {
+  color: #999;
+  background: rgba(200, 200, 200, 0.15);
 }
 
 .record-delete-btn {
@@ -621,7 +687,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 12rpx;
+  margin-bottom: 16rpx;
 }
 
 .record-time {
@@ -631,27 +697,36 @@
 
 .record-status {
   font-size: 22rpx;
-  padding: 4rpx 12rpx;
-  border-radius: 4rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 6rpx;
   background: #f0f0f0;
-  color: #666;
+  color: #999;
+  font-weight: 500;
 }
 
 .record-status.win {
-  background: rgba(82,196,26,0.1);
+  background: rgba(255, 107, 107, 0.15);
+  color: #ff6b6b;
+  font-weight: 600;
+}
+
+.record-status.pending {
+  background: rgba(82, 196, 26, 0.15);
   color: #52c41a;
+  font-weight: 600;
 }
 
 .record-status.lose {
-  background: rgba(255,77,79,0.1);
-  color: #ff4d4f;
+  background: rgba(200, 200, 200, 0.2);
+  color: #999;
+  font-weight: 500;
 }
 
 .record-info {
   display: flex;
   align-items: center;
-  gap: 16rpx;
-  margin-bottom: 12rpx;
+  gap: 12rpx;
+  margin-bottom: 14rpx;
 }
 
 .record-matches {
@@ -663,26 +738,28 @@
 .record-pass {
   font-size: 24rpx;
   color: #667eea;
-  background: rgba(102,126,234,0.1);
-  padding: 4rpx 12rpx;
-  border-radius: 4rpx;
+  background: rgba(102, 126, 234, 0.1);
+  padding: 6rpx 14rpx;
+  border-radius: 6rpx;
+  font-weight: 500;
 }
 
 .record-footer {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
 }
 
 .record-amount {
   font-size: 24rpx;
-  color: #666;
+  color: #999;
+  font-weight: 400;
 }
 
 .record-bonus {
-  font-size: 26rpx;
+  font-size: 28rpx;
   color: #ff6b6b;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .record-arrow {
@@ -690,6 +767,6 @@
   right: 20rpx;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 32rpx;
-  color: #ccc;
+  font-size: 28rpx;
+  color: #ddd;
 }

@@ -45,11 +45,11 @@
 }
 
 .status-card.win {
-  background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff8c8c 100%);
 }
 
 .status-card.lose {
-  background: linear-gradient(135deg, #ff4d4f 0%, #ff7875 100%);
+  background: linear-gradient(135deg, #d9d9d9 0%, #e8e8e8 100%);
 }
 
 .status-icon {
@@ -62,11 +62,21 @@
   font-weight: 700;
   color: #fff;
   margin-bottom: 8rpx;
+  text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
 }
 
 .scheme-no {
   font-size: 22rpx;
-  color: rgba(255,255,255,0.8);
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.status-card.lose .status-text {
+  color: #999;
+  text-shadow: none;
+}
+
+.status-card.lose .scheme-no {
+  color: rgba(100, 100, 100, 0.8);
 }
 
 /* 信息卡片 */
@@ -138,6 +148,14 @@
   font-weight: 600;
 }
 
+.bonus-value.win {
+  color: #ff6b6b;
+}
+
+.bonus-value.lose {
+  color: #999;
+}
+
 .time-value {
   font-size: 24rpx;
   color: #666;
@@ -204,69 +222,163 @@
   font-weight: 500;
 }
 
+/* 开奖结果 */
+.option-result {
+  width: 110rpx;
+  padding: 10rpx 12rpx;
+  background: #f8f9fc;
+  border-radius: 8rpx;
+  border-left: 3rpx solid #667eea;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+/* 中奖 - 红色 */
+.option-result.hit {
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.12) 0%, rgba(255, 140, 140, 0.08) 100%);
+  border-left-color: #ff6b6b;
+}
+
+/* 待开奖 - 绿色 */
+.option-result.pending {
+  background: linear-gradient(135deg, rgba(82, 196, 26, 0.12) 0%, rgba(115, 209, 61, 0.08) 100%);
+  border-left-color: #52c41a;
+}
+
+/* 未中奖 - 灰色 */
+.option-result.miss {
+  background: rgba(200, 200, 200, 0.08);
+  border-left-color: #d9d9d9;
+}
+
+.result-value {
+  font-size: 22rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.option-result.hit .result-value {
+  color: #ff6b6b;
+  font-weight: 600;
+}
+
+.option-result.pending .result-value {
+  color: #52c41a;
+  font-weight: 600;
+}
+
+.option-result.miss .result-value {
+  color: #999;
+  font-weight: 400;
+}
+
 .match-options {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 10rpx;
 }
 
+.option-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8rpx;
+}
+
 .option-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 10rpx 14rpx;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff8c8c 100%);
+  border-radius: 8rpx;
+  border: none;
+  transition: all 0.2s ease;
+}
+
+/* 未中奖 - 灰色背景 */
+.option-item.miss {
+  background: linear-gradient(135deg, #999 0%, #bbb 100%);
+}
+
+.opt-content {
   display: flex;
   align-items: center;
   gap: 8rpx;
-  padding: 10rpx 16rpx;
-  background: #f8f9fc;
-  border-radius: 8rpx;
-  border: 2rpx solid transparent;
-}
-
-.option-item.hit {
-  background: rgba(82,196,26,0.1);
-  border-color: #52c41a;
-}
-
-.option-item.miss {
-  background: rgba(255,77,79,0.1);
-  border-color: #ff4d4f;
 }
 
 .opt-type {
-  font-size: 22rpx;
-  color: #999;
+  font-size: 20rpx;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 400;
 }
 
 .opt-value {
   font-size: 24rpx;
-  color: #333;
+  color: #fff;
   font-weight: 600;
 }
 
-.option-item.hit .opt-value {
-  color: #52c41a;
-}
-
-.option-item.miss .opt-value {
-  color: #ff4d4f;
-}
-
 .opt-odds {
-  font-size: 22rpx;
-  color: #ff6b6b;
+  font-size: 20rpx;
+  color: rgba(255, 255, 255, 0.85);
   font-weight: 500;
+  white-space: nowrap;
 }
 
 .hit-icon {
-  color: #52c41a;
+  color: #fff;
   font-weight: 700;
-  font-size: 24rpx;
+  font-size: 22rpx;
 }
 
 .miss-icon {
-  color: #ff4d4f;
+  color: rgba(255, 255, 255, 0.7);
   font-weight: 700;
-  font-size: 24rpx;
+  font-size: 22rpx;
 }
 
-.safe-bottom {
-  height: calc(32rpx + env(safe-area-inset-bottom));
+.bottom-placeholder {
+  height: calc(120rpx + env(safe-area-inset-bottom));
+}
+
+/* 底部分享栏 */
+.bottom-share-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  padding: 16rpx 24rpx;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.06);
+  z-index: 100;
+}
+
+.share-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  width: 100%;
+  height: 88rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12rpx;
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+.share-btn::after {
+  border: none;
+}
+
+.share-icon {
+  font-size: 36rpx;
+}
+
+.share-text {
+  font-size: 30rpx;
+  color: #fff;
+  font-weight: 600;
 }

@@ -145,6 +145,47 @@ const userStore = {
       return false
     }
     return true
+  },
+
+  /**
+   * 微信登录
+   * @param {Object} userInfo 用户信息（昵称、头像等）
+   */
+  async wxLogin(userInfo) {
+    try {
+      const app = getAppInstance()
+
+      // 获取微信登录凭证
+      const loginRes = await new Promise((resolve, reject) => {
+        wx.login({
+          success: resolve,
+          fail: reject
+        })
+      })
+
+      if (!loginRes.code) {
+        return { success: false, message: '获取微信登录凭证失败' }
+      }
+
+      // 调用后端微信登录接口
+      const data = await userApi.wxLogin(loginRes.code, userInfo)
+
+      if (data && data.token) {
+        // 保存登录状态
+        app.setLoginState(data.token, data.userInfo || null)
+
+        // 如果没有用户信息，再获取一次
+        if (!data.userInfo) {
+          await this.fetchUserInfo()
+        }
+
+        return { success: true }
+      }
+
+      return { success: false, message: '登录失败' }
+    } catch (error) {
+      return { success: false, message: error.message }
+    }
   }
 }
 

@@ -43,7 +43,18 @@
           <text class="info-value amount">¥{{record.totalAmount}}</text>
         </view>
       </view>
-      <view class="bonus-row" wx:if="{{record.bonusRange}}">
+      <!-- 中奖 -->
+      <view class="bonus-row" wx:if="{{record.status === 1}}">
+        <text class="bonus-label">中奖金额</text>
+        <text class="bonus-value win">¥{{record.actualBonus}}</text>
+      </view>
+      <!-- 未中奖 -->
+      <view class="bonus-row" wx:elif="{{record.status === 2}}">
+        <text class="bonus-label">开奖结果</text>
+        <text class="bonus-value lose">未中奖</text>
+      </view>
+      <!-- 待开奖 -->
+      <view class="bonus-row" wx:elif="{{record.bonusRange}}">
         <text class="bonus-label">预计奖金</text>
         <text class="bonus-value">¥{{record.bonusRange}}</text>
       </view>
@@ -76,19 +87,36 @@
         </view>
 
         <view class="match-options">
-          <view class="option-item {{opt.isHit === true ? 'hit' : opt.isHit === false ? 'miss' : ''}}"
-                wx:for="{{item.options}}" wx:for-item="opt" wx:key="index">
-            <text class="opt-type">{{opt.optionTypeDesc}}</text>
-            <text class="opt-value">{{opt.displayValue}}</text>
-            <text class="opt-odds">@{{opt.odds}}</text>
-            <text class="hit-icon" wx:if="{{opt.isHit === true}}">✓</text>
-            <text class="miss-icon" wx:if="{{opt.isHit === false}}">✗</text>
+          <view class="option-row" wx:for="{{item.options}}" wx:for-item="opt" wx:key="index">
+            <!-- 左侧：用户选择 -->
+            <view class="option-item {{opt.isHit ? 'hit' : (opt.checkTime ? 'miss' : 'pending')}}">
+              <view class="opt-content">
+                <text class="opt-type">{{opt.optionTypeDesc}}</text>
+                <text class="opt-value">{{opt.displayValue}}</text>
+                <text class="opt-odds">@{{opt.odds}}</text>
+              </view>
+              <text class="hit-icon" wx:if="{{opt.checkTime && opt.isHit}}">✓</text>
+              <text class="miss-icon" wx:if="{{opt.checkTime && !opt.isHit}}">✗</text>
+            </view>
+
+            <!-- 右侧：开奖结果 -->
+            <view class="option-result {{opt.isHit ? 'hit' : (opt.checkTime ? 'miss' : 'pending')}}">
+              <text class="result-value">{{opt.matchResultDesc || '待开奖'}}</text>
+            </view>
           </view>
         </view>
       </view>
     </view>
 
-    <!-- 底部安全区 -->
-    <view class="safe-bottom"></view>
+    <!-- 底部占位 -->
+    <view class="bottom-placeholder"></view>
   </scroll-view>
+
+  <!-- 底部分享栏 -->
+  <view class="bottom-share-bar" wx:if="{{record}}">
+    <button class="share-btn" open-type="share">
+      <text class="share-icon">📤</text>
+      <text class="share-text">分享给好友</text>
+    </button>
+  </view>
 </view>
