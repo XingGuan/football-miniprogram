@@ -375,7 +375,7 @@
 }
 
 .stepper-input {
-  width: 60rpx;
+  width: 100rpx;
   height: 48rpx;
   text-align: center;
   font-size: 24rpx;
