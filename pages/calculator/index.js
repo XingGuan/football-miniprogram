@@ -400,7 +400,7 @@ Page({
 
   onMultipleChange(e) {
     const multiple = parseInt(e.detail.value) || 1
-    this.setData({ multiple: Math.max(1, Math.min(99, multiple)) })
+    this.setData({ multiple: Math.max(1, Math.min(5000, multiple)) })
     this.calculateBets()
   },
 
@@ -411,7 +411,7 @@ Page({
   },
 
   onMultiplePlus() {
-    const multiple = Math.min(99, this.data.multiple + 1)
+    const multiple = Math.min(5000, this.data.multiple + 1)
     this.setData({ multiple })
     this.calculateBets()
   },
