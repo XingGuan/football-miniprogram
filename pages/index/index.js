@@ -20,7 +20,7 @@ Page({
       { value: '4', label: '进行中' },
       { value: '5', label: '已完成' }
     ],
-    // 模拟试玩按钮位置
+    // 模拟选号按钮位置
     calculatorX: 500,
     calculatorY: 120
   },
@@ -342,14 +342,22 @@ Page({
     })
   },
 
-  // 跳转到模拟试玩
+  // 跳转到模拟选号
   onCalculator() {
+    // 检查登录状态，未登录则跳转登录页
+    if (!userStore.isLoggedIn()) {
+      wx.showToast({ title: '请先登录', icon: 'none' })
+      wx.navigateTo({
+        url: '/pages/login/index'
+      })
+      return
+    }
     wx.navigateTo({
       url: '/pages/calculator/index'
     })
   },
 
-  // 模拟试玩按钮拖动
+  // 模拟选号按钮拖动
   onCalculatorMove(e) {
     // 记录最新位置，防止tap事件被误触
     this._lastMoveTime = Date.now()

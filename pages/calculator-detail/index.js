@@ -1,4 +1,4 @@
-// pages/calculator-detail/index.js - 模拟试玩记录详情
+// pages/calculator-detail/index.js - 模拟选号记录详情
 const matchApi = require('../../api/match')
 const userStore = require('../../store/user')
 
@@ -23,13 +23,11 @@ Page({
 
   // 直接调用API获取记录
   async loadRecord(id) {
-    console.log('loadRecord 开始, id:', id)
 
     const userInfo = userStore.getUserInfo()
-    console.log('userInfo:', userInfo)
 
-    // 兼容 id 和 userId 字段
-    const userId = userInfo && (userInfo.id || userInfo.userId)
+    // 兼容 id 
+    const userId = userInfo && (userInfo.id)
     console.log('userId:', userId)
 
     if (!userId) {
@@ -40,12 +38,9 @@ Page({
     this.setData({ loading: true })
 
     try {
-      console.log('开始调用API, userId:', userId)
       const res = await matchApi.getCalculatorRecords(userId)
-      console.log('API返回:', res)
       const records = res.data || res || []
-      console.log('记录列表:', records)
-      console.log('查找ID:', id, typeof id)
+      
 
       const record = records.find(r => String(r.id) === String(id))
       console.log('找到记录:', record)
@@ -79,12 +74,55 @@ Page({
         ...match,
         options: (match.options || []).map(opt => ({
           ...opt,
-          displayValue: this.getValueName(opt.optionType, opt.optionValue)
-        }))
+          displayValue: this.getValueName(opt.optionType, opt.optionValue),
+          isHit: opt.isHit === 1
+        })),
       }))
     }
 
+    // 计算实际中奖金额
+    data.actualBonus = this.calculateActualBonus(data)
+
     this.setData({ record: data, loading: false })
+  },
+
+// 计算实际中奖金额
+  calculateActualBonus(record) {
+    if (record.status !== 1) return 0
+    if (!record.matchDetails || record.matchDetails.length === 0) return 0
+
+    const multiple = record.multiple || 1
+    const passTypes = record.passTypes || []
+
+    // 收集所有命中的选项
+    let hitOptions = []
+    for (const match of record.matchDetails) {
+      if (!match.options) continue
+      for (const opt of match.options) {
+        if (opt.isHit === true) {
+          hitOptions.push(opt.odds || 1)
+        }
+      }
+    }
+    if (hitOptions.length === 0) return 0
+
+    let totalBonus = 0
+
+    // 如果包含单关，每个命中选项单独计算
+    if (passTypes.includes('single')) {
+      for (const odds of hitOptions) {
+        totalBonus += odds * 2 * multiple
+      }
+    } else {
+      // 串关：所有命中赔率相乘
+      let totalOdds = 1
+      for (const odds of hitOptions) {
+        totalOdds *= odds
+      }
+      totalBonus = totalOdds * 2 * multiple
+    }
+
+    return totalBonus.toFixed(2)
   },
 
   // 格式化过关方式
@@ -157,5 +195,24 @@ Page({
     }
     // 比分直接返回
     return value
+  },
+
+  // 分享给好友
+  onShareAppMessage() {
+    const { record } = this.data
+    if (!record) {
+      return {
+        title: '我的模拟选号方案',
+        path: '/pages/calculator/index'
+      }
+    }
+
+    const matchCount = record.matchDetails ? record.matchDetails.length : 0
+    const statusText = record.status === 1 ? '中奖啦！' : record.status === 2 ? '未中奖' : '待开奖'
+
+    return {
+      title: `${statusText} ${matchCount}场比赛 ${record.passTypesStr}`,
+      path: `/pages/calculator-detail/index?id=${record.id}`
+    }
   }
 })

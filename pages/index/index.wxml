@@ -1,10 +1,10 @@
 <!-- pages/index/index.wxml -->
 <view class="page-container">
-  <!-- 模拟试玩入口 - 可拖动 -->
+  <!-- 模拟选号入口 - 可拖动 -->
   <movable-area class="calculator-area">
     <movable-view class="calculator-btn" direction="all" x="{{calculatorX}}" y="{{calculatorY}}" bindchange="onCalculatorMove" bindtap="onCalculator">
       <text class="calculator-icon">🎮</text>
-      <text class="calculator-text">模拟试玩</text>
+      <text class="calculator-text">模拟选号</text>
     </movable-view>
   </movable-area>
 

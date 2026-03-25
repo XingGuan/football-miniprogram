@@ -86,6 +86,30 @@ function userSign(userId) {
   return post(`/api/user/sign/${userId}`)
 }
 
+/**
+ * 微信登录
+ * @param {string} code 微信登录凭证
+ * @param {Object} userInfo 用户信息（昵称、头像等）
+ */
+function wxLogin(code, userInfo) {
+  return post('/api/user/wx/login', { code, ...userInfo })
+}
+
+/**
+ * 绑定手机号（更新用户信息）
+ * @param {Object} data 绑定参数
+ * @param {string} data.userId 用户ID
+ * @param {string} data.phone 手机号
+ * @param {string} data.code 验证码
+ */
+function updateUserInfoWithPhone(data) {
+  return post('/api/user/info/update', {
+    userId: data.userId,
+    phone: data.phone,
+    code: data.code
+  })
+}
+
 module.exports = {
   sendSms,
   login,
@@ -96,5 +120,7 @@ module.exports = {
   deductPoint,
   checkMatchUnlock,
   batchCheckMatchUnlock,
-  userSign
+  userSign,
+  wxLogin,
+  updateUserInfoWithPhone
 }

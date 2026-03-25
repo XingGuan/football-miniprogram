@@ -4,23 +4,28 @@ const userStore = require('../../store/user')
 
 Page({
   data: {
-    currentTab: 'play', // play: 模拟投注, records: 我的记录
+    currentTab: 'play', // play: 模拟选号, records: 我的记录
     matches: [],
     loading: true,
     error: null,
     selections: {},
     selectedMap: {},
     selectedCount: 0,
-    singleAvailable: false,
-    passTypes: [
-      { value: 'single', label: '单关', min: 1 },
-      { value: '2_1', label: '2串1', min: 2 },
-      { value: '3_1', label: '3串1', min: 3 },
-      { value: '4_1', label: '4串1', min: 4 },
-      { value: '5_1', label: '5串1', min: 5 },
-      { value: '6_1', label: '6串1', min: 6 }
+    // 所有过关方式定义
+    allPassTypes: [
+      { value: 'single', label: '单关', min: 1, max: 1 },
+      { value: '2_1', label: '2串1', min: 2, max: 8 },
+      { value: '3_1', label: '3串1', min: 3, max: 8 },
+      { value: '4_1', label: '4串1', min: 4, max: 8 },
+      { value: '5_1', label: '5串1', min: 5, max: 8 },
+      { value: '6_1', label: '6串1', min: 6, max: 8 },
+      { value: '7_1', label: '7串1', min: 7, max: 8 },
+      { value: '8_1', label: '8串1', min: 8, max: 8 }
     ],
+    // 动态可用的过关方式
+    availablePassTypes: [],
     selectedPassTypes: [],
+    selectedPassTypesMap: {},  // 用于模板中判断选中状态
     multiple: 1,
     totalBets: 0,
     totalAmount: 0,
@@ -39,12 +44,13 @@ Page({
 
   onLoad() {
     this.loadMatches()
-    this.loadRecords()
   },
 
   onShow() {
-    // 每次显示时刷新记录
-    this.loadRecords()
+    // 每次显示时，如果已经在记录tab，则刷新记录
+    if (this.data.currentTab === 'records') {
+      this.loadRecords()
+    }
   },
 
   // 切换Tab
@@ -234,27 +240,91 @@ Page({
     return 0
   },
 
-  // 检查选中的比赛中是否有支持单关的（只有had和hhad需要检查bettingSingle）
-  checkSingleAvailable(selectedMatchIds) {
+  // 检查是否支持单关
+  // 规则：只有当所有选中的选项都支持单关时，才能选择单关
+  // had需要bettingSingle，hhad需要bettingAllUp，crs/ttg/hafu默认支持
+  checkSingleAvailable() {
     const { matches, selections } = this.data
+    const matchIds = Object.keys(selections)
 
-    for (const matchId of selectedMatchIds) {
+    if (matchIds.length === 0) return false
+
+    // 检查所有选中的选项是否都支持单关
+    for (const matchId of matchIds) {
       const match = matches.find(m => String(m.matchId) === String(matchId))
       const matchSelections = selections[matchId] || []
 
       for (const sel of matchSelections) {
-        // had和hhad需要检查bettingSingle
-        if (sel.type === 'had' || sel.type === 'hhad') {
-          if (match && match.bettingSingle == 1) {
-            return true
-          }
-        } else {
-          // 其他玩法（crs、ttg、hafu）不受bettingSingle限制，直接支持单关
-          return true
+        // 检查这个选项是否支持单关
+        if (!this.canOptionSingleBet(match, sel)) {
+          // 只要有一个选项不支持单关，就不能选择单关
+          return false
         }
       }
     }
+    // 所有选项都支持单关
+    return true
+  },
+
+  // 检查单个选项是否支持单关
+  canOptionSingleBet(match, sel) {
+    if (!match) return false
+
+    // crs、ttg、hafu 默认支持单关
+    if (sel.type === 'crs' || sel.type === 'ttg' || sel.type === 'hafu') {
+      return true
+    }
+    // had需要bettingSingle
+    if (sel.type === 'had') {
+      return match.bettingSingle == 1 || match.bettingSingle === true
+    }
+    // hhad需要bettingAllUp
+    if (sel.type === 'hhad') {
+      return match.bettingAllUp == 1 || match.bettingAllUp === true
+    }
     return false
+  },
+
+  // 更新可用的过关方式
+  updateAvailablePassTypes() {
+    const { selections, allPassTypes, selectedPassTypes } = this.data
+    const matchIds = Object.keys(selections)
+    const matchCount = matchIds.length
+
+    if (matchCount === 0) {
+      this.setData({ availablePassTypes: [], selectedPassTypes: [] })
+      return
+    }
+
+    const singleAvailable = this.checkSingleAvailable()
+    const availablePassTypes = []
+
+    allPassTypes.forEach(pt => {
+      if (pt.value === 'single') {
+        // 单关：需要检查是否有支持单关的选项
+        if (singleAvailable) {
+          availablePassTypes.push(pt)
+        }
+      } else {
+        // 串关：场次数需要满足最小要求
+        if (matchCount >= pt.min) {
+          availablePassTypes.push(pt)
+        }
+      }
+    })
+
+    // 过滤掉已选但现在不可用的过关方式
+    const validSelectedPassTypes = selectedPassTypes.filter(pt =>
+      availablePassTypes.some(apt => apt.value === pt)
+    )
+
+    // 更新选中状态的 map
+    const selectedPassTypesMap = {}
+    validSelectedPassTypes.forEach(pt => {
+      selectedPassTypesMap[pt] = true
+    })
+
+    this.setData({ availablePassTypes, selectedPassTypes: validSelectedPassTypes, selectedPassTypesMap })
   },
 
   toggleSelection(matchId, type, value, odds) {
@@ -275,10 +345,9 @@ Page({
 
     const selectedCount = Object.keys(selections).length
 
-    // 检查是否有支持单关的比赛被选中
-    const singleAvailable = this.checkSingleAvailable(Object.keys(selections))
-
-    this.setData({ selections, selectedMap, selectedCount, singleAvailable })
+    this.setData({ selections, selectedMap, selectedCount })
+    // 更新可用的过关方式
+    this.updateAvailablePassTypes()
     this.calculateBets()
   },
 
@@ -313,28 +382,19 @@ Page({
   },
 
   onSelectPassType(e) {
-    const { value, min } = e.currentTarget.dataset
-    const { selectedPassTypes, selectedCount, singleAvailable } = this.data
-
-    // 单关需要检查是否有支持单关的比赛被选中
-    if (value === 'single') {
-      if (!singleAvailable) {
-        wx.showToast({ title: '当前选中的比赛不支持单关', icon: 'none' })
-        return
-      }
-    } else if (selectedCount < min) {
-      wx.showToast({ title: `需要至少选择${min}场比赛`, icon: 'none' })
-      return
-    }
+    const { value } = e.currentTarget.dataset
+    const { selectedPassTypes, selectedPassTypesMap } = this.data
 
     const index = selectedPassTypes.indexOf(value)
     if (index > -1) {
       selectedPassTypes.splice(index, 1)
+      delete selectedPassTypesMap[value]
     } else {
       selectedPassTypes.push(value)
+      selectedPassTypesMap[value] = true
     }
 
-    this.setData({ selectedPassTypes })
+    this.setData({ selectedPassTypes, selectedPassTypesMap })
     this.calculateBets()
   },
 
@@ -367,22 +427,35 @@ Page({
     }
 
     let totalBets = 0
-    let minOdds = []
-    let maxOdds = []
+    let allBonusResults = [] // 存储所有可能的奖金组合
+
+    // 打印计算过程
+    console.log('=== 注数计算 ===')
+    console.log(`场次数: ${matchIds.length}`)
+    matchIds.forEach(matchId => {
+      const types = selections[matchId].map(s => s.type + ':' + s.value)
+      console.log(`  场次${matchId}: ${types.join(', ')}`)
+    })
 
     selectedPassTypes.forEach(passType => {
       const bets = this.calculatePassTypeBets(passType, matchIds, selections)
+      console.log(`${passType}: ${bets.count}注`)
       totalBets += bets.count
-      minOdds = minOdds.concat(bets.minOdds)
-      maxOdds = maxOdds.concat(bets.maxOdds)
+      allBonusResults = allBonusResults.concat(bets.bonusResults)
     })
+    console.log(`总计: ${totalBets}注, ${totalBets * 2 * multiple}元`)
 
-    // 过滤掉无效的赔率值
-    minOdds = minOdds.filter(o => o > 0)
-    maxOdds = maxOdds.filter(o => o > 0)
+    // 计算最小和最大奖金
+    let minBonus = 0
+    let maxBonus = 0
+    if (allBonusResults.length > 0) {
+      const validResults = allBonusResults.filter(r => r > 0)
+      if (validResults.length > 0) {
+        minBonus = Math.min(...validResults) * 2 * multiple
+        maxBonus = validResults.reduce((sum, r) => sum + r, 0) * 2 * multiple
+      }
+    }
 
-    const minBonus = minOdds.length > 0 ? Math.min(...minOdds) * 2 * multiple : 0
-    const maxBonus = maxOdds.length > 0 ? Math.max(...maxOdds) * 2 * multiple : 0
     const totalAmount = totalBets * multiple * 2
 
     this.setData({
@@ -393,63 +466,127 @@ Page({
     })
   },
 
+  // 检查某个选项是否支持单关（用于单关注数计算）
+  canSingleBet(matchId, sel) {
+    const { matches } = this.data
+    const match = matches.find(m => String(m.matchId) === String(matchId))
+    return this.canOptionSingleBet(match, sel)
+  },
+
   calculatePassTypeBets(passType, matchIds, selections) {
     if (passType === 'single') {
-      // 单关计算：had/hhad需要检查bettingSingle，其他玩法直接支持
-      const { matches } = this.data
+      // 单关计算：每个支持单关的选项算1注
       let count = 0
-      let allOdds = []
+      let bonusResults = []
 
       matchIds.forEach(matchId => {
-        const match = matches.find(m => String(m.matchId) === String(matchId))
         const matchSelections = selections[matchId] || []
-
         matchSelections.forEach(sel => {
-          // had和hhad需要bettingSingle==1才能单关
-          if (sel.type === 'had' || sel.type === 'hhad') {
-            if (match && match.bettingSingle == 1) {
-              count++
-              if (sel.odds > 0) allOdds.push(sel.odds)
-            }
-          } else {
-            // 其他玩法（crs、ttg、hafu）不受限制
+          if (this.canSingleBet(matchId, sel)) {
             count++
-            if (sel.odds > 0) allOdds.push(sel.odds)
+            if (sel.odds > 0) bonusResults.push(sel.odds)
           }
         })
       })
 
-      if (count === 0) return { count: 0, minOdds: [0], maxOdds: [0] }
-      if (allOdds.length === 0) return { count, minOdds: [0], maxOdds: [0] }
-      return { count, minOdds: [Math.min(...allOdds)], maxOdds: [Math.max(...allOdds)] }
+      return { count, bonusResults }
     }
 
+    // 串关计算（按实际打印彩票方式计算）
     const [m] = passType.split('_').map(Number)
-    if (matchIds.length < m) return { count: 0, minOdds: [0], maxOdds: [0] }
+    if (matchIds.length < m) return { count: 0, bonusResults: [] }
 
-    const combinations = this.getCombinations(matchIds, m)
-    let totalCount = 0
-    let allMinOdds = []
-    let allMaxOdds = []
-
-    combinations.forEach(combo => {
-      let comboCount = 1
-      combo.forEach(matchId => { comboCount *= selections[matchId].length })
-
-      const comboOdds = combo.map(matchId => {
-        const odds = selections[matchId].map(s => s.odds).filter(o => o > 0)
-        return odds.length > 0 ? odds : [1]
+    // 按玩法类型分组每场的选项
+    const matchPlayTypes = {}
+    matchIds.forEach(matchId => {
+      matchPlayTypes[matchId] = {}
+      const matchSelections = selections[matchId] || []
+      matchSelections.forEach(sel => {
+        if (!matchPlayTypes[matchId][sel.type]) {
+          matchPlayTypes[matchId][sel.type] = []
+        }
+        matchPlayTypes[matchId][sel.type].push(sel)
       })
-
-      const minOddsProduct = comboOdds.reduce((product, odds) => product * Math.min(...odds), 1)
-      const maxOddsProduct = comboOdds.reduce((product, odds) => product * Math.max(...odds), 1)
-
-      totalCount += comboCount
-      allMinOdds.push(minOddsProduct)
-      allMaxOdds.push(maxOddsProduct)
     })
 
-    return { count: totalCount, minOdds: allMinOdds, maxOdds: allMaxOdds }
+    // 获取所有可能的"玩法路径"（每场选择一种玩法类型）
+    const playTypePaths = this.getPlayTypePaths(matchIds, matchPlayTypes)
+
+    let totalCount = 0
+    let bonusResults = []
+
+    // 对每种玩法路径计算注数
+    playTypePaths.forEach(path => {
+      // path: { matchId1: 'had', matchId2: 'hhad', ... }
+
+      // 计算这条路径下每场的选项数
+      const pathSelections = {}
+      matchIds.forEach(matchId => {
+        const playType = path[matchId]
+        pathSelections[matchId] = matchPlayTypes[matchId][playType]
+      })
+
+      // 计算这条路径的注数（同一玩法内的多选项用乘法）
+      const matchCombinations = this.getCombinations(matchIds, m)
+
+      matchCombinations.forEach(combo => {
+        let comboCount = 1
+        combo.forEach(matchId => {
+          comboCount *= pathSelections[matchId].length
+        })
+        totalCount += comboCount
+
+        // 计算赔率组合
+        const oddsComboList = this.getOddsCombinationsForPath(combo, pathSelections)
+        oddsComboList.forEach(oddsList => {
+          const product = oddsList.reduce((p, o) => p * o, 1)
+          if (product > 0) bonusResults.push(product)
+        })
+      })
+    })
+
+    return { count: totalCount, bonusResults }
+  },
+
+  // 获取所有玩法路径组合
+  getPlayTypePaths(matchIds, matchPlayTypes) {
+    if (matchIds.length === 0) return [{}]
+
+    const [first, ...rest] = matchIds
+    const firstPlayTypes = Object.keys(matchPlayTypes[first])
+    const restPaths = this.getPlayTypePaths(rest, matchPlayTypes)
+
+    const result = []
+    firstPlayTypes.forEach(playType => {
+      restPaths.forEach(restPath => {
+        result.push({
+          ...restPath,
+          [first]: playType
+        })
+      })
+    })
+
+    return result
+  },
+
+  // 获取某条路径下的赔率组合
+  getOddsCombinationsForPath(matchIds, pathSelections) {
+    if (matchIds.length === 0) return [[]]
+
+    const [first, ...rest] = matchIds
+    const firstOdds = pathSelections[first].map(s => s.odds).filter(o => o > 0)
+    if (firstOdds.length === 0) firstOdds.push(1)
+
+    const restCombinations = this.getOddsCombinationsForPath(rest, pathSelections)
+
+    const result = []
+    firstOdds.forEach(odds => {
+      restCombinations.forEach(restOdds => {
+        result.push([odds, ...restOdds])
+      })
+    })
+
+    return result
   },
 
   getCombinations(arr, m) {
@@ -512,8 +649,9 @@ Page({
         selections: {},
         selectedMap: {},
         selectedPassTypes: [],
+        selectedPassTypesMap: {},
+        availablePassTypes: [],
         selectedCount: 0,
-        singleAvailable: false,
         multiple: 1,
         totalBets: 0,
         totalAmount: 0,
