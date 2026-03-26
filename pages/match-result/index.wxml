@@ -33,23 +33,23 @@
         <!-- 状态指示条 -->
         <view class="result-status-bar"></view>
 
-        <!-- 联赛和时间 -->
+        <!-- 联赛信息 -->
         <view class="result-header">
           <view class="league-info">
             <text class="league-name">{{item.leagueName}}</text>
-            <view class="match-status">
-              <text class="status-badge {{item.statusClass}}">{{item.matchStatusName}}</text>
-            </view>
+            <text class="status-badge {{item.statusClass}}">{{item.matchStatusName}}</text>
           </view>
-          <view class="match-time">{{item.matchMinute}}分</view>
         </view>
 
-        <!-- 对阵信息 -->
-        <view class="match-vs-section">
+        <!-- 对阵信息和比分 -->
+        <view class="match-section">
           <view class="team home">
             <text class="team-name">{{item.homeName}}</text>
           </view>
           <view class="vs-box">
+            <view class="score-display">
+              <text class="score-main">{{item.fullScore}}</text>
+            </view>
             <text class="vs-text">vs</text>
           </view>
           <view class="team away">
@@ -57,29 +57,9 @@
           </view>
         </view>
 
-        <!-- 全场比分 -->
-        <view class="score-section">
-          <text class="score-label">全场</text>
-          <view class="score-display">
-            <text class="score-main">{{item.fullScore}}</text>
-          </view>
+        <!-- 胜平负结果 -->
+        <view class="result-row" wx:if="{{item.hadResult}}">
           <text class="result-badge {{item.hadResult}}">{{getHadResultDisplay(item.hadResult)}}</text>
-        </view>
-
-        <!-- 其他比分 -->
-        <view class="other-scores" wx:if="{{item.halfScore || item.extraScore || item.penaltyScore}}">
-          <view class="score-item" wx:if="{{item.halfScore}}">
-            <text class="label">半场</text>
-            <text class="value">{{item.halfScore}}</text>
-          </view>
-          <view class="score-item" wx:if="{{item.extraScore}}">
-            <text class="label">加时</text>
-            <text class="value">{{item.extraScore}}</text>
-          </view>
-          <view class="score-item" wx:if="{{item.penaltyScore}}">
-            <text class="label">点球</text>
-            <text class="value">{{item.penaltyScore}}</text>
-          </view>
         </view>
 
         <!-- 各玩法开奖结果 -->
