@@ -60,13 +60,26 @@ function deductPoint(id, deductPoint, matchId) {
   return post('/api/user/point/deduct', params)
 }
 
+
 /**
- * 查询比赛是否已解锁
+ * 扣减用户积分
+ * @param {string} id 用户ID
+ * @param {number} deductPoint 扣减积分数
+ * @param {string} matchId 比赛ID（可选）
+ */
+function deductPointForInformation(id, deductPoint, matchId) {
+  const params = { id, deductPoint }
+  if (matchId) params.matchId = matchId
+  return post('/api/user/point/information/deduct', params)
+}
+
+/**
+ * 查询情报是否已解锁
  * @param {string} matchId 比赛ID
  * @param {string} userId 用户ID
  */
-function checkMatchUnlock(matchId, userId) {
-  return post('/api/match/check/unlock', { matchId, userId }, { showLoading: false })
+function checkInformationUnlock(matchId, userId) {
+  return post('/api/match/check/Information/unlock', { matchId, userId }, { showLoading: false })
 }
 
 /**
@@ -118,7 +131,8 @@ module.exports = {
   getUserInfoById,
   updateUserInfo,
   deductPoint,
-  checkMatchUnlock,
+  deductPointForInformation,
+  checkInformationUnlock,
   batchCheckMatchUnlock,
   userSign,
   wxLogin,

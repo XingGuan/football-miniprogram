@@ -283,6 +283,43 @@
         </view>
       </view>
 
+      <!-- 情报 -->
+      <view class="tab-panel" wx:elif="{{activeTab === 'information'}}">
+        <view class="loading-tip" wx:if="{{tabLoading.information}}">
+          <view class="loading-spinner small"></view>
+          <text>加载中...</text>
+        </view>
+        <view class="empty-tip" wx:elif="{{!informationData }}">
+          <text>暂无情报数据</text>
+        </view>
+        <view class="information-content" wx:else>
+          <!-- 情报内容区域 -->
+          <view class="info-section">
+            <view class="info-header">
+              <text class="info-title">比赛情报</text>
+              <text class="info-tag" >热门</text>
+            </view>
+
+            <!-- 蒙版遮罩层 - 未解锁时显示 -->
+            <view class="info-body {{!informationUnlocked ? 'masked' : ''}}">
+              <view class="info-text">{{informationData}}</view>
+
+              <!-- 蒙版覆盖层 -->
+              <view class="info-mask" wx:if="{{!informationUnlocked}}">
+                <view class="mask-content">
+                  <text class="mask-icon">🔒</text>
+                  <text class="mask-text">情报内容已隐藏</text>
+                  <view class="unlock-btn" bindtap="onUnlockInformation">
+                    <text class="unlock-btn-text">消耗1积分解锁</text>
+                  </view>
+                  <text class="mask-tip">当前积分: {{userPoints}}</text>
+                </view>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
       <!-- 赔率变化 -->
       <view class="tab-panel" wx:elif="{{activeTab === 'odds'}}">
         <view class="loading-tip" wx:if="{{tabLoading.odds}}">

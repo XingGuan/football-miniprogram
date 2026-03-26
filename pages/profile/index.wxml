@@ -86,6 +86,18 @@
 
   <!-- 功能菜单 -->
   <view class="menu-section">
+    <!-- 分享给好友 -->
+    <button class="menu-item" open-type="share">
+      <view class="menu-left">
+        <text class="menu-icon">📤</text>
+        <view class="menu-info">
+          <text class="menu-title">分享给好友</text>
+          <text class="menu-desc">邀请好友一起使用</text>
+        </view>
+      </view>
+      <text class="menu-arrow">›</text>
+    </button>
+
     <!-- 联系客服 -->
     <button class="menu-item" open-type="contact">
       <view class="menu-left">

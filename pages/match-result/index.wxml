@@ -1,0 +1,119 @@
+<!-- pages/match-result/index.wxml - 赛果列表 -->
+<view class="result-page">
+  <!-- 加载状态 -->
+  <view class="loading-wrapper" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 错误状态 -->
+  <view class="error-wrapper" wx:elif="{{error}}">
+    <text class="error-text">{{error}}</text>
+    <view class="retry-btn" bindtap="onRetry">重试</view>
+  </view>
+
+  <!-- 主内容 -->
+  <view class="main-content" wx:else>
+    <!-- 页面标题 -->
+    <view class="page-header">
+      <text class="page-title">⚽ 赛果</text>
+      <text class="page-desc">查看比赛开奖结果</text>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{results.length === 0}}">
+      <text class="empty-icon">📋</text>
+      <text class="empty-text">暂无赛果</text>
+      <text class="empty-tip">还没有比赛结果</text>
+    </view>
+
+    <!-- 赛果列表 -->
+    <scroll-view class="results-scroll" scroll-y wx:else>
+      <view class="result-item {{item.statusClass}}" wx:for="{{results}}" wx:key="matchId">
+        <!-- 状态指示条 -->
+        <view class="result-status-bar"></view>
+
+        <!-- 联赛和时间 -->
+        <view class="result-header">
+          <view class="league-info">
+            <text class="league-name">{{item.leagueName}}</text>
+            <view class="match-status">
+              <text class="status-badge {{item.statusClass}}">{{item.matchStatusName}}</text>
+            </view>
+          </view>
+          <view class="match-time">{{item.matchMinute}}分</view>
+        </view>
+
+        <!-- 对阵信息 -->
+        <view class="match-vs-section">
+          <view class="team home">
+            <text class="team-name">{{item.homeName}}</text>
+          </view>
+          <view class="vs-box">
+            <text class="vs-text">vs</text>
+          </view>
+          <view class="team away">
+            <text class="team-name">{{item.awayName}}</text>
+          </view>
+        </view>
+
+        <!-- 全场比分 -->
+        <view class="score-section">
+          <text class="score-label">全场</text>
+          <view class="score-display">
+            <text class="score-main">{{item.fullScore}}</text>
+          </view>
+          <text class="result-badge {{item.hadResult}}">{{getHadResultDisplay(item.hadResult)}}</text>
+        </view>
+
+        <!-- 其他比分 -->
+        <view class="other-scores" wx:if="{{item.halfScore || item.extraScore || item.penaltyScore}}">
+          <view class="score-item" wx:if="{{item.halfScore}}">
+            <text class="label">半场</text>
+            <text class="value">{{item.halfScore}}</text>
+          </view>
+          <view class="score-item" wx:if="{{item.extraScore}}">
+            <text class="label">加时</text>
+            <text class="value">{{item.extraScore}}</text>
+          </view>
+          <view class="score-item" wx:if="{{item.penaltyScore}}">
+            <text class="label">点球</text>
+            <text class="value">{{item.penaltyScore}}</text>
+          </view>
+        </view>
+
+        <!-- 各玩法开奖结果 -->
+        <view class="odds-section">
+          <view class="odds-item" wx:if="{{item.hadResult}}">
+            <text class="odds-label">胜平负</text>
+            <text class="odds-result">{{item.hadCombinationDesc}}</text>
+            <text class="odds-value">@{{item.hadOdds}}</text>
+          </view>
+          <view class="odds-item" wx:if="{{item.hhadResult}}">
+            <text class="odds-label">让球</text>
+            <text class="odds-result">{{item.hhadCombinationDesc}}</text>
+            <text class="odds-value">@{{item.hhadOdds}}</text>
+          </view>
+          <view class="odds-item" wx:if="{{item.ttgResult}}">
+            <text class="odds-label">总进球</text>
+            <text class="odds-result">{{item.ttgCombinationDesc}}</text>
+            <text class="odds-value">@{{item.ttgOdds}}</text>
+          </view>
+          <view class="odds-item" wx:if="{{item.hafuResult}}">
+            <text class="odds-label">半全场</text>
+            <text class="odds-result">{{item.hafuCombinationDesc}}</text>
+            <text class="odds-value">@{{item.hafuOdds}}</text>
+          </view>
+          <view class="odds-item" wx:if="{{item.crsResult}}">
+            <text class="odds-label">比分</text>
+            <text class="odds-result">{{item.crsCombinationDesc}}</text>
+            <text class="odds-value">@{{item.crsOdds}}</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 底部占位 -->
+      <view class="bottom-placeholder"></view>
+    </scroll-view>
+  </view>
+</view>

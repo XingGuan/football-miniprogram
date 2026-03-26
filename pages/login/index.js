@@ -144,7 +144,7 @@ Page({
           } else {
             this.navigateBack()
           }
-        }, 1500)
+        }, 1000)
       } else {
         wx.showToast({
           title: result.message || '登录失败',
@@ -233,7 +233,7 @@ Page({
           } else {
             this.navigateBack()
           }
-        }, 1500)
+        }, 1000)
       } else {
         wx.showToast({
           title: result.message || '登录失败',

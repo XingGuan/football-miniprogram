@@ -100,6 +100,13 @@ function getCalculatorRecommendList() {
 }
 
 /**
+ * 获取比赛结果列表
+ */
+function getMatchResults() {
+  return post('/api/match/result/list')
+}
+
+/**
  * 格式化日期
  * @param {Date} date 日期对象
  */
@@ -122,5 +129,6 @@ module.exports = {
   deleteCalculatorRecord,
   getMatchAllOdds,
   recommendCalculatorRecord,
-  getCalculatorRecommendList
+  getCalculatorRecommendList,
+  getMatchResults
 }
