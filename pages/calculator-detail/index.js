@@ -7,7 +7,8 @@ Page({
     recordId: null,
     record: null,
     loading: true,
-    error: null
+    error: null,
+    recommending: false
   },
 
   onLoad(options) {
@@ -428,6 +429,38 @@ Page({
     }
     // 比分直接返回
     return value
+  },
+
+  // 推荐方案
+  async onRecommend() {
+    const { record } = this.data
+    if (!record) {
+      wx.showToast({
+        title: '记录不存在',
+        icon: 'error'
+      })
+      return
+    }
+
+    this.setData({ recommending: true })
+
+    try {
+      const res = await matchApi.recommendCalculatorRecord(record.id)
+      this.setData({ recommending: false })
+
+      wx.showToast({
+        title: '推荐成功',
+        icon: 'success'
+      })
+    } catch (err) {
+      console.error('推荐失败:', err)
+      this.setData({ recommending: false })
+
+      wx.showToast({
+        title: err.message || '推荐失败',
+        icon: 'error'
+      })
+    }
   },
 
   // 分享给好友
