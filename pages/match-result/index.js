@@ -26,19 +26,24 @@ Page({
       const results = res.data || res || []
 
       // 处理数据，添加展示需要的字段
-      const processedResults = results.map(item => ({
-        ...item,
-        // 格式化状态类名
-        statusClass: this.getStatusClass(item.matchStatus),
-        // 完整比分显示
-        fullScore: this.formatScore(item.sectionsNo999),
-        halfScore: this.formatScore(item.sectionsNo1),
-        extraScore: item.sectionsExtra ? this.formatScore(item.sectionsExtra) : '',
-        penaltyScore: item.sectionsPenalty ? this.formatScore(item.sectionsPenalty) : '',
-        // 格式化日期时间
-        displayDate: this.formatDate(item.matchDate),
-        displayTime: item.matchTime || '--:--'
-      }))
+      const processedResults = results.map(item => {
+        // 尝试多个可能的字段名来获取比分
+        const score = item.sectionsNo999 || item.score || item.fullScore || item.finalScore || '-'
+
+        return {
+          ...item,
+          // 格式化状态类名
+          statusClass: this.getStatusClass(item.matchStatus),
+          // 完整比分显示
+          fullScore: this.formatScore(score),
+          halfScore: this.formatScore(item.sectionsNo1 || item.halfScore),
+          extraScore: item.sectionsExtra ? this.formatScore(item.sectionsExtra) : '',
+          penaltyScore: item.sectionsPenalty ? this.formatScore(item.sectionsPenalty) : '',
+          // 格式化日期时间
+          displayDate: this.formatDate(item.matchDate),
+          displayTime: item.matchTime || '--:--'
+        }
+      })
 
       this.setData({ results: processedResults, loading: false, error: null })
     } catch (error) {
