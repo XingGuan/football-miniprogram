@@ -85,6 +85,21 @@ function getMatchAllOdds(matchId) {
 }
 
 /**
+ * 推荐模拟选号方案
+ * @param {string|number} id 记录ID
+ */
+function recommendCalculatorRecord(id) {
+  return post(`/api/match/calculator/recommend/${id}`)
+}
+
+/**
+ * 获取大厅推荐方案列表
+ */
+function getCalculatorRecommendList() {
+  return post('/api/match/calculator/list')
+}
+
+/**
  * 格式化日期
  * @param {Date} date 日期对象
  */
@@ -105,5 +120,7 @@ module.exports = {
   saveCalculatorSelection,
   getCalculatorRecords,
   deleteCalculatorRecord,
-  getMatchAllOdds
+  getMatchAllOdds,
+  recommendCalculatorRecord,
+  getCalculatorRecommendList
 }

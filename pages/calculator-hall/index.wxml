@@ -1,0 +1,62 @@
+<!-- pages/calculator-hall/index.wxml - 推荐方案大厅 -->
+<view class="hall-page">
+  <!-- 加载状态 -->
+  <view class="loading-wrapper" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 错误状态 -->
+  <view class="error-wrapper" wx:elif="{{error}}">
+    <text class="error-text">{{error}}</text>
+    <view class="retry-btn" bindtap="onRetry">重试</view>
+  </view>
+
+  <!-- 主内容 -->
+  <view class="main-content" wx:else>
+    <!-- 页面标题 -->
+    <view class="page-header">
+      <text class="page-title">推荐方案</text>
+      <text class="page-desc">浏览其他用户推荐的中奖方案</text>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{recommendations.length === 0}}">
+      <text class="empty-icon">🏆</text>
+      <text class="empty-text">暂无推荐方案</text>
+      <text class="empty-tip">暂时还没有用户推荐方案</text>
+    </view>
+
+    <!-- 方案列表 -->
+    <scroll-view class="recommendations-scroll" scroll-y wx:else>
+      <view class="record-swipe-wrapper" wx:for="{{recommendations}}" wx:key="id">
+        <view class="record-swipe-inner {{item.swiped ? 'swiped' : ''}} {{item.status === 1 ? 'win' : (item.status === 2 ? 'lose' : 'pending')}}"
+              data-index="{{index}}"
+              bindtouchstart="onTouchStart"
+              bindtouchmove="onTouchMove"
+              bindtouchend="onTouchEnd">
+          <view class="record-card" bindtap="onRecordTap" data-record="{{item}}">
+            <view class="record-header">
+              <text class="record-time">{{item.createTimeStr}}</text>
+              <text class="record-status {{item.status === 1 ? 'win' : (item.status === 2 ? 'lose' : 'pending')}}">
+                {{item.statusDesc}}
+              </text>
+            </view>
+            <view class="record-info">
+              <text class="record-matches">{{item.matchCount}}场比赛</text>
+              <text class="record-pass">{{item.passTypesStr}}</text>
+            </view>
+            <view class="record-footer">
+              <text class="record-amount">{{item.totalBets}}注 × {{item.multiple}}倍 = {{item.totalAmount}}元</text>
+              <text class="record-bonus" wx:if="{{item.bonus > 0}}">奖金: {{item.bonus}}元</text>
+            </view>
+            <view class="record-arrow">›</view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 底部占位 -->
+      <view class="bottom-placeholder"></view>
+    </scroll-view>
+  </view>
+</view>

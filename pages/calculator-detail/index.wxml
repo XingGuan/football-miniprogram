@@ -112,11 +112,11 @@
     <view class="bottom-placeholder"></view>
   </scroll-view>
 
-  <!-- 底部分享栏 -->
+  <!-- 底部操作栏 -->
   <view class="bottom-share-bar" wx:if="{{record}}">
-    <button class="share-btn" open-type="share">
-      <text class="share-icon">📤</text>
-      <text class="share-text">分享给好友</text>
+    <button class="share-btn" bindtap="onRecommend" loading="{{recommending}}">
+      <text class="share-icon">👍</text>
+      <text class="share-text">推荐</text>
     </button>
   </view>
 </view>

@@ -1,0 +1,258 @@
+/* pages/calculator-hall/index.wxss - 推荐方案大厅 */
+.hall-page {
+  height: 100vh;
+  background: #f5f7fa;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.loading-wrapper, .error-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 200rpx 40rpx;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid #f0f0f0;
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loading-text, .error-text {
+  margin-top: 20rpx;
+  font-size: 26rpx;
+  color: #666;
+}
+
+.retry-btn {
+  margin-top: 24rpx;
+  padding: 16rpx 48rpx;
+  background: #667eea;
+  color: #fff;
+  border-radius: 32rpx;
+  font-size: 26rpx;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* 页面头部 */
+.page-header {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-bottom: 1rpx solid #f0f0f0;
+  padding: 24rpx 24rpx;
+}
+
+.page-title {
+  font-size: 32rpx;
+  color: #333;
+  font-weight: 600;
+  margin-bottom: 8rpx;
+}
+
+.page-desc {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 100rpx 40rpx;
+  color: #999;
+}
+
+.empty-icon {
+  font-size: 100rpx;
+  margin-bottom: 32rpx;
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #666;
+  font-weight: 500;
+  margin-bottom: 16rpx;
+}
+
+.empty-tip {
+  font-size: 26rpx;
+  color: #999;
+  text-align: center;
+}
+
+.recommendations-scroll {
+  flex: 1;
+  height: 0;
+  padding: 20rpx 16rpx 24rpx 16rpx;
+}
+
+/* 左滑删除容器 */
+.record-swipe-wrapper {
+  margin-bottom: 16rpx;
+  overflow: hidden;
+  border-radius: 12rpx;
+}
+
+.record-swipe-inner {
+  display: flex;
+  transition: transform 0.2s ease;
+}
+
+.record-swipe-inner.swiped {
+  transform: translateX(-140rpx);
+}
+
+.record-card {
+  flex-shrink: 0;
+  width: 100%;
+  background: #fff;
+  border-radius: 12rpx;
+  padding: 20rpx 24rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04);
+  position: relative;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+  border-left: 4rpx solid #e8e8e8;
+}
+
+/* 中奖 - 红色 */
+.record-swipe-inner.win .record-card {
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.06) 0%, rgba(255, 140, 140, 0.04) 100%);
+  border-left-color: #ff6b6b;
+  box-shadow: 0 2rpx 12rpx rgba(255, 107, 107, 0.12);
+}
+
+/* 待开奖 - 绿色 */
+.record-swipe-inner.pending .record-card {
+  background: linear-gradient(135deg, rgba(82, 196, 26, 0.06) 0%, rgba(115, 209, 61, 0.04) 100%);
+  border-left-color: #52c41a;
+  box-shadow: 0 2rpx 12rpx rgba(82, 196, 26, 0.12);
+}
+
+/* 未中奖状态 - 灰色主题 */
+.record-swipe-inner.lose .record-card {
+  background: linear-gradient(135deg, rgba(200, 200, 200, 0.06) 0%, rgba(220, 220, 220, 0.04) 100%);
+  border-left-color: #d9d9d9;
+  opacity: 0.8;
+}
+
+.record-swipe-inner.lose .record-matches {
+  color: #999;
+}
+
+.record-swipe-inner.lose .record-pass {
+  color: #999;
+  background: rgba(200, 200, 200, 0.15);
+}
+
+.record-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.record-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.record-status {
+  font-size: 22rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 6rpx;
+  background: #f0f0f0;
+  color: #999;
+  font-weight: 500;
+}
+
+.record-status.win {
+  background: rgba(255, 107, 107, 0.15);
+  color: #ff6b6b;
+  font-weight: 600;
+}
+
+.record-status.pending {
+  background: rgba(82, 196, 26, 0.15);
+  color: #52c41a;
+  font-weight: 600;
+}
+
+.record-status.lose {
+  background: rgba(200, 200, 200, 0.2);
+  color: #999;
+  font-weight: 500;
+}
+
+.record-info {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 14rpx;
+}
+
+.record-matches {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 600;
+}
+
+.record-pass {
+  font-size: 24rpx;
+  color: #667eea;
+  background: rgba(102, 126, 234, 0.1);
+  padding: 6rpx 14rpx;
+  border-radius: 6rpx;
+  font-weight: 500;
+}
+
+.record-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.record-amount {
+  font-size: 24rpx;
+  color: #999;
+  font-weight: 400;
+}
+
+.record-bonus {
+  font-size: 28rpx;
+  color: #ff6b6b;
+  font-weight: 700;
+}
+
+.record-arrow {
+  position: absolute;
+  right: 24rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 36rpx;
+  color: #ddd;
+  font-weight: 300;
+}
+
+.bottom-placeholder {
+  height: 20rpx;
+}
