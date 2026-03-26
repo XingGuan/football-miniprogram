@@ -4,6 +4,7 @@
     "pages/calculator/index",
     "pages/calculator-detail/index",
     "pages/calculator-hall/index",
+    "pages/match-result/index",
     "pages/login/index",
     "pages/ai-chat/index",
     "pages/history/index",
@@ -37,8 +38,14 @@
       {
         "pagePath": "pages/calculator-hall/index",
         "text": "大厅",
-        "iconPath": "images/tabbar/hall.png",
-        "selectedIconPath": "images/tabbar/hall-active.png"
+        "iconPath": "images/tabbar/match.png",
+        "selectedIconPath": "images/tabbar/match-active.png"
+      },
+      {
+        "pagePath": "pages/match-result/index",
+        "text": "赛果",
+        "iconPath": "images/tabbar/result.png",
+        "selectedIconPath": "images/tabbar/result-active.png"
       },
       {
         "pagePath": "pages/history/index",

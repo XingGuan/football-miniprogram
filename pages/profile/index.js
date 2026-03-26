@@ -399,5 +399,13 @@ Page({
     if (this._bindCountdownTimer) {
       clearInterval(this._bindCountdownTimer)
     }
+  },
+
+  // 分享给好友
+  onShareAppMessage() {
+    return {
+      title: 'AI足球分析助手 - 智能比赛分析预测',
+      path: '/pages/index/index'
+    }
   }
 })
