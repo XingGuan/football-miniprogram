@@ -164,11 +164,6 @@
   font-weight: 600;
 }
 
-.match-status {
-  display: flex;
-  gap: 8rpx;
-}
-
 .status-badge {
   font-size: 18rpx;
   padding: 4rpx 10rpx;
@@ -193,18 +188,12 @@
   color: #999;
 }
 
-.match-time {
-  font-size: 20rpx;
-  color: #ccc;
-  font-weight: 500;
-}
-
-/* 对阵信息 */
-.match-vs-section {
+/* 对阵和比分区 */
+.match-section {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  padding: 16rpx 20rpx;
+  padding: 24rpx 20rpx;
   gap: 12rpx;
 }
 
@@ -224,7 +213,7 @@
 }
 
 .team-name {
-  font-size: 24rpx;
+  font-size: 26rpx;
   color: #333;
   font-weight: 600;
   text-align: center;
@@ -233,9 +222,11 @@
 
 .vs-box {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-width: 60rpx;
+  min-width: 80rpx;
+  gap: 8rpx;
 }
 
 .vs-text {
@@ -244,47 +235,35 @@
   font-weight: 500;
 }
 
-/* 比分区 */
-.score-section {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 18rpx 20rpx;
-  background: #f8f9fb;
-  border-bottom: 1rpx solid #f0f0f0;
-}
-
-.score-label {
-  font-size: 18rpx;
-  color: #999;
-  font-weight: 500;
-  min-width: 40rpx;
-}
-
 .score-display {
-  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .score-main {
-  font-size: 40rpx;
+  font-size: 44rpx;
   color: #333;
   font-weight: 700;
   font-family: 'Arial', sans-serif;
   letter-spacing: 2rpx;
 }
 
+/* 结果行 */
+.result-row {
+  display: flex;
+  justify-content: center;
+  padding: 12rpx 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
 .result-badge {
   font-size: 18rpx;
-  padding: 6rpx 14rpx;
-  border-radius: 6rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
   background: #f0f0f0;
   color: #999;
   font-weight: 600;
-  min-width: 50rpx;
-  text-align: center;
 }
 
 .result-badge.H {
@@ -302,49 +281,19 @@
   color: #52c41a;
 }
 
-/* 其他比分 */
-.other-scores {
-  display: flex;
-  justify-content: space-around;
-  padding: 12rpx 20rpx;
-  border-bottom: 1rpx solid #f0f0f0;
-  gap: 12rpx;
-}
-
-.score-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4rpx;
-  flex: 1;
-}
-
-.score-item .label {
-  font-size: 18rpx;
-  color: #999;
-  font-weight: 500;
-}
-
-.score-item .value {
-  font-size: 24rpx;
-  color: #333;
-  font-weight: 700;
-  font-family: 'Arial', sans-serif;
-}
-
 /* 开奖结果 */
 .odds-section {
   padding: 12rpx 20rpx;
   display: flex;
   flex-direction: column;
-  gap: 8rpx;
+  gap: 10rpx;
 }
 
 .odds-item {
   display: flex;
   align-items: center;
   gap: 12rpx;
-  padding: 8rpx 0;
+  padding: 10rpx 0;
   font-size: 18rpx;
 }
 
