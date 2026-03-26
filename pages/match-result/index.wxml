@@ -46,7 +46,7 @@
         </view>
 
         <!-- 对阵和比分 -->
-        <view class="match-section">
+        <view class="match-section" bindtap="onToggleExpand" data-matchid="{{item.matchId}}">
           <view class="vs-info">
             <text class="team-name home">{{item.homeName}}</text>
             <view class="score-box">
@@ -54,16 +54,10 @@
             </view>
             <text class="team-name away">{{item.awayName}}</text>
           </view>
-          <view class="expand-btn" bindtap="onToggleExpand" data-matchid="{{item.matchId}}">
+          <view class="expand-btn">
             <text class="expand-icon {{expandedId === item.matchId ? 'expanded' : ''}}">^</text>
           </view>
         </view>
-
-        <!-- 胜平负结果徽章 -->
-        <view class="result-row" wx:if="{{item.hadResult}}">
-          <text class="result-badge {{item.hadResult}}">{{getHadResultDisplay(item.hadResult)}}</text>
-        </view>
-
         <!-- 展开的开奖结果列表（1行显示） -->
         <view class="odds-compact" wx:if="{{expandedId === item.matchId}}">
           <view class="odds-item" wx:if="{{item.hadResult}}">

@@ -44,8 +44,8 @@
       {
         "pagePath": "pages/match-result/index",
         "text": "赛果",
-        "iconPath": "images/tabbar/result.png",
-        "selectedIconPath": "images/tabbar/result-active.png"
+        "iconPath": "images/tabbar/match.png",
+        "selectedIconPath": "images/tabbar/match-active.png"
       },
       {
         "pagePath": "pages/history/index",
