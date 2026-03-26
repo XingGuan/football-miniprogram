@@ -16,7 +16,7 @@
   <view class="main-content" wx:else>
     <!-- 页面标题 -->
     <view class="page-header">
-      <text class="page-title">推荐方案</text>
+      <text class="page-title">推荐大厅</text>
       <text class="page-desc">浏览其他用户推荐的中奖方案</text>
     </view>
 
@@ -36,6 +36,25 @@
               bindtouchmove="onTouchMove"
               bindtouchend="onTouchEnd">
           <view class="record-card" bindtap="onRecordTap" data-record="{{item}}">
+            <!-- 用户信息栏 -->
+            <view class="user-info-bar" wx:if="{{item.userStats}}">
+              <view class="user-avatar-wrapper">
+                <image class="user-avatar" src="{{item.userStats.avatar}}" mode="aspectFill" wx:if="{{item.userStats.avatar}}"></image>
+                <view class="user-avatar-fallback" wx:else>{{item.userStats.userName[0]}}</view>
+              </view>
+              <view class="user-info">
+                <text class="user-name">{{item.userStats.userName}}</text>
+                <view class="user-stats">
+                  <text class="stat-item">中奖: {{item.userStats.winRecords}}</text>
+                  <text class="stat-divider">|</text>
+                  <text class="stat-item">未中: {{item.userStats.loseRecords}}</text>
+                  <text class="stat-divider">|</text>
+                  <text class="stat-item">胜率: {{item.winRate}}%</text>
+                </view>
+              </view>
+            </view>
+
+            <!-- 方案信息 -->
             <view class="record-header">
               <text class="record-time">{{item.createTimeStr}}</text>
               <text class="record-status {{item.status === 1 ? 'win' : (item.status === 2 ? 'lose' : 'pending')}}">

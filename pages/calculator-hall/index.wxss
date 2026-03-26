@@ -134,6 +134,71 @@
   border-left: 4rpx solid #e8e8e8;
 }
 
+/* 用户信息栏 */
+.user-info-bar {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 16rpx;
+  padding-bottom: 12rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.user-avatar-wrapper {
+  flex-shrink: 0;
+}
+
+.user-avatar {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  background: #f0f0f0;
+}
+
+.user-avatar-fallback {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20rpx;
+  font-weight: 600;
+}
+
+.user-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.user-name {
+  font-size: 26rpx;
+  color: #333;
+  font-weight: 600;
+}
+
+.user-stats {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 22rpx;
+  color: #999;
+}
+
+.stat-item {
+  color: #666;
+  font-size: 22rpx;
+}
+
+.stat-divider {
+  color: #ddd;
+  margin: 0 4rpx;
+}
+
 /* 中奖 - 红色 */
 .record-swipe-inner.win .record-card {
   background: linear-gradient(135deg, rgba(255, 107, 107, 0.06) 0%, rgba(255, 140, 140, 0.04) 100%);
