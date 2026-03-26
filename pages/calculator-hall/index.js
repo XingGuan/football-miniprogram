@@ -27,17 +27,51 @@ Page({
     try {
       const res = await matchApi.getCalculatorRecommendList()
       const rawRecords = res.data || res || []
+
+      // 按用户ID分组，统计用户战绩
+      const userStats = {}
+      rawRecords.forEach(item => {
+        const userId = item.userId
+        if (!userStats[userId]) {
+          userStats[userId] = {
+            userName: item.userName || `用户${userId}`,
+            avatar: item.avatar || '',
+            totalRecords: 0,
+            winRecords: 0,
+            loseRecords: 0,
+            pendingRecords: 0
+          }
+        }
+        userStats[userId].totalRecords++
+        if (item.status === 1) {
+          userStats[userId].winRecords++
+        } else if (item.status === 2) {
+          userStats[userId].loseRecords++
+        } else {
+          userStats[userId].pendingRecords++
+        }
+      })
+
       const recommendations = rawRecords.map(item => ({
         ...item,
         matchCount: item.matchDetails ? item.matchDetails.length : 0,
         passTypesStr: this.formatPassTypes(item.passTypes),
-        createTimeStr: this.formatTime(item.createTime)
+        createTimeStr: this.formatTime(item.createTime),
+        // 添加用户统计信息
+        userStats: userStats[item.userId],
+        winRate: this.calculateWinRate(userStats[item.userId])
       }))
       this.setData({ recommendations, loading: false, error: null })
     } catch (error) {
       console.error('加载推荐列表失败:', error)
       this.setData({ loading: false, error: '加载失败，请重试' })
     }
+  },
+
+  // 计算胜率
+  calculateWinRate(userStat) {
+    if (!userStat || userStat.totalRecords === 0) return 0
+    return ((userStat.winRecords / userStat.totalRecords) * 100).toFixed(0)
   },
 
   // 格式化时间
