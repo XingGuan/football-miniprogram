@@ -50,7 +50,7 @@
           <view class="vs-info">
             <text class="team-name home">{{item.homeName}}</text>
             <view class="score-box">
-              <text class="score {{getHadResultDisplay(item.hadResult)}}">{{item.fullScore}}</text>
+              <text class="score {{item.hadResult ? 'has-result' : ''}}">{{item.fullScore}}</text>
             </view>
             <text class="team-name away">{{item.awayName}}</text>
           </view>

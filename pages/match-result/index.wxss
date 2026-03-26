@@ -258,9 +258,7 @@
   color: #333;
 }
 
-.score.主胜,
-.score.客胜,
-.score.平局 {
+.score.has-result {
   color: #ff3b30;
 }
 
