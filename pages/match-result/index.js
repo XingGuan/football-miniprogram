@@ -5,7 +5,8 @@ Page({
   data: {
     results: [],
     loading: true,
-    error: null
+    error: null,
+    expandedId: null // 记录展开的卡片ID
   },
 
   onLoad() {
@@ -33,7 +34,10 @@ Page({
         fullScore: this.formatScore(item.sectionsNo999),
         halfScore: this.formatScore(item.sectionsNo1),
         extraScore: item.sectionsExtra ? this.formatScore(item.sectionsExtra) : '',
-        penaltyScore: item.sectionsPenalty ? this.formatScore(item.sectionsPenalty) : ''
+        penaltyScore: item.sectionsPenalty ? this.formatScore(item.sectionsPenalty) : '',
+        // 格式化日期时间
+        displayDate: this.formatDate(item.matchDate),
+        displayTime: item.matchTime || '--:--'
       }))
 
       this.setData({ results: processedResults, loading: false, error: null })
@@ -59,6 +63,19 @@ Page({
     return score
   },
 
+  // 格式化日期
+  formatDate(dateStr) {
+    if (!dateStr) return '--'
+    try {
+      const date = new Date(dateStr)
+      const month = String(date.getMonth() + 1).padStart(2, '0')
+      const day = String(date.getDate()).padStart(2, '0')
+      return `${month}-${day}`
+    } catch (e) {
+      return dateStr
+    }
+  },
+
   // 获取胜平负结果显示
   getHadResultDisplay(hadResult) {
     const map = {
@@ -67,6 +84,15 @@ Page({
       'A': '客胜'
     }
     return map[hadResult] || '-'
+  },
+
+  // 切换展开状态
+  onToggleExpand(e) {
+    const matchId = e.currentTarget.dataset.matchid
+    const isExpanded = this.data.expandedId === matchId
+    this.setData({
+      expandedId: isExpanded ? null : matchId
+    })
   },
 
   // 重试加载
