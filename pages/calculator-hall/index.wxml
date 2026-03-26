@@ -63,8 +63,6 @@
               </view>
             </view>
           </view>
-
-          <view class="time-info">{{item.createTimeStr}}</view>
         </view>
 
         <!-- 分割线 -->
@@ -84,17 +82,6 @@
             <view class="detail-item">
               <text class="detail-label">投注</text>
               <text class="detail-value">{{item.totalBets}}注</text>
-            </view>
-          </view>
-
-          <view class="amount-row">
-            <view class="amount-info">
-              <text class="amount-label">投注金额</text>
-              <text class="amount-value">¥{{item.totalAmount}}</text>
-            </view>
-            <view class="bonus-info" wx:if="{{item.status === 1}}">
-              <text class="bonus-label">中奖奖金</text>
-              <text class="bonus-value">¥{{item.bonus}}</text>
             </view>
           </view>
         </view>
