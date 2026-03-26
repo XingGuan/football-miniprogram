@@ -28,7 +28,7 @@ Page({
       // 处理数据，添加展示需要的字段
       const processedResults = results.map(item => {
         // 尝试多个可能的字段名来获取比分
-        const score = item.sectionsNo999 || item.score || item.fullScore || item.finalScore || '-'
+        const score = item.crsResult 
 
         return {
           ...item,
