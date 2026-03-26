@@ -16,62 +16,91 @@
   <view class="main-content" wx:else>
     <!-- 页面标题 -->
     <view class="page-header">
-      <text class="page-title">推荐大厅</text>
-      <text class="page-desc">浏览其他用户推荐的中奖方案</text>
+      <text class="page-title">🏆 推荐大厅</text>
+      <text class="page-desc">浏览高手的中奖方案</text>
     </view>
 
     <!-- 空状态 -->
     <view class="empty-state" wx:if="{{recommendations.length === 0}}">
-      <text class="empty-icon">🏆</text>
+      <text class="empty-icon">📭</text>
       <text class="empty-text">暂无推荐方案</text>
-      <text class="empty-tip">暂时还没有用户推荐方案</text>
+      <text class="empty-tip">分享你的中奖方案给大家吧</text>
     </view>
 
     <!-- 方案列表 -->
     <scroll-view class="recommendations-scroll" scroll-y wx:else>
-      <view class="record-swipe-wrapper" wx:for="{{recommendations}}" wx:key="id">
-        <view class="record-swipe-inner {{item.swiped ? 'swiped' : ''}} {{item.status === 1 ? 'win' : (item.status === 2 ? 'lose' : 'pending')}}"
-              data-index="{{index}}"
-              bindtouchstart="onTouchStart"
-              bindtouchmove="onTouchMove"
-              bindtouchend="onTouchEnd">
-          <view class="record-card" bindtap="onRecordTap" data-record="{{item}}">
-            <!-- 用户信息栏 -->
-            <view class="user-info-bar" wx:if="{{item.userStats}}">
-              <view class="user-avatar-wrapper">
-                <image class="user-avatar" src="{{item.userStats.avatar}}" mode="aspectFill" wx:if="{{item.userStats.avatar}}"></image>
-                <view class="user-avatar-fallback" wx:else>{{item.userStats.userName[0]}}</view>
-              </view>
-              <view class="user-info">
-                <text class="user-name">{{item.userStats.userName}}</text>
-                <view class="user-stats">
-                  <text class="stat-item">中奖: {{item.userStats.winRecords}}</text>
-                  <text class="stat-divider">|</text>
-                  <text class="stat-item">未中: {{item.userStats.loseRecords}}</text>
-                  <text class="stat-divider">|</text>
-                  <text class="stat-item">胜率: {{item.winRate}}%</text>
-                </view>
-              </view>
-            </view>
+      <view class="scheme-item" wx:for="{{recommendations}}" wx:key="id" bindtap="onRecordTap" data-record="{{item}}">
+        <!-- 顶部背景条 - 根据状态显示颜色 -->
+        <view class="scheme-status-bar {{item.status === 1 ? 'win' : (item.status === 2 ? 'lose' : 'pending')}}"></view>
 
-            <!-- 方案信息 -->
-            <view class="record-header">
-              <text class="record-time">{{item.createTimeStr}}</text>
-              <text class="record-status {{item.status === 1 ? 'win' : (item.status === 2 ? 'lose' : 'pending')}}">
-                {{item.statusDesc}}
-              </text>
+        <!-- 用户信息区 -->
+        <view class="scheme-user-section">
+          <view class="user-avatar-wrapper">
+            <image class="user-avatar" src="{{item.userStats.avatar}}" mode="aspectFill" wx:if="{{item.userStats.avatar}}"></image>
+            <view class="user-avatar-fallback" wx:else>{{item.userStats.userName[0]}}</view>
+          </view>
+
+          <view class="user-meta">
+            <view class="user-header">
+              <text class="user-name">{{item.userStats.userName}}</text>
+              <view class="badge {{item.status === 1 ? 'win' : (item.status === 2 ? 'lose' : 'pending')}}">
+                <text class="badge-icon">{{item.status === 1 ? '✓' : (item.status === 2 ? '✗' : '⏳')}}</text>
+                <text class="badge-text">{{item.statusDesc}}</text>
+              </view>
             </view>
-            <view class="record-info">
-              <text class="record-matches">{{item.matchCount}}场比赛</text>
-              <text class="record-pass">{{item.passTypesStr}}</text>
+            <view class="user-stats-row">
+              <view class="stat-box">
+                <text class="stat-label">中奖</text>
+                <text class="stat-value win-color">{{item.userStats.winRecords}}</text>
+              </view>
+              <view class="stat-box">
+                <text class="stat-label">未中</text>
+                <text class="stat-value lose-color">{{item.userStats.loseRecords}}</text>
+              </view>
+              <view class="stat-box highlight">
+                <text class="stat-label">胜率</text>
+                <text class="stat-value rate-color">{{item.winRate}}%</text>
+              </view>
             </view>
-            <view class="record-footer">
-              <text class="record-amount">{{item.totalBets}}注 × {{item.multiple}}倍 = {{item.totalAmount}}元</text>
-              <text class="record-bonus" wx:if="{{item.bonus > 0}}">奖金: {{item.bonus}}元</text>
+          </view>
+
+          <view class="time-info">{{item.createTimeStr}}</view>
+        </view>
+
+        <!-- 分割线 -->
+        <view class="divider"></view>
+
+        <!-- 方案信息区 -->
+        <view class="scheme-detail-section">
+          <view class="detail-row">
+            <view class="detail-item">
+              <text class="detail-label">比赛数</text>
+              <text class="detail-value">{{item.matchCount}}场</text>
             </view>
-            <view class="record-arrow">›</view>
+            <view class="detail-item">
+              <text class="detail-label">过关</text>
+              <text class="detail-value">{{item.passTypesStr}}</text>
+            </view>
+            <view class="detail-item">
+              <text class="detail-label">投注</text>
+              <text class="detail-value">{{item.totalBets}}注</text>
+            </view>
+          </view>
+
+          <view class="amount-row">
+            <view class="amount-info">
+              <text class="amount-label">投注金额</text>
+              <text class="amount-value">¥{{item.totalAmount}}</text>
+            </view>
+            <view class="bonus-info" wx:if="{{item.status === 1}}">
+              <text class="bonus-label">中奖奖金</text>
+              <text class="bonus-value">¥{{item.bonus}}</text>
+            </view>
           </view>
         </view>
+
+        <!-- 查看箭头 -->
+        <view class="scheme-arrow">›</view>
       </view>
 
       <!-- 底部占位 -->

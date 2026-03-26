@@ -5,11 +5,7 @@ Page({
   data: {
     recommendations: [],
     loading: true,
-    error: null,
-    // 左滑删除相关
-    touchStartX: 0,
-    touchStartY: 0,
-    currentSwipeIndex: -1
+    error: null
   },
 
   onLoad() {
@@ -102,65 +98,10 @@ Page({
   // 点击记录进入详情
   onRecordTap(e) {
     const record = e.currentTarget.dataset.record
-    // 如果正在滑动状态，不跳转
-    if (record && record.swiped) {
-      this.resetAllSwipe()
-      return
-    }
     if (!record || !record.id) return
     wx.navigateTo({
       url: `/pages/calculator-detail/index?id=${record.id}`
     })
-  },
-
-  // 触摸开始
-  onTouchStart(e) {
-    this.touchStartX = e.touches[0].clientX
-    this.touchStartY = e.touches[0].clientY
-    this.touchStartTime = Date.now()
-  },
-
-  // 触摸移动
-  onTouchMove(e) {
-    const touchX = e.touches[0].clientX
-    const touchY = e.touches[0].clientY
-    const deltaX = touchX - this.touchStartX
-    const deltaY = touchY - this.touchStartY
-
-    // 判断是否为水平滑动
-    if (Math.abs(deltaX) < Math.abs(deltaY)) return
-
-    const index = e.currentTarget.dataset.index
-    const recommendations = this.data.recommendations
-
-    // 重置其他卡片
-    if (this.data.currentSwipeIndex !== -1 && this.data.currentSwipeIndex !== index) {
-      recommendations[this.data.currentSwipeIndex].swiped = false
-    }
-
-    // 左滑显示删除按钮
-    if (deltaX < -20) {
-      recommendations[index].swiped = true
-      this.setData({ recommendations, currentSwipeIndex: index })
-    } else if (deltaX > 20) {
-      // 右滑隐藏删除按钮
-      recommendations[index].swiped = false
-      this.setData({ recommendations, currentSwipeIndex: -1 })
-    }
-  },
-
-  // 触摸结束
-  onTouchEnd(e) {
-    // 处理逻辑在 onTouchMove 中完成
-  },
-
-  // 重置所有滑动状态
-  resetAllSwipe() {
-    const recommendations = this.data.recommendations
-    if (this.data.currentSwipeIndex !== -1) {
-      recommendations[this.data.currentSwipeIndex].swiped = false
-      this.setData({ recommendations, currentSwipeIndex: -1 })
-    }
   },
 
   // 重试加载
