@@ -113,7 +113,7 @@
   </scroll-view>
 
   <!-- 底部操作栏 -->
-  <view class="bottom-share-bar" wx:if="{{record}}">
+  <view class="bottom-share-bar" wx:if="{{record && !isFromHall}}">
     <button class="share-btn" bindtap="onRecommend" loading="{{recommending}}">
       <text class="share-icon">👍</text>
       <text class="share-text">推荐</text>

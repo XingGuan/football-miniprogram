@@ -83,6 +83,10 @@
               <text class="detail-label">投注</text>
               <text class="detail-value">{{item.totalBets}}注</text>
             </view>
+            <view class="detail-item">
+              <text class="detail-label">投注金额</text>
+              <text class="detail-value">{{item.totalAmount}}</text>
+            </view>
           </view>
         </view>
 
