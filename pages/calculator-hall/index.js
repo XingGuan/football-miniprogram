@@ -100,7 +100,7 @@ Page({
     const record = e.currentTarget.dataset.record
     if (!record || !record.id) return
     wx.navigateTo({
-      url: `/pages/calculator-detail/index?id=${record.id}`
+      url: `/pages/calculator-detail/index?id=${record.id}&from=hall`
     })
   },
 

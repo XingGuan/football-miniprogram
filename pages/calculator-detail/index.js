@@ -8,17 +8,22 @@ Page({
     record: null,
     loading: true,
     error: null,
-    recommending: false
+    recommending: false,
+    isFromHall: false // 是否从大厅来
   },
 
   onLoad(options) {
     console.log('详情页 onLoad, options:', options)
     const id = options.id
+    const from = options.from
     if (!id) {
       this.setData({ loading: false, error: '参数错误' })
       return
     }
-    this.setData({ recordId: id })
+    this.setData({
+      recordId: id,
+      isFromHall: from === 'hall'
+    })
     this.loadRecord(id)
   },
 
