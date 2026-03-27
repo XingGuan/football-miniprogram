@@ -24,27 +24,14 @@ Page({
       recordId: id,
       isFromHall: from === 'hall'
     })
+   
     this.loadRecord(id)
   },
 
   // 直接调用API获取记录
   async loadRecord(id) {
-
-    const userInfo = userStore.getUserInfo()
-
-    // 兼容 id 
-    const userId = userInfo && (userInfo.id)
-    console.log('userId:', userId)
-
-    if (!userId) {
-      this.setData({ loading: false, error: '请先登录' })
-      return
-    }
-
-    this.setData({ loading: true })
-
     try {
-      const res = await matchApi.getCalculatorRecords(userId)
+      const res = await matchApi.getCalculatorRecords(id)
       const records = res.data || res || []
       
 
