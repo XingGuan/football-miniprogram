@@ -5,6 +5,7 @@
     <image class="logo" src="/images/logo.png" mode="aspectFit" />
     <text class="app-name">足球分析助手</text>
     <text class="app-desc">智能 AI 分析，助你决策</text>
+    <text>test</text>
   </view>
 
   <!-- 登录表单 -->

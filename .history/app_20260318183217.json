@@ -39,7 +39,7 @@
       },
       {
         "pagePath": "pages/profile/index",
-        "text": "我的",
+        "text": "我的1",
         "iconPath": "images/tabbar/profile.png",
         "selectedIconPath": "images/tabbar/profile-active.png"
       }

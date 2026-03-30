@@ -30,7 +30,7 @@
         "iconPath": "images/tabbar/match.png",
         "selectedIconPath": "images/tabbar/match-active.png"
       },
-
+      
       {
         "pagePath": "pages/history/index",
         "text": "历史",

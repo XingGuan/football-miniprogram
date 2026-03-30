@@ -48,7 +48,7 @@
     "disableSWC": true
   },
   "compileType": "miniprogram",
-  "libVersion": "3.3.4",
+  "libVersion": "3.15.0",
   "appid": "wxec827e71879e6a27",
   "projectname": "football-analysis-miniprogram",
   "condition": {},
