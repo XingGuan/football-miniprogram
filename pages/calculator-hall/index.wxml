@@ -16,8 +16,15 @@
   <view class="main-content" wx:else>
     <!-- 页面标题 -->
     <view class="page-header">
-      <text class="page-title">🏆 推荐大厅</text>
-      <text class="page-desc">浏览高手的中奖方案</text>
+      <view class="header-content">
+        <view class="title-section">
+          <text class="page-title">🏆 推荐大厅</text>
+          <text class="page-desc">浏览高手的中奖方案</text>
+        </view>
+        <button class="header-share-btn" open-type="share">
+          <text class="share-icon">📤</text>
+        </button>
+      </view>
     </view>
 
     <!-- 空状态 -->

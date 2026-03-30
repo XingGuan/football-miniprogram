@@ -113,10 +113,16 @@
   </scroll-view>
 
   <!-- 底部操作栏 -->
-  <view class="bottom-share-bar" wx:if="{{record && !isFromHall}}">
-    <button class="share-btn" bindtap="onRecommend" loading="{{recommending}}">
+  <view class="bottom-share-bar" wx:if="{{record}}">
+    <!-- 推荐按钮（仅在非大厅来源时显示） -->
+    <button class="share-btn" wx:if="{{!isFromHall}}" bindtap="onRecommend" loading="{{recommending}}">
       <text class="share-icon">👍</text>
       <text class="share-text">推荐</text>
+    </button>
+    <!-- 分享按钮（始终显示） -->
+    <button class="share-btn" open-type="share">
+      <text class="share-icon">📤</text>
+      <text class="share-text">分享</text>
     </button>
   </view>
 </view>

@@ -58,6 +58,43 @@
   box-shadow: 0 4rpx 16rpx rgba(102, 126, 234, 0.2);
 }
 
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16rpx;
+}
+
+.title-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  flex: 1;
+}
+
+.header-share-btn {
+  flex-shrink: 0;
+  width: 48rpx;
+  height: 48rpx;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}
+
+.header-share-btn::after {
+  border: none;
+}
+
+.header-share-btn .share-icon {
+  font-size: 28rpx;
+  line-height: 1;
+}
+
 .page-title {
   font-size: 36rpx;
   color: #fff;

@@ -371,6 +371,7 @@ Page({
   // 按周几分组比赛
   groupMatchesByWeekday(matches) {
     const groups = {}
+    const dateMap = {} // 记录每个周几对应的日期
 
     matches.forEach(match => {
       // 从 matchNumStr 提取周几，如 "周二004" -> "周二"
@@ -379,14 +380,37 @@ Page({
         groups[weekday] = []
       }
       groups[weekday].push(match)
+
+      // 记录该周的第一场比赛的日期（格式：MM-DD）
+      if (!dateMap[weekday] && match.matchDate) {
+        // 从 "2026-03-26" 提取 "03-26"
+        const dateParts = match.matchDate.split('-')
+        if (dateParts.length >= 3) {
+          dateMap[weekday] = `${dateParts[1]}-${dateParts[2]}`
+        }
+      }
     })
 
-    // 按周几顺序排序
-    const weekOrder = ['周一', '周二', '周三', '周四', '周五', '周六', '周日', '其他']
+    // 按周几顺序排序，以当天为起点
+    const fullWeekOrder = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+    const today = new Date()
+    const todayWeekday = today.getDay() // 0(周日) ~ 6(周一)
+
+    // 转换为中文周几（1-7: 周一-周日，0也是周一）
+    const weekdayIndex = todayWeekday === 0 ? 6 : todayWeekday - 1 // 0-6: 周一-周日
+
+    // 从当天开始的周顺序
+    const weekOrder = [
+      ...fullWeekOrder.slice(weekdayIndex),
+      ...fullWeekOrder.slice(0, weekdayIndex),
+      '其他'
+    ]
+
     return Object.keys(groups)
       .sort((a, b) => weekOrder.indexOf(a) - weekOrder.indexOf(b))
       .map(weekday => ({
         league: weekday,
+        date: dateMap[weekday] || '',
         matches: groups[weekday].sort((a, b) => a.matchNum - b.matchNum)
       }))
   }

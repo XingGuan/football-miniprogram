@@ -123,6 +123,30 @@ function updateUserInfoWithPhone(data) {
   })
 }
 
+/**
+ * 获取积分明细列表
+ * @param {string} userId 用户ID
+ * @param {string} changeType 变化类型（可选）
+ * @param {number} pageNum 页码
+ * @param {number} pageSize 每页数量
+ * @param {number} timestamp 时间戳（可选）
+ */
+function getPointDetailList(userId, changeType, pageNum = 1, pageSize = 20, timestamp) {
+  const params = { userId, pageNum, pageSize }
+  if (changeType) params.changeType = changeType
+  if (timestamp) params.timestamp = timestamp
+  return post('/api/user/point/detail/list', params, { showLoading: false })
+}
+
+/**
+ * 修改用户名
+ * @param {string} userId 用户ID
+ * @param {string} userName 新用户名
+ */
+function updateUserName(userId, userName) {
+  return post('/api/user/info/update/name', { userId, userName })
+}
+
 module.exports = {
   sendSms,
   login,
@@ -136,5 +160,7 @@ module.exports = {
   batchCheckMatchUnlock,
   userSign,
   wxLogin,
-  updateUserInfoWithPhone
+  updateUserInfoWithPhone,
+  getPointDetailList,
+  updateUserName
 }

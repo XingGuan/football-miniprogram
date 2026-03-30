@@ -39,7 +39,10 @@
     <view class="weekday-group" wx:for="{{groupedMatches}}" wx:key="league" wx:for-index="groupIndex">
       <view class="weekday-header" data-index="{{groupIndex}}" bindtap="onToggleGroup">
         <view class="weekday-left">
-          <text class="weekday-name">{{item.league}}</text>
+          <view class="weekday-info">
+            <text class="weekday-date" wx:if="{{item.date}}">{{item.date}}</text>
+            <text class="weekday-name">{{item.league}}</text>
+          </view>
           <text class="match-count">{{item.matches.length}}场</text>
         </view>
         <view class="weekday-right">

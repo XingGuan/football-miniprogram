@@ -5,6 +5,7 @@
     "pages/calculator-detail/index",
     "pages/calculator-hall/index",
     "pages/match-result/index",
+    "pages/point-detail/index",
     "pages/login/index",
     "pages/ai-chat/index",
     "pages/history/index",

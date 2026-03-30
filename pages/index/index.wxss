@@ -105,6 +105,19 @@
   gap: 16rpx;
 }
 
+.weekday-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.weekday-date {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
 .weekday-name {
   font-size: 34rpx;
   font-weight: 700;
