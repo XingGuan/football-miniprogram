@@ -8,7 +8,8 @@ Page({
     agreed: false,
     countdown: 0,
     loading: false,
-    sendingCode: false
+    sendingCode: false,
+    wxLoading: false
   },
 
   onLoad() {
@@ -132,9 +133,18 @@ Page({
           icon: 'success'
         })
 
+        // 检查是否有待分析的比赛
+        const app = getApp()
+        const hasPendingAnalysis = !!app.globalData.pendingAnalysisMatch
+
         setTimeout(() => {
-          this.navigateBack()
-        }, 1500)
+          if (hasPendingAnalysis) {
+            // 返回首页，首页会自动处理待分析的比赛
+            wx.switchTab({ url: '/pages/index/index' })
+          } else {
+            this.navigateBack()
+          }
+        }, 1000)
       } else {
         wx.showToast({
           title: result.message || '登录失败',
@@ -177,6 +187,87 @@ Page({
   onViewPrivacy() {
     wx.navigateTo({
       url: '/pages/agreement/index?type=privacy'
+    })
+  },
+
+  // 微信登录
+  async onWxLogin() {
+    const { agreed, wxLoading } = this.data
+
+    if (wxLoading) return
+
+    if (!agreed) {
+      wx.showToast({
+        title: '请先同意用户协议',
+        icon: 'none'
+      })
+      return
+    }
+
+    this.setData({ wxLoading: true })
+
+    try {
+      // 获取用户信息（头像、昵称）
+      const userProfile = await this.getUserProfile()
+
+      // 调用微信登录
+      const result = await userStore.wxLogin({
+        nickName: userProfile.nickName,
+        avatarUrl: userProfile.avatarUrl,
+        gender: userProfile.gender
+      })
+
+      if (result.success) {
+        wx.showToast({
+          title: '登录成功',
+          icon: 'success'
+        })
+
+        // 检查是否有待分析的比赛
+        const app = getApp()
+        const hasPendingAnalysis = !!app.globalData.pendingAnalysisMatch
+
+        setTimeout(() => {
+          if (hasPendingAnalysis) {
+            wx.switchTab({ url: '/pages/index/index' })
+          } else {
+            this.navigateBack()
+          }
+        }, 1000)
+      } else {
+        wx.showToast({
+          title: result.message || '登录失败',
+          icon: 'none'
+        })
+      }
+    } catch (e) {
+      console.error('微信登录失败:', e)
+      wx.showToast({
+        title: e.message || '登录失败',
+        icon: 'none'
+      })
+    } finally {
+      this.setData({ wxLoading: false })
+    }
+  },
+
+  // 获取用户头像昵称
+  getUserProfile() {
+    return new Promise((resolve, reject) => {
+      wx.getUserProfile({
+        desc: '用于完善用户资料',
+        success: (res) => {
+          resolve(res.userInfo)
+        },
+        fail: (err) => {
+          // 用户拒绝授权，使用默认信息
+          resolve({
+            nickName: '微信用户',
+            avatarUrl: '',
+            gender: 0
+          })
+        }
+      })
     })
   },
 

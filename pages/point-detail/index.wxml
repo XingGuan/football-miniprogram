@@ -1,0 +1,76 @@
+<!-- pages/point-detail/index.wxml - 积分明细 -->
+<view class="detail-page">
+  <!-- 加载状态 -->
+  <view class="loading-wrapper" wx:if="{{loading && details.length === 0}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 错误状态 -->
+  <view class="error-wrapper" wx:elif="{{error && details.length === 0}}">
+    <text class="error-text">{{error}}</text>
+    <view class="retry-btn" bindtap="onRetry">重试</view>
+  </view>
+
+  <!-- 主内容 -->
+  <view class="main-content" wx:else>
+    <!-- 页面头部 -->
+    <view class="page-header">
+      <text class="page-title">💎 积分明细</text>
+      <text class="page-desc">查看积分变动历史</text>
+    </view>
+
+    <!-- 筛选类型 -->
+    <scroll-view class="type-filter" scroll-x>
+      <view
+        class="filter-item {{selectedType === item.value ? 'active' : ''}}"
+        wx:for="{{typeOptions}}"
+        wx:key="value"
+        data-type="{{item.value}}"
+        bindtap="onTypeChange"
+      >
+        <text class="filter-label">{{item.label}}</text>
+      </view>
+    </scroll-view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{details.length === 0}}">
+      <text class="empty-icon">📋</text>
+      <text class="empty-text">暂无数据</text>
+      <text class="empty-tip">还没有积分变动记录</text>
+    </view>
+
+    <!-- 明细列表 -->
+    <scroll-view class="details-scroll" scroll-y wx:else bindscrolltolower="onLoadMore">
+      <view class="detail-item" wx:for="{{details}}" wx:key="id">
+        <view class="item-left">
+          <view class="item-icon">
+            <text>{{selectedType === 'DEDUCT_MATCH' ? '📊' : selectedType === 'DEDUCT_INFO' ? '🔍' : selectedType === 'SIGN' ? '📅' : selectedType === 'REGISTER' ? '🎁' : selectedType === 'BIND_PHONE' ? '📱' : '💎'}}</text>
+          </view>
+          <view class="item-info">
+            <text class="item-type">{{item.changeTypeDesc}}</text>
+            <text class="item-time">{{item.displayTime}}</text>
+          </view>
+        </view>
+
+        <view class="item-right">
+          <text class="item-change {{item.changeClass}}">{{item.displayChange}}</text>
+          <text class="item-after">结余 {{item.pointAfter}}</text>
+        </view>
+      </view>
+
+      <!-- 加载中提示 -->
+      <view class="loading-more" wx:if="{{loading && details.length > 0}}">
+        <text>加载中...</text>
+      </view>
+
+      <!-- 已加载全部 -->
+      <view class="end-tip" wx:elif="{{!hasMore && details.length > 0}}">
+        <text>已加载全部</text>
+      </view>
+
+      <!-- 底部占位 -->
+      <view class="bottom-placeholder"></view>
+    </scroll-view>
+  </view>
+</view>

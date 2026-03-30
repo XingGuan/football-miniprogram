@@ -29,9 +29,12 @@
 
   <!-- AI分析 + 欧赔 (4列) -->
   <view class="odds-row">
-    <view class="odds-cell action-cell" catchtap="onAnalyze">
-      <text class="action-tag">AI</text>
-      <text class="action-text">分析</text>
+    <view class="odds-cell action-cell {{isUnlocked ? 'unlocked' : 'locked'}}" catchtap="onAnalyze">
+      <view class="action-content">
+        <text class="action-tag">AI</text>
+        <text class="action-text">分析</text>
+        <text class="lock-icon" wx:if="{{!isUnlocked}}">🔒</text>
+      </view>
     </view>
     <view class="odds-cell">
       <text class="odds-label">主胜</text>

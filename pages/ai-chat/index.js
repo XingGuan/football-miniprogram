@@ -1,6 +1,7 @@
 // pages/ai-chat/index.js - AI 对话页面（核心功能）
 const streamApi = require('../../api/stream')
 const userStore = require('../../store/user')
+const userApi = require('../../api/user')
 
 Page({
   data: {
@@ -9,10 +10,13 @@ Page({
     sending: false,
     typing: false,
     matchInfo: null,
+    matchId: null,
     showQuickQuestions: true,
     scrollToView: '',
     keyboardHeight: 0,
-    deepThinking: false
+    deepThinking: false,
+    pointsPerAnalysis: 1, // 每次分析消耗积分
+    userPoints: 0 // 用户当前积分
   },
 
   // 流式请求控制器
@@ -29,6 +33,14 @@ Page({
       }
     }
 
+    // 获取比赛ID
+    if (options.matchId) {
+      this.setData({ matchId: options.matchId })
+    }
+
+    // 加载用户积分
+    this.loadUserPoints()
+
     // 加载历史消息
     this.loadMessages()
 
@@ -43,6 +55,9 @@ Page({
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ selected: 1 })
     }
+
+    // 刷新用户积分
+    this.loadUserPoints()
 
     // 检查是否有从比赛页面传来的数据
     const app = getApp()
@@ -66,6 +81,14 @@ Page({
     this.abortStream()
     // 保存消息
     this.saveMessages()
+  },
+
+  // 加载用户积分
+  loadUserPoints() {
+    const userInfo = userStore.getUserInfo()
+    if (userInfo && typeof userInfo.point !== 'undefined') {
+      this.setData({ userPoints: userInfo.point || 0 })
+    }
   },
 
   // 加载历史消息
@@ -103,13 +126,30 @@ Page({
 
   // 发送消息
   async onSend() {
-    const { inputText, sending, messages } = this.data
+    const { inputText, sending, messages, pointsPerAnalysis, userPoints } = this.data
 
     if (sending || !inputText.trim()) return
 
     // 检查登录状态
     if (!userStore.isLoggedIn()) {
       wx.navigateTo({ url: '/pages/login/index' })
+      return
+    }
+
+    // 检查积分是否足够
+    if (userPoints < pointsPerAnalysis) {
+      wx.showModal({
+        title: '积分不足',
+        content: `AI分析需要消耗 ${pointsPerAnalysis} 积分，您当前积分为 ${userPoints}，请做任务或者联系客服获取积分。`,
+        confirmText: '我的页面',
+        cancelText: '取消',
+        success: (res) => {
+          if (res.confirm) {
+            // 跳转到我的页面
+            wx.switchTab({ url: '/pages/profile/index' })
+          }
+        }
+      })
       return
     }
 
@@ -226,7 +266,7 @@ Page({
 
   // 完成消息
   finishMessage(messageId) {
-    const { messages } = this.data
+    const { messages, pointsPerAnalysis } = this.data
     const index = messages.findIndex(m => m.id === messageId)
 
     if (index !== -1) {
@@ -237,8 +277,63 @@ Page({
         showQuickQuestions: true
       })
 
+      // 扣减积分
+      this.deductPoints(pointsPerAnalysis)
+
       this.saveMessages()
       this.scrollToBottom()
+    }
+  },
+
+  // 扣减积分
+  async deductPoints(points) {
+    const userInfo = userStore.getUserInfo()
+    if (!userInfo || !userInfo.id) {
+      console.error('用户信息缺失')
+      return
+    }
+
+    const { matchId } = this.data
+
+    try {
+      // 显示扣减提示
+      wx.showLoading({
+        title: `消耗${points}积分中...`,
+        mask: true
+      })
+
+      // 调用后端接口扣减积分（传入matchId）
+      await userApi.deductPoint(userInfo.id, points, matchId)
+
+      // 重新拉取用户信息
+      const latestUserInfo = await userApi.getUserInfoById(userInfo.id)
+
+      if (latestUserInfo) {
+        // 更新本地存储
+        const app = getApp()
+        app.globalData.userInfo = latestUserInfo
+        wx.setStorageSync('userInfo', latestUserInfo)
+
+        // 更新页面显示
+        this.setData({ userPoints: latestUserInfo.point || 0 })
+      }
+
+      wx.hideLoading()
+
+      // 显示扣减成功提示
+      wx.showToast({
+        title: `消耗${points}积分`,
+        icon: 'success',
+        duration: 2000
+      })
+    } catch (e) {
+      wx.hideLoading()
+      console.error('扣减积分失败:', e)
+      wx.showToast({
+        title: '积分扣减失败',
+        icon: 'error',
+        duration: 2000
+      })
     }
   },
 

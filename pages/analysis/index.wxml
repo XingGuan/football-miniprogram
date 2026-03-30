@@ -72,8 +72,98 @@
 
     <!-- 标签页内容 -->
     <view class="tabs-content">
+      <!-- 最近比赛 -->
+      <view class="tab-panel" wx:if="{{activeTab === 'recent'}}">
+        <view class="loading-tip" wx:if="{{tabLoading.recent}}">
+          <view class="loading-spinner small"></view>
+          <text>加载中...</text>
+        </view>
+        <view class="empty-tip" wx:elif="{{!recentData}}">
+          <text>暂无最近比赛数据</text>
+        </view>
+        <view class="recent-content" wx:else>
+          <!-- 主队最近比赛 -->
+          <view class="team-section">
+            <view class="section-header">
+              <text class="team-name">{{recentData.home.statistics.teamShortName}}</text>
+              <text class="team-subtitle">最近5场</text>
+            </view>
+            <view class="stats-row">
+              <view class="stat-item">
+                <text class="stat-value">{{recentData.home.statistics.winProbability}}</text>
+                <text class="stat-label">胜率</text>
+              </view>
+              <view class="stat-item">
+                <text class="stat-value">{{recentData.home.statistics.goalCnt}}</text>
+                <text class="stat-label">进球</text>
+              </view>
+              <view class="stat-item">
+                <text class="stat-value">{{recentData.home.statistics.lossGoalCnt}}</text>
+                <text class="stat-label">失球</text>
+              </view>
+              <view class="stat-item">
+                <text class="stat-value">{{recentData.home.statistics.netGoal}}</text>
+                <text class="stat-label">净胜球</text>
+              </view>
+            </view>
+            <view class="match-list">
+              <view class="match-item" wx:for="{{recentData.home.matchList}}" wx:key="matchId" data-match="{{item}}" bindtap="onMatchTap">
+                <view class="match-date">{{item.matchDate}}</view>
+                <view class="match-info">
+                  <text class="match-team">{{item.homeTeamShortName}}</text>
+                  <view class="match-score {{item.teamMatchResult === 'home' ? 'win' : item.teamMatchResult === 'away' ? 'loss' : 'draw'}}">
+                    {{item.fullCourtGoal}}
+                  </view>
+                  <text class="match-team">{{item.awayTeamShortName}}</text>
+                </view>
+                <text class="match-league">{{item.tournamentShortName}}</text>
+              </view>
+            </view>
+          </view>
+
+          <!-- 客队最近比赛 -->
+          <view class="team-section">
+            <view class="section-header">
+              <text class="team-name">{{recentData.away.statistics.teamShortName}}</text>
+              <text class="team-subtitle">最近5场</text>
+            </view>
+            <view class="stats-row">
+              <view class="stat-item">
+                <text class="stat-value">{{recentData.away.statistics.winProbability}}</text>
+                <text class="stat-label">胜率</text>
+              </view>
+              <view class="stat-item">
+                <text class="stat-value">{{recentData.away.statistics.goalCnt}}</text>
+                <text class="stat-label">进球</text>
+              </view>
+              <view class="stat-item">
+                <text class="stat-value">{{recentData.away.statistics.lossGoalCnt}}</text>
+                <text class="stat-label">失球</text>
+              </view>
+              <view class="stat-item">
+                <text class="stat-value">{{recentData.away.statistics.netGoal}}</text>
+                <text class="stat-label">净胜球</text>
+              </view>
+            </view>
+            <view class="match-list">
+              <view class="match-item" wx:for="{{recentData.away.matchList}}" wx:key="matchId" data-match="{{item}}" bindtap="onMatchTap">
+                <view class="match-date">{{item.matchDate}}</view>
+                <view class="match-info">
+                  <text class="match-team">{{item.homeTeamShortName}}</text>
+                  <view class="match-score {{item.teamMatchResult === 'home' ? 'win' : item.teamMatchResult === 'away' ? 'loss' : 'draw'}}">
+                    {{item.fullCourtGoal}}
+                  </view>
+                  <text class="match-team">{{item.awayTeamShortName}}</text>
+                </view>
+                <text class="match-league">{{item.tournamentShortName}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
       <!-- 历史交锋 -->
-      <view class="tab-panel" wx:if="{{activeTab === 'history'}}">
+      <view class="tab-panel" wx:elif="{{activeTab === 'history'}}">
         <view class="loading-tip" wx:if="{{tabLoading.history}}">
           <view class="loading-spinner small"></view>
           <text>加载中...</text>
@@ -178,7 +268,6 @@
           <view class="similar-item" wx:for="{{similarData}}" wx:key="id">
             <view class="item-header">
               <text class="item-league">{{item.league}}</text>
-              <text class="item-date">{{item.matchDate}}</text>
             </view>
             <view class="item-teams">
               <text class="item-team">{{item.homeTeam}}</text>
@@ -189,6 +278,43 @@
               <text class="odds">{{item.h}}</text>
               <text class="odds">{{item.d}}</text>
               <text class="odds">{{item.a}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 情报 -->
+      <view class="tab-panel" wx:elif="{{activeTab === 'information'}}">
+        <view class="loading-tip" wx:if="{{tabLoading.information}}">
+          <view class="loading-spinner small"></view>
+          <text>加载中...</text>
+        </view>
+        <view class="empty-tip" wx:elif="{{!informationData }}">
+          <text>暂无情报数据</text>
+        </view>
+        <view class="information-content" wx:else>
+          <!-- 情报内容区域 -->
+          <view class="info-section">
+            <view class="info-header">
+              <text class="info-title">比赛情报</text>
+              <text class="info-tag" >热门</text>
+            </view>
+
+            <!-- 蒙版遮罩层 - 未解锁时显示 -->
+            <view class="info-body {{!informationUnlocked ? 'masked' : ''}}">
+              <view class="info-text">{{informationData}}</view>
+
+              <!-- 蒙版覆盖层 -->
+              <view class="info-mask" wx:if="{{!informationUnlocked}}">
+                <view class="mask-content">
+                  <text class="mask-icon">🔒</text>
+                  <text class="mask-text">情报内容已隐藏</text>
+                  <view class="unlock-btn" bindtap="onUnlockInformation">
+                    <text class="unlock-btn-text">消耗1积分解锁</text>
+                  </view>
+                  <text class="mask-tip">当前积分: {{userPoints}}</text>
+                </view>
+              </view>
             </view>
           </view>
         </view>
@@ -211,7 +337,7 @@
             <text class="col">客胜</text>
           </view>
           <view class="odds-table-row" wx:for="{{oddsData}}" wx:key="id">
-            <text class="col time">{{item.updateTime}}</text>
+            <text class="col time">{{item.updateDate}} {{item.updateTime}}</text>
             <text class="col">{{item.h}}</text>
             <text class="col">{{item.d}}</text>
             <text class="col">{{item.a}}</text>

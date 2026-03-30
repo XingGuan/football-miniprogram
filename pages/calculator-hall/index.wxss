@@ -1,0 +1,374 @@
+/* pages/calculator-hall/index.wxss - 推荐方案大厅 */
+.hall-page {
+  height: 100vh;
+  background: linear-gradient(180deg, #f8f9fb 0%, #f5f7fa 100%);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.loading-wrapper, .error-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 200rpx 40rpx;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid #f0f0f0;
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loading-text, .error-text {
+  margin-top: 20rpx;
+  font-size: 26rpx;
+  color: #666;
+}
+
+.retry-btn {
+  margin-top: 24rpx;
+  padding: 16rpx 48rpx;
+  background: #667eea;
+  color: #fff;
+  border-radius: 32rpx;
+  font-size: 26rpx;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* 页面头部 */
+.page-header {
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 32rpx 24rpx;
+  color: #fff;
+  box-shadow: 0 4rpx 16rpx rgba(102, 126, 234, 0.2);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16rpx;
+}
+
+.title-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  flex: 1;
+}
+
+.header-share-btn {
+  flex-shrink: 0;
+  width: 48rpx;
+  height: 48rpx;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 12rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+}
+
+.header-share-btn::after {
+  border: none;
+}
+
+.header-share-btn .share-icon {
+  font-size: 28rpx;
+  line-height: 1;
+}
+
+.page-title {
+  font-size: 36rpx;
+  color: #fff;
+  font-weight: 700;
+  margin-bottom: 8rpx;
+  letter-spacing: 0.5rpx;
+}
+
+.page-desc {
+  font-size: 24rpx;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 400;
+}
+
+/* 空状态 */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
+  padding: 100rpx 40rpx;
+  color: #999;
+}
+
+.empty-icon {
+  font-size: 120rpx;
+  margin-bottom: 24rpx;
+  opacity: 0.6;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #666;
+  font-weight: 600;
+  margin-bottom: 12rpx;
+}
+
+.empty-tip {
+  font-size: 26rpx;
+  color: #999;
+  text-align: center;
+}
+
+.recommendations-scroll {
+  flex: 1;
+  height: 0;
+  padding: 16rpx 12rpx 24rpx 12rpx;
+}
+
+/* 方案卡片 */
+.scheme-item {
+  background: #fff;
+  border-radius: 16rpx;
+  margin-bottom: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.scheme-item:active {
+  transform: translateY(2rpx);
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.12);
+}
+
+/* 顶部状态条 */
+.scheme-status-bar {
+  height: 4rpx;
+  width: 100%;
+}
+
+.scheme-status-bar.win {
+  background: linear-gradient(90deg, #ff6b6b 0%, #ff8c8c 100%);
+}
+
+.scheme-status-bar.pending {
+  background: linear-gradient(90deg, #52c41a 0%, #85ce61 100%);
+}
+
+.scheme-status-bar.lose {
+  background: linear-gradient(90deg, #d9d9d9 0%, #e8e8e8 100%);
+}
+
+/* 用户信息区 */
+.scheme-user-section {
+  display: flex;
+  align-items: flex-start;
+  gap: 12rpx;
+  padding: 16rpx 20rpx;
+  position: relative;
+}
+
+.user-avatar-wrapper {
+  flex-shrink: 0;
+}
+
+.user-avatar {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  background: #f0f0f0;
+  border: 2rpx solid #e8e8e8;
+}
+
+.user-avatar-fallback {
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+  font-weight: 700;
+  border: 2rpx solid rgba(102, 126, 234, 0.3);
+}
+
+.user-meta {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.user-header {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  justify-content: space-between;
+}
+
+.user-name {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 700;
+  flex: 1;
+}
+
+.badge {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  padding: 4rpx 10rpx;
+  border-radius: 12rpx;
+  font-size: 20rpx;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.badge.win {
+  background: rgba(255, 107, 107, 0.15);
+  color: #ff6b6b;
+}
+
+.badge.pending {
+  background: rgba(82, 196, 26, 0.15);
+  color: #52c41a;
+}
+
+.badge.lose {
+  background: rgba(200, 200, 200, 0.2);
+  color: #999;
+}
+
+.badge-icon {
+  font-size: 18rpx;
+}
+
+.badge-text {
+  font-size: 18rpx;
+}
+
+.user-stats-row {
+  display: flex;
+  gap: 8rpx;
+}
+
+.stat-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8rpx 10rpx;
+  background: #f8f9fb;
+  border-radius: 8rpx;
+  gap: 4rpx;
+  min-height: 50rpx;
+  justify-content: center;
+}
+
+.stat-box.highlight {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.08) 100%);
+  border: 1rpx solid rgba(102, 126, 234, 0.15);
+}
+
+.stat-label {
+  font-size: 18rpx;
+  color: #999;
+  font-weight: 500;
+}
+
+.stat-value {
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+.stat-value.win-color {
+  color: #ff6b6b;
+}
+
+.stat-value.lose-color {
+  color: #d9d9d9;
+}
+
+.stat-value.rate-color {
+  color: #667eea;
+}
+
+/* 分割线 */
+.divider {
+  height: 1rpx;
+  background: linear-gradient(90deg, #f0f0f0 0%, #f0f0f0 100%);
+  margin: 0 20rpx;
+}
+
+/* 方案详情区 */
+.scheme-detail-section {
+  padding: 12rpx 20rpx 14rpx 20rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.detail-row {
+  display: flex;
+  gap: 0;
+  justify-content: space-around;
+}
+
+.detail-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6rpx;
+  padding: 8rpx 0;
+}
+
+.detail-label {
+  font-size: 20rpx;
+  color: #999;
+  font-weight: 500;
+}
+
+.detail-value {
+  font-size: 20rpx;
+  color: #333;
+  font-weight: 800;
+}
+
+/* 查看箭头 */
+.scheme-arrow {
+  position: absolute;
+  right: 20rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 32rpx;
+  color: #e8e8e8;
+  font-weight: 300;
+  opacity: 0.6;
+}
+
+.bottom-placeholder {
+  height: 20rpx;
+}

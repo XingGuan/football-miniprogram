@@ -1,5 +1,13 @@
 <!-- pages/index/index.wxml -->
 <view class="page-container">
+  <!-- 模拟选号入口 - 可拖动 -->
+  <movable-area class="calculator-area">
+    <movable-view class="calculator-btn" direction="all" x="{{calculatorX}}" y="{{calculatorY}}" bindchange="onCalculatorMove" bindtap="onCalculator">
+      <text class="calculator-icon">🎮</text>
+      <text class="calculator-text">模拟选号</text>
+    </movable-view>
+  </movable-area>
+
   <!-- 加载状态 -->
   <view class="loading-wrapper" wx:if="{{loading}}">
     <view class="loading-content">
@@ -31,7 +39,10 @@
     <view class="weekday-group" wx:for="{{groupedMatches}}" wx:key="league" wx:for-index="groupIndex">
       <view class="weekday-header" data-index="{{groupIndex}}" bindtap="onToggleGroup">
         <view class="weekday-left">
-          <text class="weekday-name">{{item.league}}</text>
+          <view class="weekday-info">
+            <text class="weekday-date" wx:if="{{item.date}}">{{item.date}}</text>
+            <text class="weekday-name">{{item.league}}</text>
+          </view>
           <text class="match-count">{{item.matches.length}}场</text>
         </view>
         <view class="weekday-right">

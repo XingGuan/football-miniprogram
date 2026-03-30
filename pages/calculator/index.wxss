@@ -1,0 +1,772 @@
+/* pages/calculator/index.wxss */
+.calculator-page {
+  height: 100vh;
+  background: #f5f7fa;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.loading-wrapper, .error-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 200rpx 40rpx;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid #f0f0f0;
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loading-text, .error-text {
+  margin-top: 20rpx;
+  font-size: 26rpx;
+  color: #666;
+}
+
+.retry-btn {
+  margin-top: 24rpx;
+  padding: 16rpx 48rpx;
+  background: #667eea;
+  color: #fff;
+  border-radius: 32rpx;
+  font-size: 26rpx;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Tab头部 */
+.tab-header {
+  display: flex;
+  background: #ffffff;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28rpx 0;
+  position: relative;
+}
+
+.tab-text {
+  font-size: 28rpx;
+  color: #666;
+  font-weight: 500;
+}
+
+.tab-item.active .tab-text {
+  color: #333;
+  font-weight: 600;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48rpx;
+  height: 4rpx;
+  background: #667eea;
+  border-radius: 2rpx;
+}
+
+.record-badge {
+  margin-left: 8rpx;
+  padding: 2rpx 10rpx;
+  background: #ff6b6b;
+  color: #fff;
+  font-size: 20rpx;
+  border-radius: 16rpx;
+  font-weight: 500;
+}
+
+.tab-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.match-scroll {
+  flex: 1;
+  height: 0;
+  padding: 12rpx;
+}
+
+/* 比赛卡片 */
+.match-card {
+  background: #fff;
+  border-radius: 12rpx;
+  margin-bottom: 12rpx;
+  padding: 12rpx 14rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04);
+  position: relative;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+  margin-bottom: 6rpx;
+}
+
+.match-num {
+  font-size: 20rpx;
+  color: #fff;
+  background: #667eea;
+  padding: 2rpx 10rpx;
+  border-radius: 6rpx;
+  font-weight: 600;
+}
+
+.league-name {
+  font-size: 22rpx;
+  color: #ff9800;
+  font-weight: 500;
+}
+
+.match-time {
+  font-size: 20rpx;
+  color: #999;
+}
+
+.single-tag {
+  margin-left: auto;
+  font-size: 18rpx;
+  color: #fff;
+  background: #ff6b6b;
+  padding: 2rpx 8rpx;
+  border-radius: 4rpx;
+  font-weight: 500;
+}
+
+.team-row {
+  display: flex;
+  align-items: center;
+  padding: 4rpx 0;
+  margin-bottom: 6rpx;
+}
+
+.team-name {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.team-name.home { flex: 1; }
+.team-name.away { flex: 1; text-align: right; }
+
+.vs-text {
+  font-size: 20rpx;
+  color: #999;
+  padding: 0 12rpx;
+}
+
+/* 赔率区域包装 */
+.odds-wrapper {
+  display: flex;
+}
+
+.odds-left {
+  flex: 1;
+}
+
+/* 右侧更多玩法 - 和两行赔率高度一致 */
+.card-right {
+  width: 44rpx;
+  background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8rpx;
+  margin-left: 10rpx;
+}
+
+.more-text {
+  font-size: 22rpx;
+  color: #fff;
+  font-weight: 500;
+  line-height: 1.6;
+}
+
+.odds-section {
+  margin-bottom: 8rpx;
+}
+
+.odds-section.last {
+  margin-bottom: 0;
+}
+
+.section-title {
+  font-size: 20rpx;
+  color: #666;
+}
+
+.odds-row {
+  display: flex;
+  gap: 8rpx;
+}
+
+.odds-item {
+  flex: 1;
+  padding: 8rpx 6rpx;
+  background: #f8f9fc;
+  border-radius: 8rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rpx;
+  border: 2rpx solid transparent;
+}
+
+.odds-item:active { transform: scale(0.98); }
+
+.odds-item.active {
+  background: rgba(255,107,107,0.1);
+  border-color: #ff6b6b;
+}
+
+.odds-label {
+  font-size: 20rpx;
+  color: #666;
+}
+
+.odds-item.active .odds-label {
+  color: #ff6b6b;
+  font-weight: 600;
+}
+
+.odds-value {
+  font-size: 24rpx;
+  font-weight: 700;
+  color: #ff6b6b;
+}
+
+.selected-badge {
+  position: absolute;
+  top: 8rpx;
+  right: 8rpx;
+  background: #ff6b6b;
+  color: #fff;
+  font-size: 18rpx;
+  padding: 4rpx 10rpx;
+  border-radius: 12rpx;
+}
+
+.bottom-placeholder { height: 220rpx; }
+
+/* 底部操作栏 */
+.bottom-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  box-shadow: 0 -2rpx 12rpx rgba(0,0,0,0.06);
+  padding: 12rpx 16rpx;
+  padding-bottom: calc(12rpx + env(safe-area-inset-bottom));
+}
+
+.pass-type-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+  margin-bottom: 10rpx;
+}
+
+.pass-btn {
+  position: relative;
+  padding: 8rpx 16rpx;
+  background: #f5f7fa;
+  border-radius: 6rpx;
+  font-size: 22rpx;
+  color: #666;
+  border: 2rpx solid transparent;
+}
+
+.pass-btn.active {
+  background: #e53935;
+  border-color: #e53935;
+  color: #fff;
+  font-weight: 600;
+  box-shadow: 0 2rpx 8rpx rgba(229, 57, 53, 0.4);
+}
+
+.pass-type-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12rpx 0;
+  margin-bottom: 10rpx;
+}
+
+.pass-type-empty .empty-tip {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.section-title-row {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-bottom: 4rpx;
+}
+
+.single-badge {
+  font-size: 16rpx;
+  background: #ff6b6b;
+  color: #fff;
+  padding: 2rpx 8rpx;
+  border-radius: 4rpx;
+  font-weight: 500;
+}
+
+.amount-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.multiple-box {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.multiple-box .label {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.stepper {
+  display: flex;
+  align-items: center;
+  background: #f5f7fa;
+  border-radius: 6rpx;
+}
+
+.stepper-btn {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28rpx;
+  color: #ff6b6b;
+  font-weight: 600;
+}
+
+.stepper-input {
+  width: 100rpx;
+  height: 48rpx;
+  text-align: center;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #333;
+  background: #fff;
+  border: none;
+}
+
+.amount-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rpx;
+}
+
+.amount-label {
+  font-size: 24rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.bonus-text {
+  font-size: 20rpx;
+  color: #ff6b6b;
+}
+
+.submit-btn {
+  padding: 16rpx 32rpx;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff8c8c 100%);
+  border-radius: 8rpx;
+  color: #fff;
+  font-size: 26rpx;
+  font-weight: 600;
+}
+
+.submit-btn:active { opacity: 0.9; }
+.submit-btn.disabled { background: #ccc; }
+
+/* 弹窗 */
+.popup-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+}
+
+.popup-content {
+  width: 100%;
+  max-height: 75vh;
+  background: #fff;
+  border-radius: 20rpx 20rpx 0 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20rpx 24rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.popup-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.popup-close {
+  width: 48rpx;
+  height: 48rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 40rpx;
+  color: #999;
+}
+
+.popup-body {
+  flex: 1;
+  padding: 16rpx 20rpx;
+  max-height: 55vh;
+}
+
+.play-section {
+  margin-bottom: 20rpx;
+}
+
+.play-title {
+  display: block;
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12rpx;
+  padding-left: 10rpx;
+  border-left: 5rpx solid #667eea;
+}
+
+.score-group {
+  margin-bottom: 12rpx;
+}
+
+.group-label {
+  display: block;
+  font-size: 22rpx;
+  color: #666;
+  margin-bottom: 8rpx;
+}
+
+.score-grid, .goal-grid, .hafu-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8rpx;
+}
+
+.score-item, .goal-item, .hafu-item {
+  width: calc(25% - 6rpx);
+  padding: 12rpx 4rpx;
+  background: #f8f9fc;
+  border-radius: 8rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rpx;
+  border: 2rpx solid transparent;
+  box-sizing: border-box;
+}
+
+.hafu-item {
+  width: calc(33.33% - 6rpx);
+}
+
+.score-item:active, .goal-item:active, .hafu-item:active {
+  transform: scale(0.98);
+}
+
+.score-item.active, .goal-item.active, .hafu-item.active {
+  background: rgba(255,107,107,0.1);
+  border-color: #ff6b6b;
+}
+
+.s-label, .g-label, .h-label {
+  font-size: 22rpx;
+  color: #333;
+}
+
+.score-item.active .s-label,
+.goal-item.active .g-label,
+.hafu-item.active .h-label {
+  color: #ff6b6b;
+  font-weight: 600;
+}
+
+.s-odds, .g-odds, .h-odds {
+  font-size: 20rpx;
+  color: #ff6b6b;
+  font-weight: 600;
+}
+
+.popup-footer {
+  padding: 16rpx 20rpx;
+  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.popup-btn {
+  padding: 20rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10rpx;
+  text-align: center;
+  color: #fff;
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+.popup-btn:active { opacity: 0.9; }
+
+/* 记录列表样式 */
+.records-content {
+  background: linear-gradient(180deg, #f8f9fb 0%, #f5f7fa 100%);
+}
+
+.records-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 120rpx 0;
+}
+
+.records-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 40rpx;
+  color: #999;
+}
+
+.empty-icon {
+  font-size: 100rpx;
+  margin-bottom: 32rpx;
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-size: 32rpx;
+  color: #666;
+  font-weight: 500;
+  margin-bottom: 16rpx;
+}
+
+.empty-tip {
+  font-size: 26rpx;
+  color: #999;
+  text-align: center;
+}
+
+.records-scroll {
+  flex: 1;
+  height: 0;
+  padding: 20rpx 16rpx 24rpx 16rpx;
+}
+
+/* 左滑删除容器 */
+.record-swipe-wrapper {
+  margin-bottom: 16rpx;
+  overflow: hidden;
+  border-radius: 12rpx;
+}
+
+.record-swipe-inner {
+  display: flex;
+  transition: transform 0.2s ease;
+}
+
+.record-swipe-inner.swiped {
+  transform: translateX(-140rpx);
+}
+
+.record-card {
+  flex-shrink: 0;
+  width: 100%;
+  background: #fff;
+  border-radius: 12rpx;
+  padding: 20rpx 24rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.04);
+  position: relative;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+  border-left: 4rpx solid #e8e8e8;
+}
+
+/* 中奖 - 红色 */
+.record-swipe-inner.win .record-card {
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.06) 0%, rgba(255, 140, 140, 0.04) 100%);
+  border-left-color: #ff6b6b;
+  box-shadow: 0 2rpx 12rpx rgba(255, 107, 107, 0.12);
+}
+
+/* 待开奖 - 绿色 */
+.record-swipe-inner.pending .record-card {
+  background: linear-gradient(135deg, rgba(82, 196, 26, 0.06) 0%, rgba(115, 209, 61, 0.04) 100%);
+  border-left-color: #52c41a;
+  box-shadow: 0 2rpx 12rpx rgba(82, 196, 26, 0.12);
+}
+
+
+/* 未中奖状态 - 灰色主题 */
+.record-swipe-inner.lose .record-card {
+  background: linear-gradient(135deg, rgba(200, 200, 200, 0.06) 0%, rgba(220, 220, 220, 0.04) 100%);
+  border-left-color: #d9d9d9;
+  opacity: 0.8;
+}
+
+.record-swipe-inner.lose .record-matches {
+  color: #999;
+}
+
+.record-swipe-inner.lose .record-pass {
+  color: #999;
+  background: rgba(200, 200, 200, 0.15);
+}
+
+.record-delete-btn {
+  flex-shrink: 0;
+  width: 140rpx;
+  background: #ff4d4f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0 12rpx 12rpx 0;
+}
+
+.delete-text {
+  color: #fff;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.record-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16rpx;
+}
+
+.record-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.record-status {
+  font-size: 22rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 6rpx;
+  background: #f0f0f0;
+  color: #999;
+  font-weight: 500;
+}
+
+.record-status.win {
+  background: rgba(255, 107, 107, 0.15);
+  color: #ff6b6b;
+  font-weight: 600;
+}
+
+.record-status.pending {
+  background: rgba(82, 196, 26, 0.15);
+  color: #52c41a;
+  font-weight: 600;
+}
+
+.record-status.lose {
+  background: rgba(200, 200, 200, 0.2);
+  color: #999;
+  font-weight: 500;
+}
+
+.record-info {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 14rpx;
+}
+
+.record-matches {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 600;
+}
+
+.record-pass {
+  font-size: 24rpx;
+  color: #667eea;
+  background: rgba(102, 126, 234, 0.1);
+  padding: 6rpx 14rpx;
+  border-radius: 6rpx;
+  font-weight: 500;
+}
+
+.record-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.record-amount {
+  font-size: 24rpx;
+  color: #999;
+  font-weight: 400;
+}
+
+.record-bonus {
+  font-size: 28rpx;
+  color: #ff6b6b;
+  font-weight: 700;
+}
+
+.record-arrow {
+  position: absolute;
+  right: 20rpx;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 28rpx;
+  color: #ddd;
+}

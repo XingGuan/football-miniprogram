@@ -22,8 +22,7 @@ Component({
         this.setData({
           relativeTime: record.createTime ? dateUtils.getRelativeTime(record.createTime) : '',
           matchTimeStr: record.matchTime ? dateUtils.formatDateTime(record.matchTime) : '',
-          previewText: this.getPreviewText(record.aiAnalysis || ''),
-          resultTag: this.getResultTag(record)
+          previewText: this.getPreviewText(record.aiAnalysis || '')
         })
       }
     }
@@ -40,32 +39,12 @@ Component({
       return text.length > 60 ? text.substring(0, 60) + '...' : text
     },
 
-    // 获取比赛结果标签
-    getResultTag(record) {
-      if (!record.matchResult) return ''
-
-      // 有赛后分析表示比赛已结束
-      if (record.afterMatchAnalysis) {
-        return 'finished'
-      }
-      return 'pending'
-    },
+    
 
     onTap() {
       this.triggerEvent('tap', { record: this.properties.record })
     },
 
-    onDelete(e) {
-      e.stopPropagation()
-      wx.showModal({
-        title: '确认删除',
-        content: '确定要删除这条历史记录吗？',
-        success: (res) => {
-          if (res.confirm) {
-            this.triggerEvent('delete', { record: this.properties.record })
-          }
-        }
-      })
-    }
+    
   }
 })

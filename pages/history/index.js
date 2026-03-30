@@ -117,42 +117,10 @@ Page({
   // 点击历史记录
   onItemTap(e) {
     const { record } = e.detail
+    const matchId = (record && record.matchId);
     wx.navigateTo({
-      url: `/pages/history-detail/index?id=${record.matchId}`
+      url: `/pages/history-detail/index?id=`+matchId
     })
-  },
-
-  // 删除历史记录
-  async onDelete(e) {
-    const { record } = e.detail
-    const id = record.id || record.matchId
-
-    wx.showLoading({ title: '删除中...' })
-
-    try {
-      await historyApi.deleteHistory(id)
-
-      // 从列表中移除
-      const { list } = this.data
-      const newList = list.filter(item => (item.id || item.matchId) !== id)
-
-      this.setData({
-        list: newList,
-        total: this.data.total - 1
-      })
-
-      wx.hideLoading()
-      wx.showToast({
-        title: '已删除',
-        icon: 'success'
-      })
-    } catch (e) {
-      wx.hideLoading()
-      wx.showToast({
-        title: '删除失败',
-        icon: 'none'
-      })
-    }
   },
 
   // 跳转登录
