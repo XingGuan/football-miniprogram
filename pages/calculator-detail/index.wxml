@@ -1,0 +1,128 @@
+<!-- pages/calculator-detail/index.wxml -->
+<view class="detail-page">
+  <!-- 加载状态 -->
+  <view class="loading-wrapper" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 错误状态 -->
+  <view class="error-wrapper" wx:elif="{{error}}">
+    <text class="error-text">{{error}}</text>
+  </view>
+
+  <!-- 详情内容 -->
+  <scroll-view class="detail-content" scroll-y wx:else>
+    <!-- 状态卡片 -->
+    <view class="status-card {{record.status === 1 ? 'win' : record.status === 2 ? 'lose' : ''}}">
+      <view class="status-icon">
+        {{record.status === 1 ? '🎉' : record.status === 2 ? '😔' : '⏳'}}
+      </view>
+      <view class="status-text">{{record.statusDesc}}</view>
+      <view class="scheme-no">方案编号: {{record.schemeNo}}</view>
+    </view>
+
+    <!-- 投注信息 -->
+    <view class="info-card">
+      <view class="card-title">投注信息</view>
+      <view class="info-grid">
+        <view class="info-item">
+          <text class="info-label">过关方式</text>
+          <text class="info-value highlight">{{record.passTypesStr}}</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">投注倍数</text>
+          <text class="info-value">{{record.multiple}}倍</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">总注数</text>
+          <text class="info-value">{{record.totalBets}}注</text>
+        </view>
+        <view class="info-item">
+          <text class="info-label">投注金额</text>
+          <text class="info-value amount">¥{{record.totalAmount}}</text>
+        </view>
+      </view>
+      <!-- 中奖 -->
+      <view class="bonus-row" wx:if="{{record.status === 1}}">
+        <text class="bonus-label">中奖金额</text>
+        <text class="bonus-value win">¥{{record.actualBonus}}</text>
+      </view>
+      <!-- 未中奖 -->
+      <view class="bonus-row" wx:elif="{{record.status === 2}}">
+        <text class="bonus-label">开奖结果</text>
+        <text class="bonus-value lose">未中奖</text>
+      </view>
+      <!-- 待开奖 -->
+      <view class="bonus-row" wx:elif="{{record.bonusRange}}">
+        <text class="bonus-label">预计奖金</text>
+        <text class="bonus-value">¥{{record.bonusRange}}</text>
+      </view>
+      <view class="time-row">
+        <text class="time-label">创建时间</text>
+        <text class="time-value">{{record.createTimeStr}}</text>
+      </view>
+    </view>
+
+    <!-- 选择的比赛 -->
+    <view class="matches-card">
+      <view class="card-title">比赛详情 ({{record.matchDetails.length}}场)</view>
+
+      <view class="match-item" wx:for="{{record.matchDetails}}" wx:key="matchId">
+        <view class="match-header">
+          <text class="match-num">{{item.matchNumStr}}</text>
+          <text class="match-time">{{item.matchTime}}</text>
+        </view>
+
+        <view class="match-teams">
+          <view class="team home">
+            <text class="team-name">{{item.homeTeamName}}</text>
+          </view>
+          <view class="vs-box">
+            <text class="vs">VS</text>
+          </view>
+          <view class="team away">
+            <text class="team-name">{{item.awayTeamName}}</text>
+          </view>
+        </view>
+
+        <view class="match-options">
+          <view class="option-row" wx:for="{{item.options}}" wx:for-item="opt" wx:key="index">
+            <!-- 左侧：用户选择 -->
+            <view class="option-item {{opt.isHit ? 'hit' : (opt.checkTime ? 'miss' : 'pending')}}">
+              <view class="opt-content">
+                <text class="opt-type">{{opt.optionTypeDesc}}</text>
+                <text class="opt-value">{{opt.displayValue}}</text>
+                <text class="opt-odds">@{{opt.odds}}</text>
+              </view>
+              <text class="hit-icon" wx:if="{{opt.checkTime && opt.isHit}}">✓</text>
+              <text class="miss-icon" wx:if="{{opt.checkTime && !opt.isHit}}">✗</text>
+            </view>
+
+            <!-- 右侧：开奖结果 -->
+            <view class="option-result {{opt.isHit ? 'hit' : (opt.checkTime ? 'miss' : 'pending')}}">
+              <text class="result-value">{{opt.matchResultDesc || '待开奖'}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部占位 -->
+    <view class="bottom-placeholder"></view>
+  </scroll-view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-share-bar" wx:if="{{record}}">
+    <!-- 推荐按钮（仅在非大厅来源时显示） -->
+    <button class="share-btn" wx:if="{{!isFromHall}}" bindtap="onRecommend" loading="{{recommending}}">
+      <text class="share-icon">👍</text>
+      <text class="share-text">推荐</text>
+    </button>
+    <!-- 分享按钮（始终显示） -->
+    <button class="share-btn" open-type="share">
+      <text class="share-icon">📤</text>
+      <text class="share-text">分享</text>
+    </button>
+  </view>
+</view>

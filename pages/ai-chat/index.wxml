@@ -6,6 +6,10 @@
       <view class="match-info" wx:if="{{matchInfo}}">
         <text class="match-text">{{matchInfo.homeTeam}} vs {{matchInfo.awayTeam}}</text>
       </view>
+      <view class="points-info" wx:else>
+        <text class="points-icon">💎</text>
+        <text class="points-text">{{userPoints}}</text>
+      </view>
     </view>
     <view class="toolbar-right">
       <view class="tool-btn" bindtap="onClearChat">
@@ -81,6 +85,9 @@
 
     <!-- 输入框 -->
     <view class="input-wrapper">
+      <view class="input-cost-tip">
+        <text class="cost-text">💎 {{pointsPerAnalysis}} 积分/次</text>
+      </view>
       <input
         class="chat-input"
         placeholder="输入你的问题..."

@@ -1,0 +1,108 @@
+<!-- pages/calculator-hall/index.wxml - 推荐方案大厅 -->
+<view class="hall-page">
+  <!-- 加载状态 -->
+  <view class="loading-wrapper" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 错误状态 -->
+  <view class="error-wrapper" wx:elif="{{error}}">
+    <text class="error-text">{{error}}</text>
+    <view class="retry-btn" bindtap="onRetry">重试</view>
+  </view>
+
+  <!-- 主内容 -->
+  <view class="main-content" wx:else>
+    <!-- 页面标题 -->
+    <view class="page-header">
+      <view class="header-content">
+        <view class="title-section">
+          <text class="page-title">🏆 推荐大厅</text>
+          <text class="page-desc">浏览高手的中奖方案</text>
+        </view>
+        <button class="header-share-btn" open-type="share">
+          <text class="share-icon">📤</text>
+        </button>
+      </view>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{recommendations.length === 0}}">
+      <text class="empty-icon">📭</text>
+      <text class="empty-text">暂无推荐方案</text>
+      <text class="empty-tip">分享你的中奖方案给大家吧</text>
+    </view>
+
+    <!-- 方案列表 -->
+    <scroll-view class="recommendations-scroll" scroll-y wx:else>
+      <view class="scheme-item" wx:for="{{recommendations}}" wx:key="id" bindtap="onRecordTap" data-record="{{item}}">
+        <!-- 顶部背景条 - 根据状态显示颜色 -->
+        <view class="scheme-status-bar {{item.status === 1 ? 'win' : (item.status === 2 ? 'lose' : 'pending')}}"></view>
+
+        <!-- 用户信息区 -->
+        <view class="scheme-user-section">
+          <view class="user-avatar-wrapper">
+            <image class="user-avatar" src="{{item.userStats.avatar}}" mode="aspectFill" wx:if="{{item.userStats.avatar}}"></image>
+            <view class="user-avatar-fallback" wx:else>{{item.userStats.userName[0]}}</view>
+          </view>
+
+          <view class="user-meta">
+            <view class="user-header">
+              <text class="user-name">{{item.userStats.userName}}</text>
+              <view class="badge {{item.status === 1 ? 'win' : (item.status === 2 ? 'lose' : 'pending')}}">
+                <text class="badge-icon">{{item.status === 1 ? '✓' : (item.status === 2 ? '✗' : '⏳')}}</text>
+                <text class="badge-text">{{item.statusDesc}}</text>
+              </view>
+            </view>
+            <view class="user-stats-row">
+              <view class="stat-box">
+                <text class="stat-label">中奖</text>
+                <text class="stat-value win-color">{{item.userStats.winRecords}}</text>
+              </view>
+              <view class="stat-box">
+                <text class="stat-label">未中</text>
+                <text class="stat-value lose-color">{{item.userStats.loseRecords}}</text>
+              </view>
+              <view class="stat-box highlight">
+                <text class="stat-label">胜率</text>
+                <text class="stat-value rate-color">{{item.winRate}}%</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 分割线 -->
+        <view class="divider"></view>
+
+        <!-- 方案信息区 -->
+        <view class="scheme-detail-section">
+          <view class="detail-row">
+            <view class="detail-item">
+              <text class="detail-label">比赛数</text>
+              <text class="detail-value">{{item.matchCount}}场</text>
+            </view>
+            <view class="detail-item">
+              <text class="detail-label">过关</text>
+              <text class="detail-value">{{item.passTypesStr}}</text>
+            </view>
+            <view class="detail-item">
+              <text class="detail-label">投注</text>
+              <text class="detail-value">{{item.totalBets}}注</text>
+            </view>
+            <view class="detail-item">
+              <text class="detail-label">投注金额</text>
+              <text class="detail-value">{{item.totalAmount}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 查看箭头 -->
+        <view class="scheme-arrow">›</view>
+      </view>
+
+      <!-- 底部占位 -->
+      <view class="bottom-placeholder"></view>
+    </scroll-view>
+  </view>
+</view>

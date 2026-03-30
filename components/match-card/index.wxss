@@ -119,10 +119,25 @@
   background: linear-gradient(135deg, #667eea, #764ba2);
   flex-direction: row;
   gap: 6rpx;
+  position: relative;
+}
+
+.odds-cell.action-cell.locked {
+  background: linear-gradient(135deg, #94a3b8, #64748b);
+}
+
+.odds-cell.action-cell.unlocked {
+  background: linear-gradient(135deg, #667eea, #764ba2);
 }
 
 .odds-cell.action-cell:active {
   opacity: 0.85;
+}
+
+.action-content {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
 }
 
 .action-tag {
@@ -138,6 +153,11 @@
   font-size: 26rpx;
   color: #fff;
   font-weight: 500;
+}
+
+.lock-icon {
+  font-size: 22rpx;
+  margin-left: 2rpx;
 }
 
 /* 赔率文字 */

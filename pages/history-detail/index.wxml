@@ -120,11 +120,6 @@
     <view class="action-btn" bindtap="onCopy">
       <text class="action-icon">📋</text>
       <text class="action-text">复制</text>
-    </view>
-    <view class="action-btn" bindtap="onShare">
-      <text class="action-icon">📤</text>
-      <text class="action-text">分享</text>
-    </view>
-   
+    </view>   
   </view>
 </view>

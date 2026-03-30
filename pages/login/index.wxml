@@ -50,10 +50,31 @@
         </label>
       </checkbox-group>
     </view>
+
+    <!-- 分割线 -->
+    <view class="divider-section">
+      <view class="divider-line"></view>
+      <text class="divider-text">其他登录方式</text>
+      <view class="divider-line"></view>
+    </view>
+
+    <!-- 微信登录 -->
+    <view class="wx-login-section">
+      <button
+        class="wx-login-btn {{wxLoading ? 'loading' : ''}}"
+        bindtap="onWxLogin"
+        disabled="{{wxLoading}}"
+      >
+        <view class="wx-icon-wrapper">
+          <text class="wx-icon-text">微信</text>
+        </view>
+        <text class="wx-btn-text">{{wxLoading ? '登录中...' : '微信登录'}}</text>
+      </button>
+    </view>
   </view>
 
   <!-- 底部提示 -->
   <view class="footer-section">
-    <text class="footer-text">未注册手机号验证后将自动创建账号</text>
+    <text class="footer-text">未注册用户登录后将自动创建账号</text>
   </view>
 </view>

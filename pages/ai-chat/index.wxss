@@ -35,6 +35,25 @@
   font-weight: 500;
 }
 
+.points-info {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  padding: 12rpx 20rpx;
+  border-radius: 12rpx;
+}
+
+.points-icon {
+  font-size: 24rpx;
+}
+
+.points-text {
+  font-size: 24rpx;
+  color: #d97706;
+  font-weight: 600;
+}
+
 .toolbar-right {
   display: flex;
   gap: 16rpx;
@@ -214,6 +233,7 @@
 
 /* 输入框容器 */
 .input-wrapper {
+  position: relative;
   display: flex;
   align-items: center;
   background-color: #f1f5f9;
@@ -221,6 +241,22 @@
   padding: 8rpx 8rpx 8rpx 32rpx;
   border: 2rpx solid transparent;
   transition: all 0.2s ease;
+}
+
+.input-cost-tip {
+  position: absolute;
+  top: -40rpx;
+  left: 32rpx;
+  background: rgba(0, 0, 0, 0.75);
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+  backdrop-filter: blur(10rpx);
+}
+
+.cost-text {
+  font-size: 22rpx;
+  color: #fde68a;
+  font-weight: 500;
 }
 
 .input-wrapper:focus-within {
