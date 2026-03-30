@@ -3,23 +3,23 @@
   <!-- 用户信息区域 -->
   <view class="user-section">
     <!-- 已登录 -->
-    <view class="user-info" wx:if="{{isLoggedIn && userInfo}}">
+    <view class="user-info" wx:if="{{isLoggedIn && userInfo}}" bindtap="onEditProfile">
       <image
         class="avatar"
         src="{{userInfo.avatar || '/images/icons/user-avatar.png'}}"
         mode="aspectFill"
-        bindtap="onEditProfile"
       />
       <view class="info">
         <text class="name">{{userInfo.userName || '用户'}}</text>
         <text class="phone">{{userInfo.phone || ''}}</text>
       </view>
+      <view class="edit-arrow">›</view>
     </view>
 
     <!-- 积分与签到卡片 -->
     <view class="cards-row" wx:if="{{isLoggedIn && userInfo}}">
       <!-- 积分卡片 -->
-      <view class="points-card">
+      <view class="points-card" bindtap="onPointDetail">
         <view class="points-bg-decoration"></view>
         <view class="points-content">
           <view class="points-icon-wrapper">
@@ -30,6 +30,7 @@
             <text class="points-value">{{userInfo.point || 0}}</text>
           </view>
         </view>
+        <view class="points-arrow">›</view>
       </view>
 
       <!-- 签到卡片 -->
@@ -198,6 +199,36 @@
         <view class="popup-btn cancel" bindtap="onClosePhonePopup">取消</view>
         <view class="popup-btn confirm {{bindLoading ? 'loading' : ''}}" bindtap="onConfirmBindPhone">
           {{bindLoading ? '绑定中...' : '确认绑定'}}
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 修改用户名弹窗 -->
+  <view class="popup-mask" wx:if="{{showNamePopup}}" bindtap="onCloseNamePopup">
+    <view class="popup-content" catchtap="preventTap">
+      <view class="popup-header">
+        <text class="popup-title">修改用户名</text>
+        <view class="popup-close" bindtap="onCloseNamePopup">×</view>
+      </view>
+      <view class="popup-body">
+        <view class="popup-tip">输入新的用户名</view>
+        <!-- 用户名输入 -->
+        <view class="input-group">
+          <input
+            class="input-field"
+            type="text"
+            maxlength="20"
+            placeholder="请输入用户名（不超过20个字符）"
+            value="{{newUserName}}"
+            bindinput="onUserNameInput"
+          />
+        </view>
+      </view>
+      <view class="popup-footer">
+        <view class="popup-btn cancel" bindtap="onCloseNamePopup">取消</view>
+        <view class="popup-btn confirm {{updateNameLoading ? 'loading' : ''}}" bindtap="onConfirmUpdateName">
+          {{updateNameLoading ? '修改中...' : '确认修改'}}
         </view>
       </view>
     </view>

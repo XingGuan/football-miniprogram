@@ -353,6 +353,8 @@
   padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
   box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.06);
   z-index: 100;
+  display: flex;
+  gap: 12rpx;
 }
 
 .share-btn {
@@ -360,7 +362,7 @@
   align-items: center;
   justify-content: center;
   gap: 12rpx;
-  width: 100%;
+  flex: 1;
   height: 88rpx;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 12rpx;

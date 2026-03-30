@@ -107,5 +107,13 @@ Page({
   // 重试加载
   onRetry() {
     this.loadRecommendations()
+  },
+
+  // 分享给好友
+  onShareAppMessage() {
+    return {
+      title: '推荐大厅 - 查看高手的中奖方案',
+      path: '/pages/calculator-hall/index'
+    }
   }
 })

@@ -21,7 +21,11 @@ Page({
     bindCode: '',
     bindCountdown: 0,
     sendingBindCode: false,
-    bindLoading: false
+    bindLoading: false,
+    // 修改用户名相关
+    showNamePopup: false,
+    newUserName: '',
+    updateNameLoading: false
   },
 
   onLoad() {
@@ -143,13 +147,99 @@ Page({
     }
   },
 
-  // 编辑用户信息
+  // 编辑用户信息（打开修改用户名弹窗）
   onEditProfile() {
-    // 可以弹出编辑框或跳转编辑页面
-    wx.showToast({
-      title: '功能开发中',
-      icon: 'none'
+    const { userInfo } = this.data
+    if (!userInfo) return
+    this.setData({
+      showNamePopup: true,
+      newUserName: userInfo.userName || ''
     })
+  },
+
+  // 查看积分明细
+  onPointDetail() {
+    wx.navigateTo({
+      url: '/pages/point-detail/index'
+    })
+  },
+
+  // 关闭修改用户名弹窗
+  onCloseNamePopup() {
+    this.setData({
+      showNamePopup: false,
+      newUserName: '',
+      updateNameLoading: false
+    })
+  },
+
+  // 阻止冒泡
+  preventTap() {},
+
+  // 用户名输入
+  onUserNameInput(e) {
+    this.setData({ newUserName: e.detail.value })
+  },
+
+  // 确认修改用户名
+  async onConfirmUpdateName() {
+    const { newUserName, userInfo, updateNameLoading } = this.data
+
+    if (updateNameLoading) return
+
+    // 验证用户名
+    if (!newUserName || newUserName.trim() === '') {
+      wx.showToast({
+        title: '请输入用户名',
+        icon: 'none'
+      })
+      return
+    }
+
+    if (newUserName.length > 20) {
+      wx.showToast({
+        title: '用户名不超过20个字符',
+        icon: 'none'
+      })
+      return
+    }
+
+    // 检查是否与当前用户名相同
+    if (newUserName === userInfo.userName) {
+      wx.showToast({
+        title: '新用户名与当前相同',
+        icon: 'none'
+      })
+      return
+    }
+
+    this.setData({ updateNameLoading: true })
+
+    try {
+      // 调用修改用户名接口
+      await userApi.updateUserName(userInfo.id, newUserName)
+
+      wx.showToast({
+        title: '修改成功',
+        icon: 'success',
+        duration: 2000
+      })
+
+      // 关闭弹窗
+      this.onCloseNamePopup()
+
+      // 刷新用户信息
+      setTimeout(() => {
+        this.updateUserState()
+      }, 1500)
+    } catch (e) {
+      wx.showToast({
+        title: e.message || '修改失败',
+        icon: 'none'
+      })
+    } finally {
+      this.setData({ updateNameLoading: false })
+    }
   },
 
   // 菜单项点击
