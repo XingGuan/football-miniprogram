@@ -35,7 +35,7 @@
         "iconPath": "images/tabbar/match.png",
         "selectedIconPath": "images/tabbar/match-active.png"
       },
-      
+
       {
         "pagePath": "pages/calculator-hall/index",
         "text": "大厅",
