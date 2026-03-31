@@ -13,18 +13,23 @@ Page({
     selectedType: '',
     typeOptions: [
       { label: '全部', value: '' },
-      { label: '赛事扣除', value: 'DEDUCT_MATCH' },
-      { label: '情报扣除', value: 'DEDUCT_INFO' },
       { label: '签到', value: 'SIGN' },
+      { label: '赛事解锁', value: 'DEDUCT_MATCH' },
+      { label: '情报解锁', value: 'DEDUCT_INFO' },
       { label: '注册赠送', value: 'REGISTER' },
-      { label: '绑定手机', value: 'BIND_PHONE' }
+      { label: '绑定手机', value: 'BIND_PHONE' },
+      { label: '团长奖励', value: 'GROUP_BUY_LEADER' },
+      { label: '团员奖励', value: 'GROUP_BUY_MEMBER' }
     ],
     typeMap: {
       'DEDUCT_MATCH': '赛事扣除',
       'DEDUCT_INFO': '情报扣除',
       'SIGN': '签到',
       'REGISTER': '注册赠送',
-      'BIND_PHONE': '绑定手机'
+      'BIND_PHONE': '绑定手机',
+      'GROUP_BUY_LEADER':"拼团团长奖励",
+      'GROUP_BUY_MEMBER':"拼团团员奖励",
+
     }
   },
 
