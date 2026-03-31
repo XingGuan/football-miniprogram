@@ -90,10 +90,12 @@
           <view class="option-row" wx:for="{{item.options}}" wx:for-item="opt" wx:key="index">
             <!-- 左侧：用户选择 -->
             <view class="option-item {{opt.isHit ? 'hit' : (opt.checkTime ? 'miss' : 'pending')}}">
+              <text class="opt-type">{{opt.optionTypeDesc}}</text>
               <view class="opt-content">
-                <text class="opt-type">{{opt.optionTypeDesc}}</text>
-                <text class="opt-value">{{opt.displayValue}}</text>
-                <text class="opt-odds">@{{opt.odds}}</text>
+                <view class="opt-highlight">
+                  <text class="opt-value">{{opt.displayValue}}</text>
+                  <text class="opt-odds">{{opt.odds}}</text>
+                </view>
               </view>
               <text class="hit-icon" wx:if="{{opt.checkTime && opt.isHit}}">✓</text>
               <text class="miss-icon" wx:if="{{opt.checkTime && !opt.isHit}}">✗</text>
@@ -120,7 +122,7 @@
       <text class="share-text">推荐</text>
     </button>
     <!-- 分享按钮（始终显示） -->
-    <button class="share-btn" open-type="share">
+    <button class="share-btn" wx:if="{{isFromHall}}"  open-type="share">
       <text class="share-icon">📤</text>
       <text class="share-text">分享</text>
     </button>

@@ -286,42 +286,52 @@
 }
 
 .option-item {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 8rpx;
-  padding: 10rpx 14rpx;
-  background: linear-gradient(135deg, #bc0000 0%, #bc0000 100%);
+  gap: 150rpx;
+  flex: 1;
   border-radius: 8rpx;
   border: none;
   transition: all 0.2s ease;
 }
 
 /* 未中奖 - 灰色背景 */
-.option-item.miss {
-  background: linear-gradient(135deg, #999 0%, #bbb 100%);
+.option-item.miss .opt-content {
+  background: linear-gradient(135deg, #bdbdbd 0%, #d0d0d0 100%);
 }
 
 .opt-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 8rpx;
+  padding: 10rpx 30rpx;
+  background: linear-gradient(135deg, #c41d1d 0%, #d32f2f 100%);
+  border-radius: 8rpx;
+  width: 100rpx;
+}
+
+.opt-type {
+  font-size: 20rpx;
+  color: #333;
+  font-weight: 500;
+  min-width: 120rpx;
+}
+
+.opt-highlight {
   display: flex;
   align-items: center;
   gap: 8rpx;
 }
 
-.opt-type {
-  font-size: 20rpx;
-  color: rgba(255, 255, 255, 0.85);
-  font-weight: 500;
-}
-
 .opt-value {
-  font-size: 24rpx;
+  font-size: 32rpx;
   color: #fff;
   font-weight: 900;
 }
 
 .opt-odds {
-  font-size: 20rpx;
-  color: rgba(255, 255, 255, 0.85);
+  font-size: 32rpx;
+  color: #fff;
   font-weight: 900;
   white-space: nowrap;
 }

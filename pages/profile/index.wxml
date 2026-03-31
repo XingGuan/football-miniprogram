@@ -74,6 +74,22 @@
       </view>
     </view>
 
+    <!-- 拼团活动 -->
+    <view class="activity-section" wx:if="{{isLoggedIn && userInfo}}">
+      <view class="activity-card" bindtap="onActivityCenter">
+        <view class="activity-left">
+          <view class="activity-icon-wrapper">
+            <text class="activity-icon">🎉</text>
+          </view>
+          <view class="activity-info">
+            <text class="activity-title">拼团得积分</text>
+            <text class="activity-desc">邀请好友拼团，完成得积分</text>
+          </view>
+        </view>
+        <view class="activity-arrow">›</view>
+      </view>
+    </view>
+
     <!-- 未登录 -->
     <view class="login-prompt" wx:else bindtap="onLogin">
       <image class="avatar default" src="/images/icons/user-avatar.png" mode="aspectFill" />

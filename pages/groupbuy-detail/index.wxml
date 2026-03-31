@@ -1,0 +1,157 @@
+<!-- pages/groupbuy-detail/index.wxml - 拼团详情 -->
+<view class="detail-page">
+  <!-- 加载状态 -->
+  <view class="loading-wrapper" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">加载中...</text>
+  </view>
+
+  <!-- 错误状态 -->
+  <view class="error-wrapper" wx:elif="{{error}}">
+    <text class="error-text">{{error}}</text>
+    <view class="retry-btn" bindtap="onRetry">重试</view>
+  </view>
+
+  <!-- 主内容 -->
+  <view class="main-content" wx:else>
+    <scroll-view class="content-scroll" scroll-y>
+      <!-- 拼团卡片 -->
+      <view class="info-card">
+        <!-- 拼团头部横幅 -->
+        <view class="header-banner">
+          <view class="banner-left">
+            <text class="banner-title">{{group.groupSize}}人拼团</text>
+            <text class="banner-reward">可获得 {{group.groupSize}} 积分</text>
+          </view>
+          <view class="banner-right" wx:if="{{!isCompleted}}">
+            <text class="countdown-label">剩余时间</text>
+            <text class="countdown-timer">{{remainingTime}}</text>
+          </view>
+        </view>
+
+        <!-- 团长信息 -->
+        <view class="section-divider"></view>
+        <view class="leader-section">
+          <view class="section-title">团长信息</view>
+          <view class="leader-card">
+            <view class="leader-avatar">👤</view>
+            <view class="leader-info">
+              <text class="leader-name">{{group.leaderName}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 成员列表 -->
+        <view class="section-divider"></view>
+        <view class="members-section">
+          <view class="section-title">成员列表 ({{group.currentSize}}人)</view>
+          <view class="members-grid">
+            <view class="member-item" wx:for="{{group.members}}" wx:key="userId">
+              <view class="member-avatar">{{item.userName[0]}}</view>
+              <text class="member-name">{{item.userName}}</text>
+              <view class="member-status" wx:if="{{item.userId === group.leaderId}}">
+                <text class="status-badge">团长</text>
+              </view>
+            </view>
+
+            <!-- 空位 -->
+            <view class="member-item empty" wx:if="{{group.currentSize < group.groupSize}}">
+              <view class="member-avatar-empty">
+                <text class="empty-icon">+</text>
+              </view>
+              <text class="member-name">空位</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 拼团信息 -->
+        <view class="section-divider"></view>
+        <view class="info-section">
+          <view class="section-title">拼团信息</view>
+          <view class="info-list">
+            <view class="info-item">
+              <text class="info-label">拼团状态：</text>
+              <text class="info-value">{{group.statusDesc}}</text>
+            </view>
+            <view class="info-item">
+              <text class="info-label">发起时间：</text>
+              <text class="info-value">{{group.createTime}}</text>
+            </view>
+            <view class="info-item">
+              <text class="info-label">过期时间：</text>
+              <text class="info-value">{{group.expireTime}}</text>
+            </view>
+            <view class="info-item">
+              <text class="info-label">奖励积分：</text>
+              <text class="info-value reward">+{{group.groupSize}}积分</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 拼团说明 -->
+        <view class="section-divider"></view>
+        <view class="instruction-section">
+          <view class="section-title">拼团说明</view>
+          <view class="instruction-list">
+            <text class="instruction-item">• 人数满了即可获得积分奖励</text>
+            <text class="instruction-item">• 每个拼团有效期12小时</text>
+            <text class="instruction-item">• 完成拼团全部成员可获得响应积分</text>
+            <text class="instruction-item">• 可以邀请好友加入拼团</text>
+          </view>
+        </view>
+
+        <!-- 底部占位 -->
+        <view class="bottom-placeholder"></view>
+      </view>
+    </scroll-view>
+
+    <!-- 底部操作栏 -->
+    <view class="bottom-bar">
+      <!-- 团长 - 拼团已成功且奖励已发放 -->
+      <view class="action-btn success" wx:if="{{isLeader && isCompleted && group.rewardDistributed === 1}}">
+        <text class="btn-icon">✓</text>
+        <text class="btn-text">{{group.successTime}}</text>
+      </view>
+      <!-- 团长 - 拼团已成功但奖励未发放，显示领取积分按钮 -->
+      <button
+        class="action-btn claim"
+        wx:elif="{{isLeader && isCompleted && group.rewardDistributed === 0}}"
+        bindtap="onClaimReward"
+        loading="{{claiming}}"
+      >
+        <text class="btn-icon">🏆</text>
+        <text class="btn-text">{{claiming ? '领取中...' : '领取积分'}}</text>
+      </button>
+      <!-- 团长 - 拼团未满，显示等待状态 -->
+      <view class="action-btn waiting" wx:elif="{{isLeader && !isCompleted}}">
+        <text class="btn-icon">⏳</text>
+        <text class="btn-text">等待成员加入</text>
+      </view>
+      <!-- 分享按钮 -->
+      <button class="action-btn share" open-type="share" wx:if="{{!isLeader || !isCompleted}}">
+        <text class="btn-icon">👥</text>
+        <text class="btn-text">邀请好友</text>
+      </button>
+      <!-- 加入拼团按钮 -->
+      <button
+        class="action-btn join"
+        wx:if="{{canJoin && !isJoined && !isLeader}}"
+        bindtap="onJoinGroup"
+        loading="{{joining}}"
+      >
+        <text class="btn-icon">➕</text>
+        <text class="btn-text">{{joining ? '加入中...' : '加入拼团'}}</text>
+      </button>
+      <!-- 已加入状态 -->
+      <view class="action-btn success" wx:elif="{{isJoined && !isLeader}}">
+        <text class="btn-icon">✓</text>
+        <text class="btn-text">已加入</text>
+      </view>
+      <!-- 人数已满 -->
+      <view class="action-btn full" wx:elif="{{!isLeader && !canJoin}}">
+        <text class="btn-icon">🎉</text>
+        <text class="btn-text">人数已满</text>
+      </view>
+    </view>
+  </view>
+</view>

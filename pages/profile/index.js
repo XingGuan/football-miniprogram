@@ -311,6 +311,21 @@ Page({
     })
   },
 
+  // 打开活动中心
+  onActivityCenter() {
+    const { isLoggedIn } = this.data
+    if (!isLoggedIn) {
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none'
+      })
+      return
+    }
+    wx.navigateTo({
+      url: '/pages/activity/index'
+    })
+  },
+
   // 清除缓存
   onClearCache() {
     wx.showModal({

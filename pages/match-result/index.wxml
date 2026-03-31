@@ -63,27 +63,27 @@
           <view class="odds-item" wx:if="{{item.hadResult}}">
             <text class="odds-label">胜平负</text>
             <text class="odds-result">{{item.hadCombinationDesc}}</text>
-            <text class="odds-odds">@{{item.hadOdds}}</text>
+            <text class="odds-odds">{{item.hadOdds}}</text>
           </view>
           <view class="odds-item" wx:if="{{item.hhadResult}}">
             <text class="odds-label">让球</text>
             <text class="odds-result">{{item.hhadCombinationDesc}}</text>
-            <text class="odds-odds">@{{item.hhadOdds}}</text>
+            <text class="odds-odds">{{item.hhadOdds}}</text>
           </view>
           <view class="odds-item" wx:if="{{item.ttgResult}}">
             <text class="odds-label">总进球</text>
             <text class="odds-result">{{item.ttgCombinationDesc}}</text>
-            <text class="odds-odds">@{{item.ttgOdds}}</text>
+            <text class="odds-odds">{{item.ttgOdds}}</text>
           </view>
           <view class="odds-item" wx:if="{{item.hafuResult}}">
             <text class="odds-label">半全场</text>
             <text class="odds-result">{{item.hafuCombinationDesc}}</text>
-            <text class="odds-odds">@{{item.hafuOdds}}</text>
+            <text class="odds-odds">{{item.hafuOdds}}</text>
           </view>
           <view class="odds-item" wx:if="{{item.crsResult}}">
             <text class="odds-label">比分</text>
             <text class="odds-result">{{item.crsCombinationDesc}}</text>
-            <text class="odds-odds">@{{item.crsOdds}}</text>
+            <text class="odds-odds">{{item.crsOdds}}</text>
           </view>
         </view>
       </view>
