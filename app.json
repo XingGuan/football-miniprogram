@@ -6,6 +6,8 @@
     "pages/calculator-hall/index",
     "pages/match-result/index",
     "pages/point-detail/index",
+    "pages/activity/index",
+    "pages/groupbuy-detail/index",
     "pages/login/index",
     "pages/ai-chat/index",
     "pages/history/index",
@@ -51,14 +53,14 @@
       {
         "pagePath": "pages/history/index",
         "text": "历史",
-        "iconPath": "images/tabbar/history.png",
-        "selectedIconPath": "images/tabbar/history-active.png"
+        "iconPath": "images/tabbar/match.png",
+        "selectedIconPath": "images/tabbar/match-active.png"
       },
       {
         "pagePath": "pages/profile/index",
         "text": "我的",
-        "iconPath": "images/tabbar/profile.png",
-        "selectedIconPath": "images/tabbar/profile-active.png"
+        "iconPath": "images/tabbar/match.png",
+        "selectedIconPath": "images/tabbar/match-active.png"
       }
     ]
   },

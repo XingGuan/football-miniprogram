@@ -403,7 +403,7 @@ Page({
   getValueName(type, value) {
     // 胜平负、让球胜平负
     if (type === 'had' || type === 'hhad') {
-      const map = { 'H': '主胜', 'D': '平局', 'A': '客胜' }
+      const map = { 'H': '胜', 'D': '平', 'A': '负' }
       return map[value] || value
     }
     // 总进球

@@ -38,11 +38,13 @@ Page({
             pendingRecords: 0
           }
         }
-        userStats[userId].totalRecords++
+      
         if (item.status === 1) {
           userStats[userId].winRecords++
+          userStats[userId].totalRecords++
         } else if (item.status === 2) {
           userStats[userId].loseRecords++
+          userStats[userId].totalRecords++
         } else {
           userStats[userId].pendingRecords++
         }
