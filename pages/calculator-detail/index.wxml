@@ -87,23 +87,25 @@
         </view>
 
         <view class="match-options">
-          <view class="option-row" wx:for="{{item.options}}" wx:for-item="opt" wx:key="index">
-            <!-- 左侧：用户选择 -->
-            <view class="option-item {{opt.isHit ? 'hit' : (opt.checkTime ? 'miss' : 'pending')}}">
-              <text class="opt-type">{{opt.optionTypeDesc}}</text>
-              <view class="opt-content">
-                <view class="opt-highlight">
-                  <text class="opt-value">{{opt.displayValue}}</text>
-                  <text class="opt-odds">{{opt.odds}}</text>
+          <!-- 按玩法类型分组显示 -->
+          <view class="option-group" wx:for="{{item.optionGroups}}" wx:for-item="group" wx:key="type">
+            <view class="group-row">
+              <!-- 玩法名称 -->
+              <view class="group-title-box">
+                <text class="group-title">{{group.typeDesc}}</text>
+                <text class="group-goalline" wx:if="{{group.goalLine}}">({{group.goalLine}})</text>
+              </view>
+              <!-- 选项 -->
+              <view class="group-options {{group.type === 'crs' || group.type === 'ttg' || group.type === 'hafu' ? 'vertical' : ''}}">
+                <view class="option-cell {{opt.checked ? 'checked' : 'unchecked'}} {{opt.checked && opt.isHit ? 'hit' : ''}} {{opt.checked && opt.checkTime && !opt.isHit ? 'miss' : ''}} {{group.type === 'crs' || group.type === 'ttg' || group.type === 'hafu' ? 'vertical' : ''}}" wx:for="{{group.options}}" wx:for-item="opt" wx:key="value">
+                  <text class="cell-value">{{opt.displayValue}}</text>
+                  <text class="cell-odds">{{opt.odds}}</text>
                 </view>
               </view>
-              <text class="hit-icon" wx:if="{{opt.checkTime && opt.isHit}}">✓</text>
-              <text class="miss-icon" wx:if="{{opt.checkTime && !opt.isHit}}">✗</text>
-            </view>
-
-            <!-- 右侧：开奖结果 -->
-            <view class="option-result {{opt.isHit ? 'hit' : (opt.checkTime ? 'miss' : 'pending')}}">
-              <text class="result-value">{{opt.matchResultDesc || '待开奖'}}</text>
+              <!-- 开奖结果 -->
+              <view class="group-result {{group.checkTime ? (group.isHit ? 'hit' : 'miss') : 'pending'}}">
+                <text class="result-value">{{group.matchResultDesc || '待开奖'}}</text>
+              </view>
             </view>
           </view>
         </view>

@@ -27,6 +27,7 @@ Page({
     selectedPassTypes: [],
     selectedPassTypesMap: {},  // 用于模板中判断选中状态
     multiple: 1,
+    multipleInput: '1',
     totalBets: 0,
     totalAmount: 0,
     minBonus: 0,
@@ -75,12 +76,17 @@ Page({
     try {
       const res = await matchApi.getCalculatorRecords(userInfo.id)
       const rawRecords = res.data || res || []
-      const records = rawRecords.map(item => ({
-        ...item,
-        matchCount: item.matchDetails ? item.matchDetails.length : 0,
-        passTypesStr: this.formatPassTypes(item.passTypes),
-        createTimeStr: this.formatTime(item.createTime)
-      }))
+      const records = rawRecords.map(item => {
+        const timeInfo = this.formatTimeInfo(item.createTime)
+        return {
+          ...item,
+          matchCount: item.matchDetails ? item.matchDetails.length : 0,
+          passTypesStr: this.formatPassTypes(item.passTypes),
+          createTimeStr: this.formatTime(item.createTime),
+          monthDay: timeInfo.monthDay,
+          hourMinute: timeInfo.hourMinute
+        }
+      })
       this.setData({ records, recordsLoading: false })
     } catch (error) {
       console.error('加载记录失败:', error)
@@ -98,6 +104,20 @@ Page({
     const hour = String(date.getHours()).padStart(2, '0')
     const minute = String(date.getMinutes()).padStart(2, '0')
     return `${month}-${day} ${hour}:${minute}`
+  },
+
+  // 格式化时间信息（拆分月日和时分）
+  formatTimeInfo(timeStr) {
+    if (!timeStr) return { monthDay: '', hourMinute: '' }
+    const date = new Date(timeStr)
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    const hour = String(date.getHours()).padStart(2, '0')
+    const minute = String(date.getMinutes()).padStart(2, '0')
+    return {
+      monthDay: `${month}-${day}`,
+      hourMinute: `${hour}:${minute}`
+    }
   },
 
   // 格式化过关方式
@@ -398,21 +418,36 @@ Page({
     this.calculateBets()
   },
 
-  onMultipleChange(e) {
-    const multiple = parseInt(e.detail.value) || 1
-    this.setData({ multiple: Math.max(1, Math.min(5000, multiple)) })
+  // 输入倍数时，允许临时为空
+  onMultipleInput(e) {
+    const value = e.detail.value
+    this.setData({ multipleInput: value })
+    // 如果输入有效数字，实时计算
+    const num = parseInt(value)
+    if (num > 0) {
+      this.setData({ multiple: Math.min(5000, num) })
+      this.calculateBets()
+    }
+  },
+
+  // 失焦时校验，确保有效值
+  onMultipleBlur(e) {
+    const value = e.detail.value
+    let multiple = parseInt(value) || 1
+    multiple = Math.max(1, Math.min(5000, multiple))
+    this.setData({ multiple, multipleInput: String(multiple) })
     this.calculateBets()
   },
 
   onMultipleMinus() {
     const multiple = Math.max(1, this.data.multiple - 1)
-    this.setData({ multiple })
+    this.setData({ multiple, multipleInput: String(multiple) })
     this.calculateBets()
   },
 
   onMultiplePlus() {
     const multiple = Math.min(5000, this.data.multiple + 1)
-    this.setData({ multiple })
+    this.setData({ multiple, multipleInput: String(multiple) })
     this.calculateBets()
   },
 
@@ -696,6 +731,44 @@ Page({
     return totalBonus
   },
 
+  // 构建完整的玩法选项（胜平负、让球胜平负包含所有选项及checked状态）
+  buildFullOptions(matchId, selectedOptions) {
+    const { matches } = this.data
+    const match = matches.find(m => String(m.matchId) === String(matchId))
+    if (!match) return selectedOptions.map(opt => ({ ...opt, checked: true }))
+
+    const result = []
+    const hasHad = selectedOptions.some(opt => opt.type === 'had')
+    const hasHhad = selectedOptions.some(opt => opt.type === 'hhad')
+
+    // 胜平负(had)：补全胜、平、负三个选项
+    if (hasHad) {
+      result.push(
+        { type: 'had', value: 'H', odds: match.hadH, checked: selectedOptions.some(s => s.type === 'had' && s.value === 'H') },
+        { type: 'had', value: 'D', odds: match.hadD, checked: selectedOptions.some(s => s.type === 'had' && s.value === 'D') },
+        { type: 'had', value: 'A', odds: match.hadA, checked: selectedOptions.some(s => s.type === 'had' && s.value === 'A') }
+      )
+    }
+
+    // 让球胜平负(hhad)：补全让球胜、让球平、让球负三个选项
+    if (hasHhad) {
+      result.push(
+        { type: 'hhad', value: 'H', odds: match.hhadH, goalLine: match.hhadGoalLine, checked: selectedOptions.some(s => s.type === 'hhad' && s.value === 'H') },
+        { type: 'hhad', value: 'D', odds: match.hhadD, goalLine: match.hhadGoalLine, checked: selectedOptions.some(s => s.type === 'hhad' && s.value === 'D') },
+        { type: 'hhad', value: 'A', odds: match.hhadA, goalLine: match.hhadGoalLine, checked: selectedOptions.some(s => s.type === 'hhad' && s.value === 'A') }
+      )
+    }
+
+    // 其他玩法保持原样，添加 checked: true
+    selectedOptions.forEach(opt => {
+      if (opt.type !== 'had' && opt.type !== 'hhad') {
+        result.push({ ...opt, checked: true })
+      }
+    })
+
+    return result
+  },
+
   async onSubmit() {
     const { selections, selectedPassTypes, multiple, totalBets } = this.data
 
@@ -719,7 +792,7 @@ Page({
       userId: userInfo.id,
       selections: Object.keys(selections).map(matchId => ({
         matchId: parseInt(matchId),
-        options: selections[matchId]
+        options: this.buildFullOptions(matchId, selections[matchId])
       })),
       passTypes: selectedPassTypes,
       multiple,

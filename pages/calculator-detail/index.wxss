@@ -144,12 +144,12 @@
 
 .bonus-value {
   font-size: 28rpx;
-  color: #52c41a;
+  color: #c41d1d;
   font-weight: 600;
 }
 
 .bonus-value.win {
-  color: #ff6b6b;
+  color: #c41d1d;
 }
 
 .bonus-value.lose {
@@ -275,77 +275,159 @@
 .match-options {
   display: flex;
   flex-direction: column;
-  gap: 10rpx;
+  gap: 16rpx;
 }
 
-.option-row {
+/* 玩法分组 */
+.option-group {
+  background: #f8f9fc;
+  border-radius: 12rpx;
+  padding: 12rpx 16rpx;
+}
+
+.group-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  gap: 12rpx;
+}
+
+.group-title-box {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  min-width: 120rpx;
+  flex-shrink: 0;
+}
+
+.group-title {
+  font-size: 22rpx;
+  color: #666;
+  font-weight: 600;
+}
+
+.group-goalline {
+  font-size: 20rpx;
+  color: #667eea;
+  font-weight: 500;
+}
+
+.group-options {
+  display: flex;
+  gap: 0;
+  flex-wrap: nowrap;
+  flex: 1;
+}
+
+/* 比分/总进球/半全场 纵向布局 */
+.group-options.vertical {
+  flex-wrap: wrap;
   gap: 8rpx;
 }
 
-.option-item {
+/* 选项单元格 */
+.option-cell {
   display: flex;
+  flex-direction: row;
   align-items: center;
-  gap: 150rpx;
-  flex: 1;
+  justify-content: center;
+  gap: 6rpx;
+  width: 120rpx;
+  padding: 10rpx 0;
   border-radius: 8rpx;
-  border: none;
+  position: relative;
   transition: all 0.2s ease;
 }
 
-/* 未中奖 - 灰色背景 */
-.option-item.miss .opt-content {
+/* 比分/总进球/半全场 选项纵向排列 */
+.option-cell.vertical {
+  flex-direction: column;
+  gap: 4rpx;
+  width: auto;
+  min-width: 90rpx;
+  padding: 8rpx 12rpx;
+}
+
+/* 选中状态 - 中国红背景 */
+.option-cell.checked {
+  background: linear-gradient(135deg, #c41d1d 0%, #d32f2f 100%);
+}
+
+.option-cell.checked .cell-value,
+.option-cell.checked .cell-odds {
+  color: #fff;
+}
+
+/* 未选中状态 - 白色背景 */
+.option-cell.unchecked {
+  background: #fff;
+  border: 1rpx solid #e8e8e8;
+}
+
+.option-cell.unchecked .cell-value {
+  color: #999;
+}
+
+.option-cell.unchecked .cell-odds {
+  color: #bbb;
+}
+
+/* 选中且命中 - 中国红背景 */
+.option-cell.checked.hit {
+  background: linear-gradient(135deg, #c41d1d 0%, #d32f2f 100%);
+}
+
+/* 选中且未中 - 灰色背景 */
+.option-cell.checked.miss {
   background: linear-gradient(135deg, #bdbdbd 0%, #d0d0d0 100%);
 }
 
-.opt-content {
-  display: inline-flex;
-  align-items: center;
-  gap: 8rpx;
-  padding: 10rpx 30rpx;
-  background: linear-gradient(135deg, #c41d1d 0%, #d32f2f 100%);
+.cell-value {
+  font-size: 24rpx;
+  font-weight: 700;
+}
+
+.cell-odds {
+  font-size: 22rpx;
+  font-weight: 600;
+}
+
+.cell-hit, .cell-miss {
+  position: absolute;
+  top: 2rpx;
+  right: 4rpx;
+  font-size: 16rpx;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* 开奖结果 - 右侧 */
+.group-result {
+  min-width: 80rpx;
+  padding: 12rpx 14rpx;
   border-radius: 8rpx;
-  width: 100rpx;
+  text-align: center;
+  flex-shrink: 0;
 }
 
-.opt-type {
-  font-size: 20rpx;
-  color: #333;
-  font-weight: 500;
-  min-width: 120rpx;
+/* 命中 - 中国红背景 */
+.group-result.hit {
+  background: linear-gradient(135deg, #c41d1d 0%, #d32f2f 100%);
 }
 
-.opt-highlight {
-  display: flex;
-  align-items: center;
-  gap: 8rpx;
+/* 待开奖 - 深绿背景 */
+.group-result.pending {
+  background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
 }
 
-.opt-value {
-  font-size: 32rpx;
-  color: #fff;
-  font-weight: 900;
+/* 未中 - 灰色背景 */
+.group-result.miss {
+  background: linear-gradient(135deg, #bdbdbd 0%, #d0d0d0 100%);
 }
 
-.opt-odds {
-  font-size: 32rpx;
-  color: #fff;
-  font-weight: 900;
-  white-space: nowrap;
-}
-
-.hit-icon {
-  color: #fff;
-  font-weight: 700;
+.group-result .result-value {
   font-size: 22rpx;
-}
-
-.miss-icon {
-  color: rgba(255, 255, 255, 0.7);
-  font-weight: 700;
-  font-size: 22rpx;
+  color: #fff;
+  font-weight: 600;
 }
 
 .bottom-placeholder {

@@ -51,44 +51,43 @@
           <view class="odds-left">
             <!-- 胜平负 -->
             <view class="odds-section">
-              <view class="section-title-row">
+              <view class="odds-inline-row">
                 <text class="section-title">胜平负</text>
-                <text class="single-badge" wx:if="{{item.bettingSingle == 1 || item.bettingSingle == true}}">单</text>
-              </view>
-              <view class="odds-row">
-                <view class="odds-item {{selectedMap[item.matchId + '_had_H'] ? 'active' : ''}}" data-matchid="{{item.matchId}}" data-type="had" data-value="H" data-odds="{{item.hadH}}" bindtap="onSelectOption">
-                  <text class="odds-label">主胜</text>
-                  <text class="odds-value">{{item.hadH}}</text>
-                </view>
-                <view class="odds-item {{selectedMap[item.matchId + '_had_D'] ? 'active' : ''}}" data-matchid="{{item.matchId}}" data-type="had" data-value="D" data-odds="{{item.hadD}}" bindtap="onSelectOption">
-                  <text class="odds-label">平局</text>
-                  <text class="odds-value">{{item.hadD}}</text>
-                </view>
-                <view class="odds-item {{selectedMap[item.matchId + '_had_A'] ? 'active' : ''}}" data-matchid="{{item.matchId}}" data-type="had" data-value="A" data-odds="{{item.hadA}}" bindtap="onSelectOption">
-                  <text class="odds-label">客胜</text>
-                  <text class="odds-value">{{item.hadA}}</text>
+                <view class="odds-group {{item.bettingSingle == 1 || item.bettingSingle == true ? 'single' : ''}}">
+                  <text class="single-corner" wx:if="{{item.bettingSingle == 1 || item.bettingSingle == true}}">单</text>
+                  <view class="odds-item {{selectedMap[item.matchId + '_had_H'] ? 'active' : ''}}" data-matchid="{{item.matchId}}" data-type="had" data-value="H" data-odds="{{item.hadH}}" bindtap="onSelectOption">
+                    <text class="odds-label">胜</text>
+                    <text class="odds-value">{{item.hadH}}</text>
+                  </view>
+                  <view class="odds-item {{selectedMap[item.matchId + '_had_D'] ? 'active' : ''}}" data-matchid="{{item.matchId}}" data-type="had" data-value="D" data-odds="{{item.hadD}}" bindtap="onSelectOption">
+                    <text class="odds-label">平</text>
+                    <text class="odds-value">{{item.hadD}}</text>
+                  </view>
+                  <view class="odds-item {{selectedMap[item.matchId + '_had_A'] ? 'active' : ''}}" data-matchid="{{item.matchId}}" data-type="had" data-value="A" data-odds="{{item.hadA}}" bindtap="onSelectOption">
+                    <text class="odds-label">负</text>
+                    <text class="odds-value">{{item.hadA}}</text>
+                  </view>
                 </view>
               </view>
             </view>
 
             <!-- 让球胜平负 -->
             <view class="odds-section last">
-              <view class="section-title-row">
-                <text class="section-title">让球({{item.hhadGoalLine}})</text>
-                <text class="single-badge" wx:if="{{item.bettingAllUp == 1 || item.bettingAllUp == true}}">单</text>
-              </view>
-              <view class="odds-row">
-                <view class="odds-item {{selectedMap[item.matchId + '_hhad_H'] ? 'active' : ''}}" data-matchid="{{item.matchId}}" data-type="hhad" data-value="H" data-odds="{{item.hhadH}}" bindtap="onSelectOption">
-                  <text class="odds-label">主胜</text>
-                  <text class="odds-value">{{item.hhadH}}</text>
-                </view>
-                <view class="odds-item {{selectedMap[item.matchId + '_hhad_D'] ? 'active' : ''}}" data-matchid="{{item.matchId}}" data-type="hhad" data-value="D" data-odds="{{item.hhadD}}" bindtap="onSelectOption">
-                  <text class="odds-label">平局</text>
-                  <text class="odds-value">{{item.hhadD}}</text>
-                </view>
-                <view class="odds-item {{selectedMap[item.matchId + '_hhad_A'] ? 'active' : ''}}" data-matchid="{{item.matchId}}" data-type="hhad" data-value="A" data-odds="{{item.hhadA}}" bindtap="onSelectOption">
-                  <text class="odds-label">客胜</text>
-                  <text class="odds-value">{{item.hhadA}}</text>
+              <view class="odds-inline-row">
+                <text class="section-title">让球<text class="goalline">({{item.hhadGoalLine}})</text></text>
+                <view class="odds-group">
+                  <view class="odds-item {{selectedMap[item.matchId + '_hhad_H'] ? 'active' : ''}}" data-matchid="{{item.matchId}}" data-type="hhad" data-value="H" data-odds="{{item.hhadH}}" bindtap="onSelectOption">
+                    <text class="odds-label">胜</text>
+                    <text class="odds-value">{{item.hhadH}}</text>
+                  </view>
+                  <view class="odds-item {{selectedMap[item.matchId + '_hhad_D'] ? 'active' : ''}}" data-matchid="{{item.matchId}}" data-type="hhad" data-value="D" data-odds="{{item.hhadD}}" bindtap="onSelectOption">
+                    <text class="odds-label">平</text>
+                    <text class="odds-value">{{item.hhadD}}</text>
+                  </view>
+                  <view class="odds-item {{selectedMap[item.matchId + '_hhad_A'] ? 'active' : ''}}" data-matchid="{{item.matchId}}" data-type="hhad" data-value="A" data-odds="{{item.hhadA}}" bindtap="onSelectOption">
+                    <text class="odds-label">负</text>
+                    <text class="odds-value">{{item.hhadA}}</text>
+                  </view>
                 </view>
               </view>
             </view>
@@ -131,21 +130,26 @@
                 bindtouchmove="onTouchMove"
                 bindtouchend="onTouchEnd">
             <view class="record-card" bindtap="onRecordTap" data-record="{{item}}">
-              <view class="record-header">
-                <text class="record-time">{{item.createTimeStr}}</text>
-                <text class="record-status {{item.status === 1 ? 'win' : (item.status === 2 ? 'lose' : 'pending')}}">
-                  {{item.statusDesc}}
-                </text>
+              <!-- 左侧日期 -->
+              <view class="record-date-box">
+                <text class="date-month">{{item.monthDay}}</text>
+                <text class="date-time">{{item.hourMinute}}</text>
               </view>
-              <view class="record-info">
-                <text class="record-matches">{{item.matchCount}}场比赛</text>
-                <text class="record-pass">{{item.passTypesStr}}</text>
+              <!-- 右侧内容 -->
+              <view class="record-content">
+                <!-- 状态标签 - 右上角 -->
+                <view class="record-status-tag {{item.status === 1 ? 'win' : (item.status === 2 ? 'lose' : 'pending')}}">
+                  <text class="status-text">{{item.statusDesc}}</text>
+                </view>
+                <view class="record-title-row">
+                  <text class="record-matches">{{item.matchCount}}场比赛</text>
+                  <text class="record-pass">{{item.passTypesStr}}</text>
+                </view>
+                <view class="record-amount-row">
+                  <text class="record-amount">¥{{item.totalAmount}}</text>
+                  <text class="record-bonus" wx:if="{{item.status === 1 && item.bonus > 0}}">中奖 ¥{{item.bonus}}</text>
+                </view>
               </view>
-              <view class="record-footer">
-                <text class="record-amount">{{item.totalBets}}注 × {{item.multiple}}倍 = {{item.totalAmount}}元</text>
-                <text class="record-bonus" wx:if="{{item.bonus > 0}}">奖金: {{item.bonus}}元</text>
-              </view>
-              <view class="record-arrow">›</view>
             </view>
             <view class="record-delete-btn" catchtap="onDeleteRecord" data-id="{{item.id}}" data-index="{{index}}">
               <text class="delete-text">删除</text>
@@ -173,7 +177,7 @@
           <text class="label">倍数</text>
           <view class="stepper">
             <view class="stepper-btn" bindtap="onMultipleMinus">-</view>
-            <input class="stepper-input" type="number" value="{{multiple}}" bindinput="onMultipleChange" />
+            <input class="stepper-input" type="number" value="{{multipleInput}}" bindinput="onMultipleInput" bindblur="onMultipleBlur" />
             <view class="stepper-btn" bindtap="onMultiplePlus">+</view>
           </view>
         </view>
@@ -319,31 +323,31 @@
           <text class="play-title">半全场</text>
           <view class="hafu-grid">
             <view class="hafu-item {{selectedMap[currentMatch.matchId + '_hafu_HH'] ? 'active' : ''}}" data-hafu="HH" data-odds="{{currentMatch.hafuHh}}" bindtap="onSelectHafu">
-              <text class="h-label">胜-胜</text><text class="h-odds">{{currentMatch.hafuHh}}</text>
+              <text class="h-label">胜胜</text><text class="h-odds">{{currentMatch.hafuHh}}</text>
             </view>
             <view class="hafu-item {{selectedMap[currentMatch.matchId + '_hafu_HD'] ? 'active' : ''}}" data-hafu="HD" data-odds="{{currentMatch.hafuHd}}" bindtap="onSelectHafu">
-              <text class="h-label">胜-平</text><text class="h-odds">{{currentMatch.hafuHd}}</text>
+              <text class="h-label">胜平</text><text class="h-odds">{{currentMatch.hafuHd}}</text>
             </view>
             <view class="hafu-item {{selectedMap[currentMatch.matchId + '_hafu_HA'] ? 'active' : ''}}" data-hafu="HA" data-odds="{{currentMatch.hafuHa}}" bindtap="onSelectHafu">
-              <text class="h-label">胜-负</text><text class="h-odds">{{currentMatch.hafuHa}}</text>
+              <text class="h-label">胜负</text><text class="h-odds">{{currentMatch.hafuHa}}</text>
             </view>
             <view class="hafu-item {{selectedMap[currentMatch.matchId + '_hafu_DH'] ? 'active' : ''}}" data-hafu="DH" data-odds="{{currentMatch.hafuDh}}" bindtap="onSelectHafu">
-              <text class="h-label">平-胜</text><text class="h-odds">{{currentMatch.hafuDh}}</text>
+              <text class="h-label">平胜</text><text class="h-odds">{{currentMatch.hafuDh}}</text>
             </view>
             <view class="hafu-item {{selectedMap[currentMatch.matchId + '_hafu_DD'] ? 'active' : ''}}" data-hafu="DD" data-odds="{{currentMatch.hafuDd}}" bindtap="onSelectHafu">
-              <text class="h-label">平-平</text><text class="h-odds">{{currentMatch.hafuDd}}</text>
+              <text class="h-label">平平</text><text class="h-odds">{{currentMatch.hafuDd}}</text>
             </view>
             <view class="hafu-item {{selectedMap[currentMatch.matchId + '_hafu_DA'] ? 'active' : ''}}" data-hafu="DA" data-odds="{{currentMatch.hafuDa}}" bindtap="onSelectHafu">
-              <text class="h-label">平-负</text><text class="h-odds">{{currentMatch.hafuDa}}</text>
+              <text class="h-label">平负</text><text class="h-odds">{{currentMatch.hafuDa}}</text>
             </view>
             <view class="hafu-item {{selectedMap[currentMatch.matchId + '_hafu_AH'] ? 'active' : ''}}" data-hafu="AH" data-odds="{{currentMatch.hafuAh}}" bindtap="onSelectHafu">
-              <text class="h-label">负-胜</text><text class="h-odds">{{currentMatch.hafuAh}}</text>
+              <text class="h-label">负胜</text><text class="h-odds">{{currentMatch.hafuAh}}</text>
             </view>
             <view class="hafu-item {{selectedMap[currentMatch.matchId + '_hafu_AD'] ? 'active' : ''}}" data-hafu="AD" data-odds="{{currentMatch.hafuAd}}" bindtap="onSelectHafu">
-              <text class="h-label">负-平</text><text class="h-odds">{{currentMatch.hafuAd}}</text>
+              <text class="h-label">负平</text><text class="h-odds">{{currentMatch.hafuAd}}</text>
             </view>
             <view class="hafu-item {{selectedMap[currentMatch.matchId + '_hafu_AA'] ? 'active' : ''}}" data-hafu="AA" data-odds="{{currentMatch.hafuAa}}" bindtap="onSelectHafu">
-              <text class="h-label">负-负</text><text class="h-odds">{{currentMatch.hafuAa}}</text>
+              <text class="h-label">负负</text><text class="h-odds">{{currentMatch.hafuAa}}</text>
             </view>
           </view>
         </view>
