@@ -5,6 +5,7 @@
     "include": []
   },
   "setting": {
+    "localPlugins": false,
     "urlCheck": true,
     "es6": true,
     "enhance": true,
@@ -25,36 +26,29 @@
     "lazyloadPlaceholderEnable": false,
     "useMultiFrameRuntime": true,
     "useApiHook": true,
-    "useApiHostProcess": true,
+    "useApiHostProcess": false,
     "babelSetting": {
       "ignore": [],
       "disablePlugins": [],
       "outputPath": ""
     },
+    "enableEngineNative": false,
     "useIsolateContext": true,
     "userConfirmedBundleSwitch": false,
     "packNpmManually": false,
     "packNpmRelationList": [],
     "minifyWXSS": true,
-    "disableUseStrict": false,
-    "minifyWXML": true,
     "showES6CompileOption": false,
-    "useCompilerPlugins": false,
-    "ignoreUploadUnusedFiles": true,
-    "compileWorklet": false,
-    "localPlugins": false,
-    "condition": false,
-    "swc": false,
-    "disableSWC": true
+    "minifyWXML": true
   },
   "compileType": "miniprogram",
   "libVersion": "3.3.4",
   "appid": "wxec827e71879e6a27",
   "projectname": "football-analysis-miniprogram",
-  "condition": {},
   "editorSetting": {
     "tabIndent": "insertSpaces",
     "tabSize": 2
   },
-  "simulatorPluginLibVersion": {}
+  "simulatorPluginLibVersion": {},
+  "condition": {}
 }
