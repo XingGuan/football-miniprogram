@@ -63,14 +63,22 @@ Page({
 
     // 处理比赛详情中的选项显示
     if (data.matchDetails) {
-      data.matchDetails = data.matchDetails.map(match => ({
-        ...match,
-        options: (match.options || []).map(opt => ({
+      data.matchDetails = data.matchDetails.map(match => {
+        const options = (match.options || []).map(opt => ({
           ...opt,
           displayValue: this.getValueName(opt.optionType, opt.optionValue),
           isHit: opt.isHit === 1
-        })),
-      }))
+        }))
+
+        // 按玩法类型分组
+        const optionGroups = this.groupOptionsByType(options)
+
+        return {
+          ...match,
+          options,
+          optionGroups
+        }
+      })
     }
 
     // 计算实际中奖金额
@@ -399,6 +407,54 @@ Page({
     return result
   },
 
+  // 按玩法类型分组选项
+  groupOptionsByType(options) {
+    const typeMap = {}
+    const typeDescMap = {
+      'had': '胜平负',
+      'hhad': '让球胜平负',
+      'crs': '比分',
+      'ttg': '总进球',
+      'hafu': '半全场'
+    }
+
+    options.forEach(opt => {
+      const type = opt.optionType
+      if (!typeMap[type]) {
+        typeMap[type] = {
+          type,
+          typeDesc: opt.optionTypeDesc || typeDescMap[type] || type,
+          goalLine: opt.goalLine,
+          matchResultDesc: opt.matchResultDesc,
+          checkTime: opt.checkTime,
+          isHit: false,
+          options: []
+        }
+      }
+      typeMap[type].options.push({
+        value: opt.optionValue,
+        displayValue: opt.displayValue,
+        odds: opt.odds,
+        checked: opt.checked !== false, // 默认为true（兼容旧数据）
+        isHit: opt.isHit,
+        checkTime: opt.checkTime
+      })
+      // 更新开奖结果和命中状态
+      if (opt.matchResultDesc) {
+        typeMap[type].matchResultDesc = opt.matchResultDesc
+      }
+      if (opt.checkTime) {
+        typeMap[type].checkTime = opt.checkTime
+      }
+      // 只要有一个选中的选项命中，该分组就算命中
+      if (opt.checked !== false && opt.isHit) {
+        typeMap[type].isHit = true
+      }
+    })
+
+    return Object.values(typeMap)
+  },
+
   // 获取选项值显示名称
   getValueName(type, value) {
     // 胜平负、让球胜平负
@@ -413,9 +469,9 @@ Page({
     // 半全场
     if (type === 'hafu') {
       const map = {
-        'HH': '胜-胜', 'HD': '胜-平', 'HA': '胜-负',
-        'DH': '平-胜', 'DD': '平-平', 'DA': '平-负',
-        'AH': '负-胜', 'AD': '负-平', 'AA': '负-负'
+        'HH': '胜胜', 'HD': '胜平', 'HA': '胜负',
+        'DH': '平胜', 'DD': '平平', 'DA': '平负',
+        'AH': '负胜', 'AD': '负平', 'AA': '负负'
       }
       return map[value] || value
     }
