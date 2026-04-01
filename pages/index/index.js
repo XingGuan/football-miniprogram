@@ -4,6 +4,7 @@ const dateUtils = require('../../utils/date')
 const matchUtils = require('../../utils/match')
 const userStore = require('../../store/user')
 const userApi = require('../../api/user')
+const leagueColor = require('../../store/leagueColor')
 
 Page({
   data: {
@@ -191,6 +192,9 @@ Page({
       // 兼容分页结构和数组结构
       const rawMatches = Array.isArray(res) ? res : (res && res.list ? res.list : [])
 
+      // 缓存联赛颜色
+      leagueColor.batchSetColors(rawMatches)
+
       // 字段映射转换
       const matches = rawMatches.map(item => ({
         id: item.matchId,
@@ -198,6 +202,7 @@ Page({
         matchNum: item.matchNum,
         league: item.leagueAbbName,
         leagueId: item.leagueId,
+        leagueColor: item.backColor || leagueColor.getColor(item.leagueId),
         homeTeam: item.homeTeamAbbName,
         homeTeamFull: item.homeTeamAllName,
         homeTeamId: item.homeTeamId,
@@ -275,7 +280,7 @@ Page({
         })
       } else if (typeof result === 'object') {
         // 对象格式
-        console.log(result)
+    //    console.log(result)
 
         Object.assign(unlockMap, result)
       }
@@ -380,7 +385,6 @@ Page({
         groups[weekday] = []
       }
       groups[weekday].push(match)
-
       // 记录该周的第一场比赛的日期（格式：MM-DD）
       if (!dateMap[weekday] && match.matchDate) {
         // 从 "2026-03-26" 提取 "03-26"
@@ -390,7 +394,6 @@ Page({
         }
       }
     })
-
     // 按周几顺序排序，以当天为起点
     const fullWeekOrder = ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
     const today = new Date()

@@ -58,6 +58,32 @@
   box-shadow: 0 4rpx 16rpx rgba(102, 126, 234, 0.2);
 }
 
+/* 刷新按钮 - 右下角固定 */
+.refresh-btn {
+  position: fixed;
+  right: 30rpx;
+  bottom: 100rpx;
+  width: 100rpx;
+  height: 100rpx;
+  background: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.15);
+  z-index: 100;
+}
+
+.refresh-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.refresh-icon {
+  font-size: 44rpx;
+  color: #ff6b6b;
+}
+
 .page-title {
   font-size: 36rpx;
   color: #fff;
@@ -163,6 +189,14 @@
   font-size: 22rpx;
   color: #ff9800;
   font-weight: 600;
+}
+
+.league-tag {
+  font-size: 20rpx;
+  color: #fff;
+  padding: 4rpx 12rpx;
+  border-radius: 6rpx;
+  font-weight: 500;
 }
 
 .status-badge {
@@ -374,4 +408,213 @@
 
 .bottom-placeholder {
   height: 20rpx;
+}
+
+/* Tab 切换 */
+.tabs {
+  display: flex;
+  background: #fff;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.tab-item {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24rpx 0;
+  position: relative;
+}
+
+.tab-text {
+  font-size: 28rpx;
+  color: #666;
+  font-weight: 500;
+}
+
+.tab-item.active .tab-text {
+  color: #667eea;
+  font-weight: 600;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60rpx;
+  height: 4rpx;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  border-radius: 2rpx;
+}
+
+/* 比分直播卡片 */
+.live-item {
+  background: #fff;
+  border-radius: 16rpx;
+  margin-bottom: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+}
+
+.live-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 20rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.live-league {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+}
+
+.league-tag {
+  font-size: 20rpx;
+  color: #fff;
+  padding: 4rpx 12rpx;
+  border-radius: 6rpx;
+  font-weight: 500;
+}
+
+.live-status {
+  font-size: 20rpx;
+  color: #52c41a;
+  font-weight: 500;
+}
+
+.live-time {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  font-size: 20rpx;
+  color: #999;
+}
+
+/* 比分区域 */
+.live-score-section {
+  display: flex;
+  align-items: center;
+  padding: 24rpx 20rpx;
+}
+
+.live-team {
+  flex: 1;
+}
+
+.live-team.home {
+  text-align: right;
+}
+
+.live-team.away {
+  text-align: left;
+}
+
+.live-team-name {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 600;
+}
+
+.live-score-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 140rpx;
+  padding: 0 20rpx;
+}
+
+.live-score {
+  font-size: 48rpx;
+  font-weight: 800;
+  color: #ff3b30;
+  font-family: 'Arial', monospace;
+  letter-spacing: 2rpx;
+}
+
+.live-half-score {
+  font-size: 20rpx;
+  color: #999;
+  margin-top: 4rpx;
+}
+
+.live-minute {
+  font-size: 22rpx;
+  color: #52c41a;
+  font-weight: 600;
+  margin-top: 4rpx;
+  background: rgba(82, 196, 26, 0.1);
+  padding: 2rpx 12rpx;
+  border-radius: 10rpx;
+}
+
+/* 事件时间线 */
+.live-events {
+  padding: 16rpx 20rpx;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.03) 100%);
+  border-top: 1rpx solid #f0f0f0;
+}
+
+.events-title {
+  font-size: 22rpx;
+  color: #999;
+  font-weight: 500;
+  margin-bottom: 12rpx;
+}
+
+.event-item {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 10rpx 0;
+  border-bottom: 1rpx dashed #f0f0f0;
+}
+
+.event-item:last-child {
+  border-bottom: none;
+}
+
+.event-item.home {
+  flex-direction: row;
+}
+
+.event-item.away {
+  flex-direction: row-reverse;
+}
+
+.event-time {
+  font-size: 22rpx;
+  color: #667eea;
+  font-weight: 600;
+  min-width: 50rpx;
+  text-align: center;
+}
+
+.event-icon {
+  font-size: 28rpx;
+}
+
+.event-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2rpx;
+  flex: 1;
+}
+
+.event-item.away .event-info {
+  text-align: right;
+}
+
+.event-player {
+  font-size: 24rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.event-type {
+  font-size: 20rpx;
+  color: #999;
 }

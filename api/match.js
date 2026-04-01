@@ -107,6 +107,13 @@ function getMatchResults() {
 }
 
 /**
+ * 获取比分直播列表
+ */
+function getMatchLive() {
+  return post(`/api/match/live?_t=${Date.now()}`)
+}
+
+/**
  * 格式化日期
  * @param {Date} date 日期对象
  */
@@ -130,5 +137,6 @@ module.exports = {
   getMatchAllOdds,
   recommendCalculatorRecord,
   getCalculatorRecommendList,
-  getMatchResults
+  getMatchResults,
+  getMatchLive
 }

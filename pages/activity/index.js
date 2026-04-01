@@ -43,7 +43,7 @@ Page({
 
     try {
       const res = await groupbuyApi.getMyGroupList(userInfo.id, 1, 50)
-      console.log(res)
+     // console.log(res)
       // 处理不同的返回格式
       let allGroups = []
       if (Array.isArray(res)) {

@@ -13,7 +13,7 @@ Page({
   },
 
   onLoad(options) {
-    console.log('详情页 onLoad, options:', options)
+   //('详情页 onLoad, options:', options)
     const id = options.id
     const from = options.from
     if (!id) {
@@ -36,7 +36,7 @@ Page({
       
 
       const record = records.find(r => String(r.id) === String(id))
-      console.log('找到记录:', record)
+     //('找到记录:', record)
 
       if (record) {
         this.processRecord(record)

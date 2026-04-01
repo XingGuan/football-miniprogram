@@ -4,6 +4,7 @@ const matchApi = require('../../api/match')
 Page({
   data: {
     recommendations: [],
+    rankList: [], // 胜率排行榜前三
     loading: true,
     error: null
   },
@@ -59,7 +60,22 @@ Page({
         userStats: userStats[item.userId],
         winRate: this.calculateWinRate(userStats[item.userId])
       }))
-      this.setData({ recommendations, loading: false, error: null })
+
+      // 计算胜率排行榜前三
+      const rankList = Object.values(userStats)
+        .filter(u => u.totalRecords >= 1) // 至少有1条已开奖记录
+        .map(u => ({
+          ...u,
+          winRate: u.totalRecords > 0 ? Math.round((u.winRecords / u.totalRecords) * 100) : 0
+        }))
+        .sort((a, b) => {
+          // 先按胜率排序，胜率相同按中奖数排序
+          if (b.winRate !== a.winRate) return b.winRate - a.winRate
+          return b.winRecords - a.winRecords
+        })
+        .slice(0, 3)
+
+      this.setData({ recommendations, rankList, loading: false, error: null })
     } catch (error) {
       console.error('加载推荐列表失败:', error)
       this.setData({ loading: false, error: '加载失败，请重试' })

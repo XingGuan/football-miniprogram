@@ -430,20 +430,20 @@ Page({
     let allBonusResults = [] // 存储所有可能的奖金组合
 
     // 打印计算过程
-    console.log('=== 注数计算 ===')
-    console.log(`场次数: ${matchIds.length}`)
+  //  console.log('=== 注数计算 ===')
+  //  console.log(`场次数: ${matchIds.length}`)
     matchIds.forEach(matchId => {
       const types = selections[matchId].map(s => s.type + ':' + s.value)
-      console.log(`  场次${matchId}: ${types.join(', ')}`)
+   //   console.log(`  场次${matchId}: ${types.join(', ')}`)
     })
 
     selectedPassTypes.forEach(passType => {
       const bets = this.calculatePassTypeBets(passType, matchIds, selections)
-      console.log(`${passType}: ${bets.count}注`)
+   //   console.log(`${passType}: ${bets.count}注`)
       totalBets += bets.count
       allBonusResults = allBonusResults.concat(bets.bonusResults)
     })
-    console.log(`总计: ${totalBets}注, ${totalBets * 2 * multiple}元`)
+   //(`总计: ${totalBets}注, ${totalBets * 2 * multiple}元`)
 
     // 计算最小奖金：所有单注中最小的
     let minBonus = 0

@@ -1,12 +1,15 @@
 // pages/match-result/index.js - 赛果列表
 const matchApi = require('../../api/match')
+const leagueColor = require('../../store/leagueColor')
 
 Page({
   data: {
+    activeTab: 'result', // result: 赛果, live: 比分直播
     results: [],
+    liveMatches: [],
     loading: true,
     error: null,
-    expandedId: null // 记录展开的卡片ID
+    expandedId: null
   },
 
   onLoad() {
@@ -14,50 +17,118 @@ Page({
   },
 
   onShow() {
-    // 每次显示时刷新列表
-    this.loadResults()
+    if (this.data.activeTab === 'result') {
+      this.loadResults()
+    } else {
+      this.loadLiveMatches()
+    }
+  },
+
+  // 切换 Tab
+  onTabChange(e) {
+    const tab = e.currentTarget.dataset.tab
+    if (tab === this.data.activeTab) return
+
+    this.setData({ activeTab: tab, expandedId: null })
+
+    if (tab === 'result') {
+      this.loadResults()
+    } else {
+      this.loadLiveMatches()
+    }
   },
 
   // 加载赛果列表
   async loadResults() {
-    this.setData({ loading: true })
+    this.setData({ loading: true, error: null })
     try {
       const res = await matchApi.getMatchResults()
       const results = res.data || res || []
 
-      // 处理数据，添加展示需要的字段
+      // 缓存联赛颜色
+      leagueColor.batchSetColors(results)
+
       const processedResults = results.map(item => {
-        // 尝试多个可能的字段名来获取比分
-        const score = item.crsResult 
+        const score = item.crsResult
+        // 兼容不同的联赛字段名
+        const lgId = item.leagueId || item.leagueCode || item.league_id
+        const lgName = item.leagueName || item.leagueAbbName
+
+        // 获取联赛颜色：优先接口返回 -> 按ID查缓存 -> 按名称查缓存 -> 默认色
+        const displayColor = item.backColor
+          || leagueColor.getColor(lgId, null)
+          || leagueColor.getColor(lgName, null)
+          || '667eea'
 
         return {
           ...item,
-          // 格式化状态类名
           statusClass: this.getStatusClass(item.matchStatus),
-          // 完整比分显示
           fullScore: this.formatScore(score),
           halfScore: this.formatScore(item.sectionsNo1 || item.halfScore),
-          extraScore: item.sectionsExtra ? this.formatScore(item.sectionsExtra) : '',
-          penaltyScore: item.sectionsPenalty ? this.formatScore(item.sectionsPenalty) : '',
-          // 格式化日期时间
           displayDate: this.formatDate(item.matchDate),
-          displayTime: item.matchTime || '--:--'
+          displayTime: item.matchTime || '--:--',
+          displayColor
         }
       })
 
-      this.setData({ results: processedResults, loading: false, error: null })
+      this.setData({ results: processedResults, loading: false })
     } catch (error) {
       console.error('加载赛果失败:', error)
       this.setData({ loading: false, error: '加载失败，请重试' })
     }
   },
 
+  // 加载比分直播列表
+  async loadLiveMatches() {
+    this.setData({ loading: true, error: null })
+    try {
+      const res = await matchApi.getMatchLive()
+      const matches = res.data || res || []
+
+      // 缓存联赛颜色
+      leagueColor.batchSetColors(matches)
+
+      const processedMatches = matches.map(item => ({
+        ...item,
+        displayDate: this.formatDate(item.matchDate),
+        displayTime: item.matchTime ? item.matchTime.substring(0, 5) : '--:--',
+        // 优先使用接口返回的颜色，否则从缓存读取
+        displayColor: item.backColor || leagueColor.getColor(item.leagueId),
+        // 处理事件列表
+        events: (item.eventList || []).map(event => ({
+          ...event,
+          eventName: this.getEventName(event.eventCode),
+          isHome: event.teamType === 'home'
+        }))
+      }))
+
+      this.setData({ liveMatches: processedMatches, loading: false })
+    } catch (error) {
+      console.error('加载比分直播失败:', error)
+      this.setData({ loading: false, error: '加载失败，请重试' })
+    }
+  },
+
+  // 获取事件名称
+  getEventName(eventCode) {
+    const eventMap = {
+      'G': '进球',
+      'PG': '点球',
+      'OG': '乌龙球',
+      'Y': '黄牌',
+      'R': '红牌',
+      'S': '换人'
+    }
+    return eventMap[eventCode] || eventCode
+  },
+
   // 获取状态样式类
   getStatusClass(status) {
     const statusMap = {
-      '0': 'upcoming',   // 未开始
-      '1': 'ongoing',    // 进行中
-      '2': 'finished'    // 已结束
+      '0': 'upcoming',
+      '1': 'ongoing',
+      '2': 'finished',
+      '6': 'finished'
     }
     return statusMap[status] || 'unknown'
   },
@@ -81,16 +152,6 @@ Page({
     }
   },
 
-  // 获取胜平负结果显示
-  getHadResultDisplay(hadResult) {
-    const map = {
-      'H': '主胜',
-      'D': '平局',
-      'A': '客胜'
-    }
-    return map[hadResult] || '-'
-  },
-
   // 切换展开状态
   onToggleExpand(e) {
     const matchId = e.currentTarget.dataset.matchid
@@ -102,6 +163,20 @@ Page({
 
   // 重试加载
   onRetry() {
-    this.loadResults()
+    if (this.data.activeTab === 'result') {
+      this.loadResults()
+    } else {
+      this.loadLiveMatches()
+    }
+  },
+
+  // 刷新
+  onRefresh() {
+    wx.showToast({ title: '刷新中...', icon: 'loading', duration: 500 })
+    if (this.data.activeTab === 'result') {
+      this.loadResults()
+    } else {
+      this.loadLiveMatches()
+    }
   }
 })
