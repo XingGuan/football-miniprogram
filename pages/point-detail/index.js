@@ -55,7 +55,7 @@ Page({
       const currentPageNum = isLoadMore ? pageNum + 1 : 1
       const timestamp = Date.now()
       const res = await userApi.getPointDetailList(userInfo.id, selectedType, currentPageNum, this.data.pageSize, timestamp)
-      console.log(res)
+    //  console.log(res)
       const newDetails = res || []
 
       // 处理数据格式

@@ -27,6 +27,33 @@
       </view>
     </view>
 
+    <!-- 胜率排行榜 -->
+    <view class="rank-section" wx:if="{{rankList.length > 0}}">
+      <view class="rank-header">
+        <text class="rank-title">🏆 胜率排行榜</text>
+      </view>
+      <view class="rank-list">
+        <view class="rank-item" wx:for="{{rankList}}" wx:key="userName">
+          <view class="rank-medal">
+            <text wx:if="{{index === 0}}">🥇</text>
+            <text wx:elif="{{index === 1}}">🥈</text>
+            <text wx:else>🥉</text>
+          </view>
+          <view class="rank-avatar">
+            <image class="avatar-img" src="{{item.avatar}}" mode="aspectFill" wx:if="{{item.avatar}}"></image>
+            <view class="avatar-fallback" wx:else>{{item.userName[0]}}</view>
+          </view>
+          <view class="rank-user">
+            <text class="rank-name">{{item.userName}}</text>
+            <text class="rank-stats">{{item.winRecords}}中/{{item.totalRecords}}单</text>
+          </view>
+          <view class="rank-rate">
+            <text class="rate-num">{{item.winRate}}%</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
     <!-- 空状态 -->
     <view class="empty-state" wx:if="{{recommendations.length === 0}}">
       <text class="empty-icon">📭</text>

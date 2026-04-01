@@ -47,6 +47,14 @@
   color: #666;
 }
 
+.league-tag {
+  font-size: 20rpx;
+  color: #fff;
+  padding: 4rpx 12rpx;
+  border-radius: 6rpx;
+  font-weight: 500;
+}
+
 .match-time {
   font-size: 26rpx;
   color: #333;

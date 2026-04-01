@@ -10,7 +10,8 @@
       "Bash(git commit -m \"$\\(cat <<''EOF''\n优化大厅列表，显示用户名称和近期战绩\n\n- 统计每个用户的中奖/未中奖/待开奖记录\n- 计算用户的胜率百分比\n- 在每个方案卡片顶部显示用户头像、用户名和战绩\n- 战绩信息包括：中奖数、未中数、胜率\n- 用户头像支持显示图片或首字母缩写\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(git commit -m \"$\\(cat <<''EOF''\n重新设计大厅列表样式，提升视觉美观度\n\n设计改进：\n1. 现代化卡片设计：\n   - 顶部渐变状态条（中奖红色、待开奖绿色、未中奖灰色）\n   - 统一的圆角卡片设计，增强视觉层次感\n   - 优化的阴影和交互效果\n\n2. 用户信息区优化：\n   - 更大的头像显示（48rpx）\n   - 更突出的用户名称（粗体+更大字号）\n   - 彩色徽章显示方案状态\n   - 三个并排的统计数据框（中奖/未中/胜率）\n   - 右上角显示推荐时间\n\n3. 方案详情区简化：\n   - 清晰的三行信息（比赛数、过关方式、投注注数）\n   - 投注金额和中奖奖金分开展示\n   - 中奖金额使用红色背景突出\n\n4. 色彩和排版优化：\n   - 渐变背景页面，更有层次感\n   - 紫色渐变页面标题\n   - 统计数据框使用不同颜色标记\n   - 整体更加清晰易读\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(git commit -m \"$\\(cat <<''EOF''\n简化大厅卡片布局\n\n- 删除右上角的时间显示\n- 删除投注金额和中奖奖金行\n- 保留比赛数、过关方式、投注注数三项基本信息\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git restore:*)"
     ]
   }
 }

@@ -7,7 +7,7 @@
   <view class="card-header">
     <view class="header-left">
       <text class="match-num">{{match.matchNumStr}}</text>
-      <text class="league-name">{{match.league}}</text>
+      <text class="league-tag" style="background-color: #{{match.leagueColor || '667eea'}}">{{match.league}}</text>
     </view>
     <view class="header-right">
       <text class="match-time">{{formattedTime}}</text>
