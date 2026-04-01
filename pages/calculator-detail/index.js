@@ -87,7 +87,7 @@ Page({
     this.setData({ record: data, loading: false })
   },
 
-// 计算实际中奖金额
+// 计算实际中奖金额（只计算 checked=true 的选项）
   calculateActualBonus(record) {
     if (record.status !== 1) return 0
     if (!record.matchDetails || record.matchDetails.length === 0) return 0
@@ -95,12 +95,13 @@ Page({
     const multiple = record.multiple || 1
     const passTypes = record.passTypes || []
 
-    // 收集所有命中的选项
+    // 收集所有选中且命中的选项
     let hitOptions = []
     for (const match of record.matchDetails) {
       if (!match.options) continue
       for (const opt of match.options) {
-        if (opt.isHit === true) {
+        // 只计算 checked=true 且命中的选项
+        if (opt.checked !== false && opt.isHit === true) {
           hitOptions.push(opt.odds || 1)
         }
       }
@@ -163,18 +164,21 @@ Page({
 
     if (passTypes.length === 0) return ''
 
-    // 构建选项数据
+    // 构建选项数据（只计算 checked=true 的选项）
     const selections = {}
     const matchIds = []
 
     matchDetails.forEach(match => {
       const matchId = String(match.matchId)
       matchIds.push(matchId)
-      selections[matchId] = (match.options || []).map(opt => ({
-        type: opt.optionType,
-        value: opt.optionValue,
-        odds: opt.odds || 1
-      }))
+      // 只筛选 checked=true 的选项
+      selections[matchId] = (match.options || [])
+        .filter(opt => opt.checked !== false)
+        .map(opt => ({
+          type: opt.optionType,
+          value: opt.optionValue,
+          odds: opt.odds || 1
+        }))
     })
 
     // 计算最小奖金：所有单注组合中最小的
