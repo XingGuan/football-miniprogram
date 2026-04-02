@@ -144,29 +144,6 @@
         </view>
       </view>
 
-      <!-- 赔率分析 -->
-      <view class="dragon-section" wx:if="{{analysisData.maxOddsWinRate}}">
-        <text class="section-title">💎 赔率分析</text>
-        <view class="odds-items">
-          <view class="odds-item">
-            <text class="odds-label">最高赔率</text>
-            <text class="odds-value">{{analysisData.maxOddsWinRate}}%</text>
-            <view class="odds-detail">
-              <text class="odds-count">{{analysisData.maxOddsWinCount}}次命中</text>
-              <text class="odds-gap">已{{analysisData.gapsSinceLastMaxOdds}}场未出</text>
-            </view>
-          </view>
-          <view class="odds-item">
-            <text class="odds-label">最低赔率</text>
-            <text class="odds-value">{{analysisData.minOddsWinRate}}%</text>
-            <view class="odds-detail">
-              <text class="odds-count">{{analysisData.minOddsWinCount}}次命中</text>
-              <text class="odds-gap">已{{analysisData.gapsSinceLastMinOdds}}场未出</text>
-            </view>
-          </view>
-        </view>
-      </view>
-
       <!-- 关联比赛 -->
       <view class="dragon-section" wx:if="{{analysisData.matchDetails && analysisData.matchDetails.length > 0}}">
         <text class="section-title">🎮 关联比赛</text>
@@ -216,10 +193,10 @@
         <text class="btn-icon">📋</text>
         <text class="btn-text">复制</text>
       </view>
-      <view class="action-btn share-btn" open-type="share">
+      <button class="action-btn share-btn" open-type="share">
         <text class="btn-icon">📤</text>
         <text class="btn-text">分享</text>
-      </view>
+      </button>
     </view>
 
     <!-- 复制提示 -->
