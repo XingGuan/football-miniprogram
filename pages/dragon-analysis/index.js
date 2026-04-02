@@ -88,10 +88,7 @@ Page({
       `【出现率】\n` +
       `主胜: ${Math.round(data.homeWinRate * 100) / 100}%\n` +
       `平局: ${Math.round(data.drawRate * 100) / 100}%\n` +
-      `客胜: ${Math.round(data.awayWinRate * 100) / 100}%\n\n` +
-      `【赔率分析】\n` +
-      `最高赔率: ${data.maxOddsWinRate}% (${data.maxOddsWinCount}次命中)\n` +
-      `最低赔率: ${data.minOddsWinRate}% (${data.minOddsWinCount}次命中)`
+      `客胜: ${Math.round(data.awayWinRate * 100) / 100}%`
 
     return text
   },
