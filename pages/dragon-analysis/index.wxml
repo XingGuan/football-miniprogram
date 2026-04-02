@@ -176,18 +176,26 @@
             <view class="match-left">
               <text class="match-num">{{item.matchNumStr}}</text>
               <view class="team-info">
-                <text class="team-name">{{item.homeTeam}}</text>
-                <text class="vs-text">vs</text>
-                <text class="team-name">{{item.awayTeam}}</text>
+                <text class="team-name home-team">{{item.homeTeam}}</text>
+                <text class="vs-text">VS</text>
+                <text class="team-name away-team">{{item.awayTeam}}</text>
               </view>
               <text class="match-time">{{item.matchTime}}</text>
             </view>
-            <!-- 中间：结果和赔率标签 -->
+            <!-- 中间：结果、赔率、标签 -->
             <view class="match-middle">
               <view class="result-badge {{item.result === 'H' ? 'home' : (item.result === 'D' ? 'draw' : 'away')}}">
                 <text class="result-text">{{item.resultDesc}}</text>
               </view>
-              <text class="winning-odds">{{item.winningOdds}}</text>
+              <view class="odds-display">
+                <view class="odds-row">
+                  <text class="odds-value {{item.winningOdds === item.homeOdds ? 'winning' : ''}}">{{item.homeOdds}}</text>
+                  <text class="odds-sep">/</text>
+                  <text class="odds-value {{item.winningOdds === item.drawOdds ? 'winning' : ''}}">{{item.drawOdds}}</text>
+                  <text class="odds-sep">/</text>
+                  <text class="odds-value {{item.winningOdds === item.awayOdds ? 'winning' : ''}}">{{item.awayOdds}}</text>
+                </view>
+              </view>
               <view class="odds-tags">
                 <text class="odds-tag max" wx:if="{{item.isMaxOdds}}">最高</text>
                 <text class="odds-tag min" wx:if="{{item.isMinOdds}}">最低</text>
