@@ -167,6 +167,14 @@ Page({
     // 如果是在拖动，则不跳转
     if (this.data.isDragging) return
 
+    // 登录拦截
+    if (!userStore.isLoggedIn()) {
+      wx.navigateTo({
+        url: '/pages/login/index'
+      })
+      return
+    }
+
     wx.navigateTo({
       url: '/pages/dragon-analysis/index'
     })
