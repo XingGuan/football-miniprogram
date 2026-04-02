@@ -1,15 +1,33 @@
 // pages/calculator-hall/index.js - 推荐方案大厅
 const matchApi = require('../../api/match')
+const userStore = require('../../store/user')
 
 Page({
   data: {
     recommendations: [],
     rankList: [], // 胜率排行榜前三
     loading: true,
-    error: null
+    error: null,
+    // 浮动按钮拖动相关
+    dragX: 0,
+    dragY: 0,
+    dragStartX: 0,
+    dragStartY: 0,
+    isDragging: false
   },
 
   onLoad() {
+    // 初始化浮动按钮位置（右下角）
+    const windowWidth = wx.getSystemInfoSync().windowWidth
+    const windowHeight = wx.getSystemInfoSync().windowHeight
+    const btnWidth = 80 // rpx转换为px需要乘以系数，这里使用相对值
+    const btnHeight = 80
+
+    this.setData({
+      dragX: windowWidth - btnWidth - 20, // 右边距20px
+      dragY: windowHeight - btnHeight - 100 // 上面预留100px空间给底部
+    })
+
     this.loadRecommendations()
   },
 
@@ -117,6 +135,15 @@ Page({
   onRecordTap(e) {
     const record = e.currentTarget.dataset.record
     if (!record || !record.id) return
+
+    // 登录拦截
+    if (!userStore.isLoggedIn()) {
+      wx.navigateTo({
+        url: '/pages/login/index'
+      })
+      return
+    }
+
     wx.navigateTo({
       url: `/pages/calculator-detail/index?id=${record.id}&from=hall`
     })
@@ -133,5 +160,55 @@ Page({
       title: '推荐大厅 - 查看高手的中奖方案',
       path: '/pages/calculator-hall/index'
     }
+  },
+
+  // 跳转单关斩龙计划
+  onDragonAnalysis() {
+    // 如果是在拖动，则不跳转
+    if (this.data.isDragging) return
+
+    wx.navigateTo({
+      url: '/pages/dragon-analysis/index'
+    })
+  },
+
+  // 浮动按钮 - 触摸开始
+  onDragonBtnTouchStart(e) {
+    const touch = e.touches[0]
+    this.setData({
+      dragStartX: touch.clientX - this.data.dragX,
+      dragStartY: touch.clientY - this.data.dragY,
+      isDragging: true
+    })
+  },
+
+  // 浮动按钮 - 触摸移动
+  onDragonBtnTouchMove(e) {
+    if (!this.data.isDragging) return
+
+    const touch = e.touches[0]
+    const windowWidth = wx.getSystemInfoSync().windowWidth
+    const windowHeight = wx.getSystemInfoSync().windowHeight
+    const btnWidth = 80 // 浮动按钮宽度
+    const btnHeight = 80 // 浮动按钮高度
+
+    let newX = touch.clientX - this.data.dragStartX
+    let newY = touch.clientY - this.data.dragStartY
+
+    // 限制边界
+    newX = Math.max(0, Math.min(newX, windowWidth - btnWidth))
+    newY = Math.max(0, Math.min(newY, windowHeight - btnHeight))
+
+    this.setData({
+      dragX: newX,
+      dragY: newY
+    })
+  },
+
+  // 浮动按钮 - 触摸结束
+  onDragonBtnTouchEnd(e) {
+    this.setData({
+      isDragging: false
+    })
   }
 })

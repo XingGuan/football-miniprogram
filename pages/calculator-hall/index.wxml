@@ -132,4 +132,17 @@
       <view class="bottom-placeholder"></view>
     </scroll-view>
   </view>
+
+  <!-- 单关斩龙计划悬浮按钮 -->
+  <view class="dragon-floating-btn"
+        style="left: {{dragX}}px; top: {{dragY}}px;"
+        bindtap="onDragonAnalysis"
+        bindtouchstart="onDragonBtnTouchStart"
+        bindtouchmove="onDragonBtnTouchMove"
+        bindtouchend="onDragonBtnTouchEnd">
+    <view class="dragon-btn-inner">
+      <text class="dragon-icon">🐉</text>
+      <text class="dragon-text">斩龙</text>
+    </view>
+  </view>
 </view>

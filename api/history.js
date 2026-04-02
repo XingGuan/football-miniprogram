@@ -28,8 +28,27 @@ function deleteHistory(id) {
   return post(`/api/analysis/history/delete/${id}`)
 }
 
+/**
+ * 获取模型列表
+ */
+function getModelList() {
+  const timestamp = Date.now()
+  return get(`/api/prediction-model/list?t=${timestamp}`)
+}
+
+/**
+ * 获取模型统计详情
+ * @param {string} modelType 模型类型
+ */
+function getModelStats(modelType) {
+  const timestamp = Date.now()
+  return get(`/api/prediction-model/stats/type/${modelType}?t=${timestamp}`)
+}
+
 module.exports = {
   getHistoryList,
   getHistoryDetail,
-  deleteHistory
+  deleteHistory,
+  getModelList,
+  getModelStats
 }
