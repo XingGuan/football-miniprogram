@@ -1,9 +1,192 @@
 <!-- pages/history/index.wxml -->
 <view class="history-page">
-  <!-- 统计信息 -->
-  <view class="stats-bar" wx:if="{{list.length > 0}}">
-    <text class="stats-text">共 {{total}} 条记录</text>
+  <!-- Tab切换 -->
+  <view class="tab-header">
+    <view class="tab-item {{currentTab === 'models' ? 'active' : ''}}" bindtap="onTabChange" data-tab="models">
+      <text class="tab-text">模型统计</text>
+    </view>
+    <view class="tab-item {{currentTab === 'history' ? 'active' : ''}}" bindtap="onTabChange" data-tab="history">
+      <text class="tab-text">历史记录</text>
+    </view>
   </view>
+
+  <!-- 模型统计内容 -->
+  <view class="tab-content" wx:if="{{currentTab === 'models'}}">
+    <!-- 加载状态 -->
+    <view class="loading-wrapper" wx:if="{{modelsLoading}}">
+      <view class="loading-content">
+        <view class="loading-spinner"></view>
+        <text class="loading-text">加载中...</text>
+      </view>
+    </view>
+
+    <!-- 错误状态 -->
+    <empty-state
+      wx:elif="{{modelsError}}"
+      type="error"
+      title="加载失败"
+      description="{{modelsError}}"
+      button-text="重试"
+      bind:buttonTap="onRetryModels"
+    />
+
+    <!-- 空状态 -->
+    <empty-state
+      wx:elif="{{!modelsLoading && models.length === 0}}"
+      type="empty"
+      title="暂无模型"
+      description="没有可用的模型"
+    />
+
+    <!-- 模型列表 -->
+    <view class="models-list" wx:if="{{!modelsLoading && models.length > 0}}">
+      <view class="model-item {{item.modelType === 'result' ? 'active' : 'inactive'}}"
+            wx:for="{{models}}"
+            wx:key="id"
+            bindtap="{{item.modelType === 'result' ? 'onModelTap' : ''}}"
+            data-model="{{item}}">
+        <view class="model-left">
+          <view class="model-type {{item.modelType === 'result' ? 'type-result' : 'type-score'}}">
+            {{item.modelType === 'result' ? '胜负' : '比分'}}
+          </view>
+        </view>
+        <view class="model-center">
+          <text class="model-title">{{item.modelName}}</text>
+          <text class="model-desc">{{item.description}}</text>
+        </view>
+        <view class="model-right">
+          <text class="arrow" wx:if="{{item.modelType === 'result'}}">›</text>
+          <text class="soon" wx:else>敬请期待</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 模型统计详情弹窗 -->
+  <view class="modal-mask" wx:if="{{showStatsDetail}}" bindtap="onCloseStatsDetail">
+    <view class="modal-content" catchtap>
+      <!-- 关闭按钮 -->
+      <view class="modal-close" bindtap="onCloseStatsDetail">×</view>
+
+      <!-- 加载中 -->
+      <view class="modal-loading" wx:if="{{statsLoading}}">
+        <view class="loading-spinner"></view>
+        <text class="loading-text">加载中...</text>
+      </view>
+
+      <!-- 统计信息 -->
+      <view class="stats-detail" wx:elif="{{statsDetail}}">
+        <view class="stats-title">
+          <text class="title-text">{{statsDetail.modelName}} - {{statsDetail.modelType === 'result' ? '胜负预测' : '比分预测'}}</text>
+        </view>
+
+        <view class="stats-time">
+          <text class="time-label">统计时间</text>
+          <text class="time-value">{{statsDetail.statsDateStr}}</text>
+        </view>
+
+        <!-- 总体统计 -->
+        <view class="stats-section">
+          <text class="section-title">总体统计</text>
+          <view class="stats-grid">
+            <view class="stat-item">
+              <text class="stat-label">样本数量</text>
+              <text class="stat-value">{{statsDetail.sampleSize}}</text>
+            </view>
+            <view class="stat-item">
+              <text class="stat-label">总预测场次</text>
+              <text class="stat-value">{{statsDetail.totalPredictions}}</text>
+            </view>
+            <view class="stat-item">
+              <text class="stat-label">正确预测数</text>
+              <text class="stat-value">{{statsDetail.correctPredictions}}</text>
+            </view>
+            <view class="stat-item">
+              <text class="stat-label">准确率</text>
+              <text class="stat-value accuracy">{{statsDetail.accuracyRate}}%</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 分类统计 -->
+        <view class="stats-section">
+          <text class="section-title">分类统计</text>
+          <view class="classify-item">
+            <view class="classify-header">
+              <text class="classify-name">主胜</text>
+            </view>
+            <view class="classify-info">
+              <view class="info-row">
+                <text class="info-label">预测数</text>
+                <text class="info-value">{{statsDetail.homeWinCount}}</text>
+              </view>
+              <view class="info-row">
+                <text class="info-label">正确数</text>
+                <text class="info-value">{{statsDetail.homeWinCorrect}}</text>
+              </view>
+              <view class="info-row">
+                <text class="info-label">准确率</text>
+                <text class="info-value">{{statsDetail.homeWinRate}}%</text>
+              </view>
+            </view>
+          </view>
+
+          <view class="classify-item">
+            <view class="classify-header">
+              <text class="classify-name">平局</text>
+            </view>
+            <view class="classify-info">
+              <view class="info-row">
+                <text class="info-label">预测数</text>
+                <text class="info-value">{{statsDetail.drawCount}}</text>
+              </view>
+              <view class="info-row">
+                <text class="info-label">正确数</text>
+                <text class="info-value">{{statsDetail.drawCorrect}}</text>
+              </view>
+              <view class="info-row">
+                <text class="info-label">准确率</text>
+                <text class="info-value">{{statsDetail.drawRate}}%</text>
+              </view>
+            </view>
+          </view>
+
+          <view class="classify-item">
+            <view class="classify-header">
+              <text class="classify-name">客胜</text>
+            </view>
+            <view class="classify-info">
+              <view class="info-row">
+                <text class="info-label">预测数</text>
+                <text class="info-value">{{statsDetail.awayWinCount}}</text>
+              </view>
+              <view class="info-row">
+                <text class="info-label">正确数</text>
+                <text class="info-value">{{statsDetail.awayWinCorrect}}</text>
+              </view>
+              <view class="info-row">
+                <text class="info-label">准确率</text>
+                <text class="info-value">{{statsDetail.awayWinRate}}%</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 错误状态 -->
+      <view class="modal-error" wx:elif="{{statsError}}">
+        <text class="error-text">{{statsError}}</text>
+        <view class="error-retry" bindtap="onRetryStats">重试</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 历史记录内容 -->
+  <view class="tab-content" wx:if="{{currentTab === 'history'}}">
+    <!-- 统计信息 -->
+    <view class="stats-bar" wx:if="{{list.length > 0}}">
+      <text class="stats-text">共 {{total}} 条记录</text>
+    </view>
 
   <!-- 加载状态 -->
   <view class="loading-wrapper" wx:if="{{loading && list.length === 0}}">
@@ -12,16 +195,6 @@
       <text class="loading-text">加载中...</text>
     </view>
   </view>
-
-  <!-- 未登录 -->
-  <empty-state
-    wx:elif="{{error === '请先登录'}}"
-    type="empty"
-    title="未登录"
-    description="登录后查看历史记录"
-    button-text="去登录"
-    bind:buttonTap="onLogin"
-  />
 
   <!-- 错误状态 -->
   <empty-state
@@ -61,6 +234,7 @@
     <view class="no-more" wx:else>
       <text class="no-more-text">没有更多了</text>
     </view>
+  </view>
   </view>
 
   <!-- 底部安全区域 -->

@@ -114,6 +114,15 @@ function getMatchLive() {
 }
 
 /**
+ * 获取单关斩龙计划分析数据
+ * @param {number} sampleSize 样本数量 (10, 20, 30)
+ */
+function getDragonAnalysis(sampleSize = 10) {
+  const timestamp = Date.now()
+  return get(`/api/dragon/analysis/analyze?sampleSize=${sampleSize}&t=${timestamp}`)
+}
+
+/**
  * 格式化日期
  * @param {Date} date 日期对象
  */
@@ -138,5 +147,6 @@ module.exports = {
   recommendCalculatorRecord,
   getCalculatorRecommendList,
   getMatchResults,
-  getMatchLive
+  getMatchLive,
+  getDragonAnalysis
 }

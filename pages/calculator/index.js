@@ -40,7 +40,9 @@ Page({
     // 左滑删除相关
     touchStartX: 0,
     touchStartY: 0,
-    currentSwipeIndex: -1
+    currentSwipeIndex: -1,
+    // 待切换的tab（用于登录后自动切换）
+    pendingTab: null
   },
 
   onLoad() {
@@ -48,6 +50,16 @@ Page({
   },
 
   onShow() {
+    // 检查是否有待切换的tab（登录后返回）
+    if (this.data.pendingTab && userStore.isLoggedIn()) {
+      const tab = this.data.pendingTab
+      this.setData({ currentTab: tab, pendingTab: null })
+      if (tab === 'records') {
+        this.loadRecords()
+      }
+      return
+    }
+
     // 每次显示时，如果已经在记录tab，则刷新记录
     if (this.data.currentTab === 'records') {
       this.loadRecords()
@@ -58,6 +70,17 @@ Page({
   onSwitchTab(e) {
     const tab = e.currentTarget.dataset.tab
     if (tab === this.data.currentTab) return
+
+    // 切换到我的记录时，检查登录状态
+    if (tab === 'records' && !userStore.isLoggedIn()) {
+      // 记录待切换的tab，登录后自动切换
+      this.setData({ pendingTab: 'records' })
+      wx.navigateTo({
+        url: '/pages/login/index'
+      })
+      return
+    }
+
     this.setData({ currentTab: tab })
     if (tab === 'records') {
       this.loadRecords()
@@ -66,6 +89,12 @@ Page({
 
   // 加载用户记录
   async loadRecords() {
+    // 未登录不加载
+    if (!userStore.isLoggedIn()) {
+      this.setData({ records: [] })
+      return
+    }
+
     const userInfo = userStore.getUserInfo()
     if (!userInfo || !userInfo.id) {
       this.setData({ records: [] })
