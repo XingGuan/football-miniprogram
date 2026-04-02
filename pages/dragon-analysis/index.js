@@ -110,11 +110,22 @@ Page({
     })
   },
 
-  // 分享
-  onShare() {
-    wx.showShareMenu({
-      withShareTicket: true
-    })
+  // 分享给好友
+  onShareAppMessage() {
+    const data = this.data.analysisData
+    let title = '🐉 单关斩龙计划分析报告'
+    if (data) {
+      const homeGap = data.gapsSinceLastHomeWin
+      const drawGap = data.gapsSinceLastDraw
+      const awayGap = data.gapsSinceLastAwayWin
+      title = `🐉 龙位分析 | 主${homeGap}场 平${drawGap}场 客${awayGap}场未出`
+    }
+
+    return {
+      title: title,
+      path: '/pages/dragon-analysis/index',
+      imageUrl: ''
+    }
   },
 
   // 重试

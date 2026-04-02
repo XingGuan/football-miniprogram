@@ -609,21 +609,34 @@
 .team-info {
   display: flex;
   align-items: center;
-  gap: 8rpx;
-  font-size: 22rpx;
+  gap: 2rpx;
+  font-size: 20rpx;
   color: #333;
 }
 
 .team-name {
-  flex: 1;
-  font-size: 22rpx;
+  font-size: 20rpx;
   color: #333;
   font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-team {
+  flex: 1;
+}
+
+.away-team {
+  flex: 1;
+  text-align: right;
 }
 
 .vs-text {
-  font-size: 18rpx;
+  font-size: 16rpx;
   color: #999;
+  margin: 0 4rpx;
+  flex-shrink: 0;
 }
 
 .match-time {
@@ -635,8 +648,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6rpx;
-  min-width: 80rpx;
+  gap: 4rpx;
+  min-width: 100rpx;
 }
 
 .result-badge {
@@ -645,6 +658,7 @@
   font-size: 18rpx;
   font-weight: 600;
   color: #fff;
+  margin-bottom: 4rpx;
 }
 
 .result-badge.home {
@@ -659,23 +673,48 @@
   background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
 }
 
-.winning-odds {
-  font-size: 24rpx;
+.odds-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.odds-row {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  font-size: 20rpx;
+}
+
+.odds-value {
+  font-size: 20rpx;
+  color: #666;
+  min-width: 40rpx;
+  text-align: center;
+  font-weight: 500;
+}
+
+.odds-value.winning {
+  color: #c41d1d;
   font-weight: bold;
-  color: #333;
+  font-size: 22rpx;
+}
+
+.odds-sep {
+  font-size: 18rpx;
+  color: #ddd;
 }
 
 .odds-tags {
   display: flex;
-  gap: 4rpx;
-  flex-wrap: wrap;
+  gap: 3rpx;
   justify-content: center;
 }
 
 .odds-tag {
-  font-size: 14rpx;
-  padding: 4rpx 8rpx;
-  border-radius: 4rpx;
+  font-size: 12rpx;
+  padding: 3rpx 6rpx;
+  border-radius: 3rpx;
   color: #fff;
   font-weight: 600;
 }
