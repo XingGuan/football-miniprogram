@@ -61,12 +61,26 @@ Page({
     const data = this.data.analysisData
     if (!data) return ''
 
+    let currentDragonsText = `【当前龙位】\n` +
+      `主胜: 已${data.gapsSinceLastHomeWin}场未出`
+    if (data.currentHomeWinDragon > 0) {
+      currentDragonsText += ` (连${data.currentHomeWinDragon}场)`
+    }
+    currentDragonsText += `\n平局: 已${data.gapsSinceLastDraw}场未出`
+    if (data.currentDrawDragon > 0) {
+      currentDragonsText += ` (连${data.currentDrawDragon}场)`
+    }
+    currentDragonsText += `\n客胜: 已${data.gapsSinceLastAwayWin}场未出`
+    if (data.currentAwayWinDragon > 0) {
+      currentDragonsText += ` (连${data.currentAwayWinDragon}场)`
+    }
+
     const text = `【单关斩龙计划】${this.data.selectedSize}期分析\n\n` +
       `总场次: ${data.totalMatches}\n\n` +
-      `【当前龙位】\n` +
-      `主胜: 已${data.gapsSinceLastHomeWin}场未出\n` +
-      `平局: 已${data.gapsSinceLastDraw}场未出\n` +
-      `客胜: 已${data.gapsSinceLastAwayWin}场未出\n\n` +
+      currentDragonsText + `\n\n` +
+      `【赔率龙位】\n` +
+      `最高赔率龙: 已${data.gapsSinceLastMaxOdds}场未出 (${data.maxOddsWinRate}%)\n` +
+      `最低赔率龙: 已${data.gapsSinceLastMinOdds}场未出 (${data.minOddsWinRate}%)\n\n` +
       `【历史龙纪录】\n` +
       `主胜最长: ${data.maxHomeWinDragon}场\n` +
       `平局最长: ${data.maxDrawDragon}场\n` +
@@ -76,8 +90,8 @@ Page({
       `平局: ${Math.round(data.drawRate * 100) / 100}%\n` +
       `客胜: ${Math.round(data.awayWinRate * 100) / 100}%\n\n` +
       `【赔率分析】\n` +
-      `最高赔率: ${data.maxOddsWinRate}% (${data.maxOddsWinCount}次命中，已${data.gapsSinceLastMaxOdds}场未出)\n` +
-      `最低赔率: ${data.minOddsWinRate}% (${data.minOddsWinCount}次命中，已${data.gapsSinceLastMinOdds}场未出)`
+      `最高赔率: ${data.maxOddsWinRate}% (${data.maxOddsWinCount}次命中)\n` +
+      `最低赔率: ${data.minOddsWinRate}% (${data.minOddsWinCount}次命中)`
 
     return text
   },

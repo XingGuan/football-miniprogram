@@ -52,16 +52,38 @@
             <text class="dragon-name">主胜</text>
             <text class="dragon-gap">{{analysisData.gapsSinceLastHomeWin}}</text>
             <text class="dragon-unit">场未出</text>
+            <text class="dragon-current" wx:if="{{analysisData.currentHomeWinDragon > 0}}">连{{analysisData.currentHomeWinDragon}}场</text>
           </view>
           <view class="dragon-item draw">
             <text class="dragon-name">平局</text>
             <text class="dragon-gap">{{analysisData.gapsSinceLastDraw}}</text>
             <text class="dragon-unit">场未出</text>
+            <text class="dragon-current" wx:if="{{analysisData.currentDrawDragon > 0}}">连{{analysisData.currentDrawDragon}}场</text>
           </view>
           <view class="dragon-item away">
             <text class="dragon-name">客胜</text>
             <text class="dragon-gap">{{analysisData.gapsSinceLastAwayWin}}</text>
             <text class="dragon-unit">场未出</text>
+            <text class="dragon-current" wx:if="{{analysisData.currentAwayWinDragon > 0}}">连{{analysisData.currentAwayWinDragon}}场</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 赔率龙位 -->
+      <view class="dragon-section">
+        <text class="section-title">💰 赔率龙位</text>
+        <view class="odds-dragon-items">
+          <view class="odds-dragon-item max">
+            <text class="odds-dragon-label">最高赔率龙</text>
+            <text class="odds-dragon-gap">{{analysisData.gapsSinceLastMaxOdds}}</text>
+            <text class="odds-dragon-unit">场未出</text>
+            <text class="odds-dragon-rate">{{analysisData.maxOddsWinRate}}%</text>
+          </view>
+          <view class="odds-dragon-item min">
+            <text class="odds-dragon-label">最低赔率龙</text>
+            <text class="odds-dragon-gap">{{analysisData.gapsSinceLastMinOdds}}</text>
+            <text class="odds-dragon-unit">场未出</text>
+            <text class="odds-dragon-rate">{{analysisData.minOddsWinRate}}%</text>
           </view>
         </view>
       </view>
@@ -140,6 +162,40 @@
             <view class="odds-detail">
               <text class="odds-count">{{analysisData.minOddsWinCount}}次命中</text>
               <text class="odds-gap">已{{analysisData.gapsSinceLastMinOdds}}场未出</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 关联比赛 -->
+      <view class="dragon-section" wx:if="{{analysisData.matchDetails && analysisData.matchDetails.length > 0}}">
+        <text class="section-title">🎮 关联比赛</text>
+        <view class="match-list">
+          <view class="match-item" wx:for="{{analysisData.matchDetails}}" wx:key="matchId">
+            <!-- 左侧：比赛信息 -->
+            <view class="match-left">
+              <text class="match-num">{{item.matchNumStr}}</text>
+              <view class="team-info">
+                <text class="team-name">{{item.homeTeam}}</text>
+                <text class="vs-text">vs</text>
+                <text class="team-name">{{item.awayTeam}}</text>
+              </view>
+              <text class="match-time">{{item.matchTime}}</text>
+            </view>
+            <!-- 中间：结果和赔率标签 -->
+            <view class="match-middle">
+              <view class="result-badge {{item.result === 'H' ? 'home' : (item.result === 'D' ? 'draw' : 'away')}}">
+                <text class="result-text">{{item.resultDesc}}</text>
+              </view>
+              <text class="winning-odds">{{item.winningOdds}}</text>
+              <view class="odds-tags">
+                <text class="odds-tag max" wx:if="{{item.isMaxOdds}}">最高</text>
+                <text class="odds-tag min" wx:if="{{item.isMinOdds}}">最低</text>
+              </view>
+            </view>
+            <!-- 右侧：间隔 -->
+            <view class="match-right">
+              <text class="gap-text">{{item.gapFromNow}}场前</text>
             </view>
           </view>
         </view>
