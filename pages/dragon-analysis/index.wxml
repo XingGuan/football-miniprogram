@@ -37,13 +37,6 @@
 
     <!-- 分析结果卡片 -->
     <view class="analysis-card" wx:if="{{analysisData}}">
-      <!-- 总场次 -->
-      <view class="stat-block highlight">
-        <text class="stat-label">分析场次</text>
-        <text class="stat-big">{{analysisData.totalMatches}}</text>
-        <text class="stat-unit">场</text>
-      </view>
-
       <!-- 当前龙位 -->
       <view class="dragon-section">
         <text class="section-title">🎯 当前龙位</text>
@@ -52,19 +45,16 @@
             <text class="dragon-name">主胜</text>
             <text class="dragon-gap">{{analysisData.gapsSinceLastHomeWin}}</text>
             <text class="dragon-unit">场未出</text>
-            <text class="dragon-current" wx:if="{{analysisData.currentHomeWinDragon > 0}}">连{{analysisData.currentHomeWinDragon}}场</text>
           </view>
           <view class="dragon-item draw">
             <text class="dragon-name">平局</text>
             <text class="dragon-gap">{{analysisData.gapsSinceLastDraw}}</text>
             <text class="dragon-unit">场未出</text>
-            <text class="dragon-current" wx:if="{{analysisData.currentDrawDragon > 0}}">连{{analysisData.currentDrawDragon}}场</text>
           </view>
           <view class="dragon-item away">
             <text class="dragon-name">客胜</text>
             <text class="dragon-gap">{{analysisData.gapsSinceLastAwayWin}}</text>
             <text class="dragon-unit">场未出</text>
-            <text class="dragon-current" wx:if="{{analysisData.currentAwayWinDragon > 0}}">连{{analysisData.currentAwayWinDragon}}场</text>
           </view>
         </view>
       </view>
