@@ -123,10 +123,18 @@
       <text class="share-icon">👍</text>
       <text class="share-text">推荐</text>
     </button>
-    <!-- 分享按钮（始终显示） -->
-    <button class="share-btn" wx:if="{{isFromHall}}"  open-type="share">
+    <!-- 导出图片按钮（暂时隐藏） -->
+    <!-- <button class="share-btn" bindtap="onExportImage" loading="{{exporting}}">
+      <text class="share-icon">📷</text>
+      <text class="share-text">保存图片</text>
+    </button> -->
+    <!-- 分享按钮 -->
+    <button class="share-btn" wx:if="{{isFromHall}}" open-type="share">
       <text class="share-icon">📤</text>
       <text class="share-text">分享</text>
     </button>
   </view>
+
+  <!-- 隐藏的 canvas 用于生成图片 -->
+  <!-- <canvas type="2d" id="shareCanvas" style="position: fixed; left: -9999px; top: -9999px;"></canvas> -->
 </view>

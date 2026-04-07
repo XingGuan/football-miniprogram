@@ -13,7 +13,9 @@ Page({
     dragY: 0,
     dragStartX: 0,
     dragStartY: 0,
-    isDragging: false
+    isDragging: false,
+    // 功能开关
+    showDragon: false // 是否显示斩龙按钮
   },
 
   onLoad() {
@@ -28,12 +30,27 @@ Page({
       dragY: windowHeight - btnHeight - 100 // 上面预留100px空间给底部
     })
 
+    this.checkFeatures()
     this.loadRecommendations()
   },
 
   onShow() {
-    // 每次显示时刷新列表
+    // 每次显示时刷新列表和功能开关
+    this.checkFeatures()
     this.loadRecommendations()
+  },
+
+  // 检查功能开关
+  async checkFeatures() {
+    try {
+      const result = await matchApi.checkFeatures()
+      const showDragon = result=== true
+      this.setData({ showDragon })
+    } catch (error) {
+      console.error('检查功能开关失败:', error)
+      // 失败时默认隐藏
+      this.setData({ showDragon: false })
+    }
   },
 
   // 加载推荐方案列表

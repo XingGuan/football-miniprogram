@@ -9,7 +9,8 @@ Page({
     loading: true,
     error: null,
     recommending: false,
-    isFromHall: false // 是否从大厅来
+    isFromHall: false, // 是否从大厅来
+    exporting: false // 是否正在导出图片
   },
 
   onLoad(options) {
@@ -532,5 +533,333 @@ Page({
       title: `${statusText} ${matchCount}场比赛 ${record.passTypesStr}`,
       path: `/pages/calculator-detail/index?id=${record.id}`
     }
+  },
+
+  // 导出为图片
+  async onExportImage() {
+    const { record } = this.data
+    if (!record) {
+      wx.showToast({ title: '记录不存在', icon: 'error' })
+      return
+    }
+
+    this.setData({ exporting: true })
+
+    try {
+      // 请求用户授权保存到相册
+      const authResult = await wx.getSetting()
+      if (!authResult.authSetting['scope.writePhotosAlbum']) {
+        await wx.authorize({ scope: 'scope.writePhotosAlbum' })
+      }
+
+      wx.showLoading({ title: '生成图片中...', mask: true })
+
+      // 创建 canvas
+      const query = wx.createSelectorQuery()
+      query.select('#shareCanvas')
+        .fields({ node: true, size: true })
+        .exec(async (res) => {
+          if (!res || !res[0]) {
+            wx.hideLoading()
+            wx.showToast({ title: '生成失败', icon: 'error' })
+            this.setData({ exporting: false })
+            return
+          }
+
+          const canvas = res[0].node
+          const ctx = canvas.getContext('2d')
+          const dpr = wx.getSystemInfoSync().pixelRatio
+
+          // 设置 canvas 尺寸
+          const canvasWidth = 750
+          const canvasHeight = await this.calculateCanvasHeight()
+
+          canvas.width = canvasWidth * dpr
+          canvas.height = canvasHeight * dpr
+          ctx.scale(dpr, dpr)
+
+          // 绘制内容
+          await this.drawContent(ctx, canvasWidth, canvasHeight)
+
+          // 导出图片
+          wx.canvasToTempFilePath({
+            canvas: canvas,
+            success: (result) => {
+              wx.hideLoading()
+              // 保存到相册
+              wx.saveImageToPhotosAlbum({
+                filePath: result.tempFilePath,
+                success: () => {
+                  wx.showToast({ title: '已保存到相册', icon: 'success' })
+                  this.setData({ exporting: false })
+                },
+                fail: (err) => {
+                  console.error('保存失败:', err)
+                  wx.showToast({ title: '保存失败', icon: 'error' })
+                  this.setData({ exporting: false })
+                }
+              })
+            },
+            fail: (err) => {
+              wx.hideLoading()
+              console.error('生成图片失败:', err)
+              wx.showToast({ title: '生成失败', icon: 'error' })
+              this.setData({ exporting: false })
+            }
+          })
+        })
+    } catch (error) {
+      wx.hideLoading()
+      console.error('导出失败:', error)
+      if (error.errMsg && error.errMsg.includes('auth')) {
+        wx.showModal({
+          title: '提示',
+          content: '需要授权保存到相册',
+          confirmText: '去设置',
+          success: (res) => {
+            if (res.confirm) {
+              wx.openSetting()
+            }
+          }
+        })
+      } else {
+        wx.showToast({ title: '导出失败', icon: 'error' })
+      }
+      this.setData({ exporting: false })
+    }
+  },
+
+  // 计算 canvas 高度
+  async calculateCanvasHeight() {
+    const { record } = this.data
+    let height = 300 // 基础高度（状态卡片 + 投注信息）
+
+    // 计算比赛详情的高度
+    if (record.matchDetails) {
+      record.matchDetails.forEach(match => {
+        height += 200 // 每场比赛基础高度
+        if (match.optionGroups) {
+          height += match.optionGroups.length * 80 // 每个玩法组
+        }
+      })
+    }
+
+    return Math.min(height, 10000) // 限制最大高度
+  },
+
+  // 绘制内容到 canvas
+  async drawContent(ctx, width, height) {
+    const { record } = this.data
+
+    // 设置背景色
+    ctx.fillStyle = '#f5f5f5'
+    ctx.fillRect(0, 0, width, height)
+
+    let y = 20
+
+    // 绘制状态卡片
+    y = this.drawStatusCard(ctx, record, 20, y, width - 40)
+
+    y += 20
+
+    // 绘制投注信息
+    y = this.drawBetInfo(ctx, record, 20, y, width - 40)
+
+    y += 20
+
+    // 绘制比赛详情
+    y = this.drawMatchDetails(ctx, record, 20, y, width - 40)
+
+    // 绘制底部水印
+    ctx.fillStyle = '#999'
+    ctx.font = '24px sans-serif'
+    ctx.textAlign = 'center'
+    ctx.fillText('足球小程序', width / 2, height - 30)
+  },
+
+  // 绘制状态卡片
+  drawStatusCard(ctx, record, x, y, cardWidth) {
+    const cardHeight = 100
+
+    // 卡片背景
+    const bgColor = record.status === 1 ? '#4CAF50' : record.status === 2 ? '#F44336' : '#FF9800'
+    ctx.fillStyle = bgColor
+    this.roundRect(ctx, x, y, cardWidth, cardHeight, 10)
+    ctx.fill()
+
+    // 状态文字
+    ctx.fillStyle = '#fff'
+    ctx.font = 'bold 32px sans-serif'
+    ctx.textAlign = 'center'
+    ctx.fillText(record.statusDesc || '待开奖', x + cardWidth / 2, y + 50)
+
+    // 方案编号
+    ctx.font = '24px sans-serif'
+    ctx.fillText(`方案编号: ${record.schemeNo || ''}`, x + cardWidth / 2, y + 80)
+
+    return y + cardHeight
+  },
+
+  // 绘制投注信息
+  drawBetInfo(ctx, record, x, y, cardWidth) {
+    const cardHeight = 200
+
+    // 卡片背景
+    ctx.fillStyle = '#fff'
+    this.roundRect(ctx, x, y, cardWidth, cardHeight, 10)
+    ctx.fill()
+
+    // 标题
+    ctx.fillStyle = '#333'
+    ctx.font = 'bold 28px sans-serif'
+    ctx.textAlign = 'left'
+    ctx.fillText('投注信息', x + 20, y + 40)
+
+    // 信息网格
+    const infoY = y + 70
+    const col1X = x + 20
+    const col2X = x + cardWidth / 2 + 10
+
+    ctx.font = '24px sans-serif'
+    ctx.fillStyle = '#666'
+
+    ctx.fillText('过关方式:', col1X, infoY)
+    ctx.fillStyle = '#333'
+    ctx.fillText(record.passTypesStr || '', col1X + 120, infoY)
+
+    ctx.fillStyle = '#666'
+    ctx.fillText('投注倍数:', col2X, infoY)
+    ctx.fillStyle = '#333'
+    ctx.fillText(`${record.multiple || 1}倍`, col2X + 120, infoY)
+
+    ctx.fillStyle = '#666'
+    ctx.fillText('总注数:', col1X, infoY + 35)
+    ctx.fillStyle = '#333'
+    ctx.fillText(`${record.totalBets || 0}注`, col1X + 120, infoY + 35)
+
+    ctx.fillStyle = '#666'
+    ctx.fillText('投注金额:', col2X, infoY + 35)
+    ctx.fillStyle = '#f44336'
+    ctx.fillText(`¥${record.totalAmount || 0}`, col2X + 120, infoY + 35)
+
+    // 中奖金额或预计奖金
+    if (record.status === 1) {
+      ctx.fillStyle = '#666'
+      ctx.fillText('中奖金额:', col1X, infoY + 70)
+      ctx.fillStyle = '#4CAF50'
+      ctx.font = 'bold 28px sans-serif'
+      ctx.fillText(`¥${record.actualBonus || 0}`, col1X + 120, infoY + 70)
+    } else if (record.bonusRange) {
+      ctx.fillStyle = '#666'
+      ctx.font = '24px sans-serif'
+      ctx.fillText('预计奖金:', col1X, infoY + 70)
+      ctx.fillStyle = '#FF9800'
+      ctx.fillText(`¥${record.bonusRange}`, col1X + 120, infoY + 70)
+    }
+
+    return y + cardHeight
+  },
+
+  // 绘制比赛详情
+  drawMatchDetails(ctx, record, x, y, cardWidth) {
+    if (!record.matchDetails || record.matchDetails.length === 0) {
+      return y
+    }
+
+    // 标题
+    ctx.fillStyle = '#333'
+    ctx.font = 'bold 28px sans-serif'
+    ctx.textAlign = 'left'
+    ctx.fillText(`比赛详情 (${record.matchDetails.length}场)`, x, y + 30)
+
+    let currentY = y + 60
+
+    record.matchDetails.forEach((match, index) => {
+      currentY = this.drawMatchItem(ctx, match, x, currentY, cardWidth, index + 1)
+      currentY += 20
+    })
+
+    return currentY
+  },
+
+  // 绘制单场比赛
+  drawMatchItem(ctx, match, x, y, cardWidth, index) {
+    const cardHeight = 150 + (match.optionGroups ? match.optionGroups.length * 60 : 0)
+
+    // 卡片背景
+    ctx.fillStyle = '#fff'
+    this.roundRect(ctx, x, y, cardWidth, cardHeight, 10)
+    ctx.fill()
+
+    // 比赛序号和时间
+    ctx.fillStyle = '#666'
+    ctx.font = '24px sans-serif'
+    ctx.fillText(`${match.matchNumStr || ''}`, x + 20, y + 35)
+    ctx.fillText(match.matchTime || '', x + cardWidth - 150, y + 35)
+
+    // 队伍名称
+    ctx.fillStyle = '#333'
+    ctx.font = 'bold 26px sans-serif'
+    const teamsText = `${match.homeTeamName || ''} VS ${match.awayTeamName || ''}`
+    ctx.fillText(teamsText, x + 20, y + 70)
+
+    // 绘制选项
+    let optionY = y + 100
+    if (match.optionGroups) {
+      match.optionGroups.forEach(group => {
+        optionY = this.drawOptionGroup(ctx, group, x + 20, optionY, cardWidth - 40)
+      })
+    }
+
+    return y + cardHeight
+  },
+
+  // 绘制选项组
+  drawOptionGroup(ctx, group, x, y, width) {
+    ctx.font = '22px sans-serif'
+
+    // 玩法名称
+    ctx.fillStyle = '#666'
+    const typeText = group.typeDesc + (group.goalLine ? `(${group.goalLine})` : '')
+    ctx.fillText(typeText, x, y + 20)
+
+    // 选项
+    let optionX = x + 150
+    group.options.forEach(opt => {
+      if (opt.checked) {
+        // 选中的选项
+        const bgColor = opt.isHit ? '#4CAF50' : '#FF9800'
+        ctx.fillStyle = bgColor
+        ctx.fillRect(optionX, y, 80, 30)
+
+        ctx.fillStyle = '#fff'
+        ctx.fillText(opt.displayValue, optionX + 10, y + 22)
+
+        optionX += 90
+      }
+    })
+
+    // 开奖结果
+    if (group.matchResultDesc) {
+      ctx.fillStyle = group.isHit ? '#4CAF50' : '#F44336'
+      ctx.fillText(group.matchResultDesc, x + width - 100, y + 20)
+    }
+
+    return y + 40
+  },
+
+  // 绘制圆角矩形
+  roundRect(ctx, x, y, w, h, r) {
+    ctx.beginPath()
+    ctx.moveTo(x + r, y)
+    ctx.lineTo(x + w - r, y)
+    ctx.quadraticCurveTo(x + w, y, x + w, y + r)
+    ctx.lineTo(x + w, y + h - r)
+    ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h)
+    ctx.lineTo(x + r, y + h)
+    ctx.quadraticCurveTo(x, y + h, x, y + h - r)
+    ctx.lineTo(x, y + r)
+    ctx.quadraticCurveTo(x, y, x + r, y)
+    ctx.closePath()
   }
 })

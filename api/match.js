@@ -123,6 +123,14 @@ function getDragonAnalysis(sampleSize = 10) {
 }
 
 /**
+ * 检查功能开关状态
+ * @returns {Promise} 返回功能开关配置
+ */
+function checkFeatures() {
+  return post('/api/match/check/config')
+}
+
+/**
  * 格式化日期
  * @param {Date} date 日期对象
  */
@@ -148,5 +156,6 @@ module.exports = {
   getCalculatorRecommendList,
   getMatchResults,
   getMatchLive,
-  getDragonAnalysis
+  getDragonAnalysis,
+  checkFeatures
 }

@@ -135,6 +135,7 @@
 
   <!-- 单关斩龙计划悬浮按钮 -->
   <view class="dragon-floating-btn"
+        wx:if="{{showDragon}}"
         style="left: {{dragX}}px; top: {{dragY}}px;"
         bindtap="onDragonAnalysis"
         bindtouchstart="onDragonBtnTouchStart"

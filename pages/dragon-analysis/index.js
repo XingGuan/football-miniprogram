@@ -5,8 +5,8 @@ const userStore = require('../../store/user')
 Page({
   data: {
     // 样本大小选项
-    sampleSizes: [10, 20, 30, 50],
-    selectedSize: 10,
+    sampleSizes: [20, 30, 50],
+    selectedSize: 20,
     // 加载和错误状态
     loading: false,
     error: null,
@@ -49,6 +49,14 @@ Page({
       const data = await matchApi.getDragonAnalysis(sampleSize)
       const analysisData = data.data || data || {}
 
+      // 对关联比赛按照最新优先排序
+      if (analysisData.matchDetails && Array.isArray(analysisData.matchDetails)) {
+        analysisData.matchDetails.sort((a, b) => {
+          // 按照 gapFromNow 从小到大排序（最小值在前，即最新的比赛）
+          return (a.gapFromNow || 0) - (b.gapFromNow || 0)
+        })
+      }
+
       this.setData({ analysisData, loading: false })
     } catch (error) {
       console.error('加载分析数据失败:', error)
@@ -63,17 +71,11 @@ Page({
 
     let currentDragonsText = `【当前龙位】\n` +
       `主胜: 已${data.gapsSinceLastHomeWin}场未出`
-    if (data.currentHomeWinDragon > 0) {
-      currentDragonsText += ` (连${data.currentHomeWinDragon}场)`
-    }
+   
     currentDragonsText += `\n平局: 已${data.gapsSinceLastDraw}场未出`
-    if (data.currentDrawDragon > 0) {
-      currentDragonsText += ` (连${data.currentDrawDragon}场)`
-    }
+    
     currentDragonsText += `\n客胜: 已${data.gapsSinceLastAwayWin}场未出`
-    if (data.currentAwayWinDragon > 0) {
-      currentDragonsText += ` (连${data.currentAwayWinDragon}场)`
-    }
+    
 
     const text = `【单关斩龙计划】${this.data.selectedSize}期分析\n\n` +
       `总场次: ${data.totalMatches}\n\n` +

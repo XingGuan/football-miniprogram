@@ -23,10 +23,13 @@ Page({
     ],
     // 模拟选号按钮位置
     calculatorX: 500,
-    calculatorY: 120
+    calculatorY: 120,
+    // 功能开关
+    showCalculator: false // 是否显示模拟选号按钮
   },
 
   onLoad() {
+    this.checkFeatures()
     this.loadMatches()
   },
 
@@ -172,9 +175,24 @@ Page({
   },
 
   onPullDownRefresh() {
+    this.checkFeatures()
     this.loadMatches().finally(() => {
       wx.stopPullDownRefresh()
     })
+  },
+
+  // 检查功能开关
+  async checkFeatures() {
+    try {
+      const result = await matchApi.checkFeatures()
+      console.log(result)
+      const showCalculator = result === true 
+      this.setData({ showCalculator })
+    } catch (error) {
+      console.error('检查功能开关失败:', error)
+      // 失败时默认隐藏
+      this.setData({ showCalculator: false })
+    }
   },
 
   // 加载比赛列表
