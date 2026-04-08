@@ -15,74 +15,52 @@
   <scroll-view class="detail-content" scroll-y wx:else>
     <!-- 状态卡片 -->
     <view class="status-card {{record.status === 1 ? 'win' : record.status === 2 ? 'lose' : ''}}">
-      <view class="status-icon">
-        {{record.status === 1 ? '🎉' : record.status === 2 ? '😔' : '⏳'}}
+      <view class="status-row">
+        <view class="status-left">
+          <text class="status-icon">{{record.status === 1 ? '🎉' : record.status === 2 ? '😔' : '⏳'}}</text>
+          <text class="status-text">{{record.statusDesc}}</text>
+        </view>
+        <view class="scheme-no">{{record.schemeNo}}</view>
       </view>
-      <view class="status-text">{{record.statusDesc}}</view>
-      <view class="scheme-no">方案编号: {{record.schemeNo}}</view>
     </view>
 
     <!-- 投注信息 -->
     <view class="info-card">
-      <view class="card-title">投注信息</view>
-      <view class="info-grid">
-        <view class="info-item">
-          <text class="info-label">过关方式</text>
-          <text class="info-value highlight">{{record.passTypesStr}}</text>
-        </view>
-        <view class="info-item">
-          <text class="info-label">投注倍数</text>
-          <text class="info-value">{{record.multiple}}倍</text>
-        </view>
-        <view class="info-item">
-          <text class="info-label">总注数</text>
-          <text class="info-value">{{record.totalBets}}注</text>
-        </view>
-        <view class="info-item">
-          <text class="info-label">投注金额</text>
-          <text class="info-value amount">¥{{record.totalAmount}}</text>
-        </view>
-      </view>
-      <!-- 中奖 -->
-      <view class="bonus-row" wx:if="{{record.status === 1}}">
-        <text class="bonus-label">中奖金额</text>
-        <text class="bonus-value win">¥{{record.actualBonus}}</text>
-      </view>
-      <!-- 未中奖 -->
-      <view class="bonus-row" wx:elif="{{record.status === 2}}">
-        <text class="bonus-label">开奖结果</text>
-        <text class="bonus-value lose">未中奖</text>
-      </view>
-      <!-- 待开奖 -->
-      <view class="bonus-row" wx:elif="{{record.bonusRange}}">
-        <text class="bonus-label">预计奖金</text>
-        <text class="bonus-value">¥{{record.bonusRange}}</text>
-      </view>
-      <view class="time-row">
-        <text class="time-label">创建时间</text>
+      <view class="card-title-row">
+        <text class="card-title">投注信息</text>
         <text class="time-value">{{record.createTimeStr}}</text>
+      </view>
+      <view class="info-row">
+        <view class="info-left">
+          <text class="info-value">{{record.totalBets}}注</text>
+          <text class="info-value amount">{{record.multiple}}倍{{record.totalAmount}}元</text>
+        </view>
+        <view class="info-right">
+          <!-- 中奖 -->
+          <text class="info-value bonus win" wx:if="{{record.status === 1}}">中奖¥{{record.actualBonus}}</text>
+          <!-- 未中奖 -->
+          <text class="info-value bonus lose" wx:elif="{{record.status === 2}}">未中奖</text>
+          <!-- 待开奖 -->
+          <text class="info-value bonus" wx:elif="{{record.bonusRange}}">预计奖金¥{{record.bonusRange}}</text>
+        </view>
       </view>
     </view>
 
     <!-- 选择的比赛 -->
     <view class="matches-card">
       <view class="card-title">比赛详情 ({{record.matchDetails.length}}场)</view>
+      <view class="pass-row">
+        <text class="pass-label">过关方式</text>
+        <text class="pass-value">{{record.passTypesStr}}</text>
+      </view>
 
       <view class="match-item" wx:for="{{record.matchDetails}}" wx:key="matchId">
         <view class="match-header">
           <text class="match-num">{{item.matchNumStr}}</text>
-          <text class="match-time">{{item.matchTime}}</text>
-        </view>
-
-        <view class="match-teams">
-          <view class="team home">
-            <text class="team-name">{{item.homeTeamName}}</text>
-          </view>
-          <view class="vs-box">
-            <text class="vs">VS</text>
-          </view>
-          <view class="team away">
-            <text class="team-name">{{item.awayTeamName}}</text>
+          <view class="match-teams">
+            <text class="team-name home">{{item.homeTeamName}}</text>
+            <text class="match-time">{{item.matchTime}}</text>
+            <text class="team-name away">{{item.awayTeamName}}</text>
           </view>
         </view>
 

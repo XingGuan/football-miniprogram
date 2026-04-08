@@ -31,17 +31,16 @@
 
 .detail-content {
   height: 100vh;
-  padding: 16rpx;
+  padding: 12rpx;
   box-sizing: border-box;
 }
 
 /* 状态卡片 */
 .status-card {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 16rpx;
-  padding: 40rpx 32rpx;
-  text-align: center;
-  margin-bottom: 16rpx;
+  border-radius: 12rpx;
+  padding: 16rpx 20rpx;
+  margin-bottom: 12rpx;
 }
 
 .status-card.win {
@@ -52,22 +51,32 @@
   background: linear-gradient(135deg, #d9d9d9 0%, #e8e8e8 100%);
 }
 
+.status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.status-left {
+  display: flex;
+  align-items: center;
+  gap: 10rpx;
+}
+
 .status-icon {
-  font-size: 64rpx;
-  margin-bottom: 12rpx;
+  font-size: 36rpx;
 }
 
 .status-text {
-  font-size: 36rpx;
+  font-size: 28rpx;
   font-weight: 700;
   color: #fff;
-  margin-bottom: 8rpx;
   text-shadow: 0 2rpx 4rpx rgba(0, 0, 0, 0.1);
 }
 
 .scheme-no {
-  font-size: 22rpx;
-  color: rgba(255, 255, 255, 0.9);
+  font-size: 20rpx;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .status-card.lose .status-text {
@@ -82,88 +91,100 @@
 /* 信息卡片 */
 .info-card, .matches-card {
   background: #fff;
-  border-radius: 16rpx;
-  padding: 24rpx;
-  margin-bottom: 16rpx;
+  border-radius: 12rpx;
+  padding: 16rpx;
+  margin-bottom: 12rpx;
 }
 
-.card-title {
-  font-size: 28rpx;
-  font-weight: 600;
-  color: #333;
-  margin-bottom: 20rpx;
-  padding-bottom: 16rpx;
+.card-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14rpx;
+  padding-bottom: 12rpx;
   border-bottom: 1rpx solid #f0f0f0;
 }
 
-.info-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20rpx;
-  margin-bottom: 20rpx;
-}
-
-.info-item {
-  display: flex;
-  flex-direction: column;
-  gap: 6rpx;
-}
-
-.info-label {
+.card-title {
   font-size: 24rpx;
-  color: #999;
+  font-weight: 600;
+  color: #333;
 }
 
-.info-value {
-  font-size: 28rpx;
-  color: #333;
+.pass-row {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+  padding: 10rpx 16rpx;
+  background: #f8f9fc;
+  border-radius: 6rpx;
+  margin-bottom: 12rpx;
+}
+
+.pass-label {
+  font-size: 22rpx;
+  color: #666;
   font-weight: 600;
 }
 
-.info-value.highlight {
-  color: #667eea;
+.pass-value {
+  font-size: 24rpx;
+  color: #ff6b6b;
+  font-weight: 600;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10rpx 16rpx;
+  background: #f8f9fc;
+  border-radius: 6rpx;
+  margin-bottom: 12rpx;
+}
+
+.info-left {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.info-right {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.info-value {
+  font-size: 22rpx;
+  color: #333;
+  font-weight: 600;
 }
 
 .info-value.amount {
   color: #ff6b6b;
 }
 
-.bonus-row, .time-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 16rpx;
-  border-top: 1rpx solid #f5f5f5;
-  margin-top: 16rpx;
-}
-
-.bonus-label, .time-label {
-  font-size: 24rpx;
-  color: #999;
-}
-
-.bonus-value {
-  font-size: 28rpx;
-  color: #c41d1d;
-  font-weight: 600;
-}
-
-.bonus-value.win {
+.info-value.bonus {
   color: #c41d1d;
 }
 
-.bonus-value.lose {
+.info-value.bonus.win {
+  color: #c41d1d;
+}
+
+.info-value.bonus.lose {
   color: #999;
 }
 
 .time-value {
-  font-size: 24rpx;
+  font-size: 20rpx;
   color: #666;
 }
 
 /* 比赛列表 */
 .match-item {
-  padding: 20rpx 0;
+  padding: 14rpx 0;
   border-bottom: 1rpx solid #f5f5f5;
 }
 
@@ -172,62 +193,64 @@
 }
 
 .match-header {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 12rpx;
-  margin-bottom: 16rpx;
+  margin-bottom: 12rpx;
+  justify-content: center;
 }
 
 .match-num {
-  font-size: 22rpx;
+  position: absolute;
+  left: 0;
+  font-size: 20rpx;
   color: #fff;
   background: #667eea;
-  padding: 4rpx 12rpx;
-  border-radius: 6rpx;
+  padding: 3rpx 10rpx;
+  border-radius: 5rpx;
   font-weight: 600;
-}
-
-.match-time {
-  font-size: 22rpx;
-  color: #999;
+  white-space: nowrap;
 }
 
 .match-teams {
   display: flex;
   align-items: center;
-  margin-bottom: 16rpx;
-}
-
-.team {
-  flex: 1;
-}
-
-.team.away {
-  text-align: right;
+  gap: 8rpx;
+  justify-content: center;
 }
 
 .team-name {
-  font-size: 30rpx;
+  font-size: 22rpx;
   font-weight: 600;
   color: #333;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 140rpx;
 }
 
-.vs-box {
-  padding: 0 20rpx;
+.team-name.home {
+  text-align: right;
 }
 
-.vs {
-  font-size: 24rpx;
-  color: #ccc;
-  font-weight: 500;
+.team-name.away {
+  text-align: left;
+}
+
+.match-time {
+  font-size: 20rpx;
+  color: #999;
+  white-space: nowrap;
+  flex-shrink: 0;
+  padding: 0 4rpx;
 }
 
 /* 开奖结果 */
 .option-result {
-  width: 110rpx;
-  padding: 10rpx 12rpx;
+  width: 100rpx;
+  padding: 8rpx 10rpx;
   background: #f8f9fc;
-  border-radius: 8rpx;
+  border-radius: 6rpx;
   border-left: 3rpx solid #667eea;
   text-align: center;
   transition: all 0.2s ease;
@@ -252,7 +275,7 @@
 }
 
 .result-value {
-  font-size: 22rpx;
+  font-size: 20rpx;
   color: #333;
   font-weight: 500;
 }
@@ -275,38 +298,38 @@
 .match-options {
   display: flex;
   flex-direction: column;
-  gap: 16rpx;
+  gap: 12rpx;
 }
 
 /* 玩法分组 */
 .option-group {
   background: #f8f9fc;
-  border-radius: 12rpx;
-  padding: 12rpx 16rpx;
+  border-radius: 10rpx;
+  padding: 10rpx 12rpx;
 }
 
 .group-row {
   display: flex;
   align-items: center;
-  gap: 12rpx;
+  gap: 10rpx;
 }
 
 .group-title-box {
   display: flex;
   align-items: center;
-  gap: 4rpx;
-  min-width: 120rpx;
+  gap: 3rpx;
+  min-width: 110rpx;
   flex-shrink: 0;
 }
 
 .group-title {
-  font-size: 22rpx;
+  font-size: 20rpx;
   color: #666;
   font-weight: 600;
 }
 
 .group-goalline {
-  font-size: 20rpx;
+  font-size: 18rpx;
   color: #667eea;
   font-weight: 500;
 }
@@ -330,10 +353,10 @@
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  gap: 6rpx;
-  width: 120rpx;
-  padding: 10rpx 0;
-  border-radius: 8rpx;
+  gap: 5rpx;
+  width: 110rpx;
+  padding: 8rpx 0;
+  border-radius: 6rpx;
   position: relative;
   transition: all 0.2s ease;
 }
@@ -341,10 +364,10 @@
 /* 比分/总进球/半全场 选项纵向排列 */
 .option-cell.vertical {
   flex-direction: column;
-  gap: 4rpx;
+  gap: 3rpx;
   width: auto;
-  min-width: 90rpx;
-  padding: 8rpx 12rpx;
+  min-width: 80rpx;
+  padding: 6rpx 10rpx;
 }
 
 /* 选中状态 - 中国红背景 */
@@ -382,12 +405,12 @@
 }
 
 .cell-value {
-  font-size: 24rpx;
+  font-size: 22rpx;
   font-weight: 700;
 }
 
 .cell-odds {
-  font-size: 22rpx;
+  font-size: 20rpx;
   font-weight: 600;
 }
 
@@ -402,9 +425,9 @@
 
 /* 开奖结果 - 右侧 */
 .group-result {
-  min-width: 80rpx;
-  padding: 12rpx 14rpx;
-  border-radius: 8rpx;
+  min-width: 70rpx;
+  padding: 10rpx 12rpx;
+  border-radius: 6rpx;
   text-align: center;
   flex-shrink: 0;
 }
@@ -425,7 +448,7 @@
 }
 
 .group-result .result-value {
-  font-size: 22rpx;
+  font-size: 20rpx;
   color: #fff;
   font-weight: 600;
 }
@@ -441,23 +464,23 @@
   left: 0;
   right: 0;
   background: #fff;
-  padding: 16rpx 24rpx;
-  padding-bottom: calc(16rpx + env(safe-area-inset-bottom));
+  padding: 12rpx 20rpx;
+  padding-bottom: calc(12rpx + env(safe-area-inset-bottom));
   box-shadow: 0 -4rpx 16rpx rgba(0, 0, 0, 0.06);
   z-index: 100;
   display: flex;
-  gap: 12rpx;
+  gap: 10rpx;
 }
 
 .share-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12rpx;
+  gap: 10rpx;
   flex: 1;
-  height: 88rpx;
+  height: 76rpx;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 12rpx;
+  border-radius: 10rpx;
   border: none;
   padding: 0;
   margin: 0;
@@ -468,11 +491,11 @@
 }
 
 .share-icon {
-  font-size: 36rpx;
+  font-size: 32rpx;
 }
 
 .share-text {
-  font-size: 30rpx;
+  font-size: 26rpx;
   color: #fff;
   font-weight: 600;
 }
