@@ -131,6 +131,14 @@ function checkFeatures() {
 }
 
 /**
+ * 获取球队排名信息
+ * @param {string|number} matchId 比赛ID
+ */
+function getTableData(matchId) {
+  return get(`/api/match/table/${matchId}`)
+}
+
+/**
  * 格式化日期
  * @param {Date} date 日期对象
  */
@@ -157,5 +165,6 @@ module.exports = {
   getMatchResults,
   getMatchLive,
   getDragonAnalysis,
+  getTableData,
   checkFeatures
 }

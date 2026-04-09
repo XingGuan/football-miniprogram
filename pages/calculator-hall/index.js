@@ -8,6 +8,7 @@ Page({
     rankList: [], // 胜率排行榜前三
     loading: true,
     error: null,
+    rankExpanded: true, // 排行榜是否展开
     // 浮动按钮拖动相关
     dragX: 0,
     dragY: 0,
@@ -171,10 +172,17 @@ Page({
     this.loadRecommendations()
   },
 
+  // 切换排行榜展开/折叠
+  onToggleRank() {
+    this.setData({
+      rankExpanded: !this.data.rankExpanded
+    })
+  },
+
   // 分享给好友
   onShareAppMessage() {
     return {
-      title: '推荐大厅 - 查看高手的中奖方案',
+      title: '分享大厅 - 查看高手的中奖方案',
       path: '/pages/calculator-hall/index'
     }
   },

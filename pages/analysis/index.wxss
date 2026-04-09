@@ -628,3 +628,139 @@
   font-size: 22rpx;
   color: #999;
 }
+
+/* 排名表格 */
+.table-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.table-type-switcher {
+  display: flex;
+  gap: 12rpx;
+  margin-bottom: 20rpx;
+}
+
+.type-btn {
+  flex: 1;
+  padding: 12rpx 16rpx;
+  background: #f5f5f5;
+  border-radius: 8rpx;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.type-btn.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+}
+
+.type-btn text {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: #666;
+}
+
+.type-btn.active text {
+  color: #fff;
+}
+
+.table-wrapper {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 10rpx;
+  overflow: hidden;
+}
+
+.table-header {
+  display: flex;
+  background: #f8f9fa;
+  border-bottom: 2rpx solid #e8e8e8;
+  padding: 12rpx 0;
+}
+
+.table-header .col {
+  font-size: 22rpx;
+  color: #666;
+  font-weight: 600;
+  text-align: center;
+  padding: 8rpx;
+}
+
+.table-header .col.rank {
+  flex: 0.6;
+}
+
+.table-header .col.team {
+  flex: 1.5;
+  text-align: left;
+  padding-left: 16rpx;
+}
+
+.table-header .col.matches,
+.table-header .col.win,
+.table-header .col.draw,
+.table-header .col.loss,
+.table-header .col.goals,
+.table-header .col.ga,
+.table-header .col.points {
+  flex: 0.7;
+}
+
+.table-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.table-row {
+  display: flex;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+  align-items: center;
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-row:active {
+  background: #f9f9f9;
+}
+
+.table-row .col {
+  font-size: 24rpx;
+  color: #333;
+  text-align: center;
+  padding: 0 8rpx;
+}
+
+.table-row .col.rank {
+  flex: 0.6;
+  font-weight: 600;
+  color: #667eea;
+}
+
+.table-row .col.team {
+  flex: 1.5;
+  text-align: left;
+  padding-left: 16rpx;
+  font-weight: 500;
+}
+
+.table-row .col.matches,
+.table-row .col.win,
+.table-row .col.draw,
+.table-row .col.loss,
+.table-row .col.goals,
+.table-row .col.ga {
+  flex: 0.7;
+  font-size: 22rpx;
+  color: #666;
+}
+
+.table-row .col.points {
+  flex: 0.7;
+  font-weight: 600;
+  color: #ff6b6b;
+}

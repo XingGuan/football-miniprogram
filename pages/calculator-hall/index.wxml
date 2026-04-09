@@ -18,7 +18,7 @@
     <view class="page-header">
       <view class="header-content">
         <view class="title-section">
-          <text class="page-title">🏆 推荐大厅</text>
+          <text class="page-title">🏆 分享大厅</text>
           <text class="page-desc">浏览高手的中奖方案</text>
         </view>
         <button class="header-share-btn" open-type="share">
@@ -29,10 +29,11 @@
 
     <!-- 胜率排行榜 -->
     <view class="rank-section" wx:if="{{rankList.length > 0}}">
-      <view class="rank-header">
+      <view class="rank-header" bindtap="onToggleRank">
         <text class="rank-title">🏆 胜率排行榜</text>
+        <text class="rank-toggle">{{rankExpanded ? '收起' : '展开'}}</text>
       </view>
-      <view class="rank-list">
+      <view class="rank-list {{rankExpanded ? '' : 'collapsed'}}">
         <view class="rank-item" wx:for="{{rankList}}" wx:key="userName">
           <view class="rank-medal">
             <text wx:if="{{index === 0}}">🥇</text>
@@ -57,7 +58,7 @@
     <!-- 空状态 -->
     <view class="empty-state" wx:if="{{recommendations.length === 0}}">
       <text class="empty-icon">📭</text>
-      <text class="empty-text">暂无推荐方案</text>
+      <text class="empty-text">暂无分享方案</text>
       <text class="empty-tip">分享你的中奖方案给大家吧</text>
     </view>
 
