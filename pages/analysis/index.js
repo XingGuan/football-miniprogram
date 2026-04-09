@@ -17,6 +17,7 @@ Page({
     // 标签页
     tabs: [
       { key: 'recent', name: '战绩' },
+      { key: 'table', name: '排名' },
       { key: 'history', name: '交锋' },
       { key: 'information', name: '情报' },
       { key: 'xg', name: 'XG' },
@@ -28,6 +29,8 @@ Page({
     // 各标签页数据
     recentData: null,
     historyData: [],
+    tableData: { total: [], home: [], away: [] },
+    tableType: 'total', // 排名类型：total（全部）/home（主）/away（客）
     xgData: null,
     informationData: null,
     similarData: [],
@@ -174,6 +177,10 @@ Page({
           this.setData({ recentData: data || null })
           break
 
+        case 'table':
+          await this.loadTableData(matchId)
+          break
+
         case 'history':
           data = await analysisApi.getHistoryData(matchId)
           this.setData({ historyData: data || [] })
@@ -212,6 +219,54 @@ Page({
   },
 
 
+
+  // 加载排名数据
+  async loadTableData(matchId) {
+    try {
+      const tableData = {
+        total: [],
+        home: [],
+        away: []
+      }
+
+      // 调用API获取排名数据
+      const result = await matchApi.getTableData(matchId)
+
+      if (result && Array.isArray(result)) {
+        // 按tableType准确分组排名数据
+        // total: tableType 为 'total' 的数据
+        tableData.total = result.filter(item => item.tableType === 'total')
+        // home: tableType 为 'home' 的数据
+        tableData.home = result.filter(item => item.tableType === 'home')
+        // away: tableType 为 'away' 的数据
+        tableData.away = result.filter(item => item.tableType === 'away')
+
+        // 每种类型的数据按排名排序
+        tableData.total.sort((a, b) => (a.ranking || 999) - (b.ranking || 999))
+        tableData.home.sort((a, b) => (a.ranking || 999) - (b.ranking || 999))
+        tableData.away.sort((a, b) => (a.ranking || 999) - (b.ranking || 999))
+
+        console.log('排名数据分组结果:', {
+          total: tableData.total.length,
+          home: tableData.home.length,
+          away: tableData.away.length
+        })
+      }
+
+      this.setData({
+        tableData,
+        tableType: 'total'
+      })
+    } catch (e) {
+      console.error('加载排名数据失败:', e)
+    }
+  },
+
+  // 切换排名类型
+  onTableTypeChange(e) {
+    const type = e.currentTarget.dataset.type
+    this.setData({ tableType: type })
+  },
 
   // 格式化日期
   formatDate(date) {

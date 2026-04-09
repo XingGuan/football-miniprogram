@@ -72,6 +72,59 @@
 
     <!-- 标签页内容 -->
     <view class="tabs-content">
+      <!-- 排名 -->
+      <view class="tab-panel" wx:if="{{activeTab === 'table'}}">
+        <view class="loading-tip" wx:if="{{tabLoading.table}}">
+          <view class="loading-spinner small"></view>
+          <text>加载中...</text>
+        </view>
+        <view class="empty-tip" wx:elif="{{!tableData || (!tableData.total && !tableData.home && !tableData.away)}}">
+          <text>暂无排名数据</text>
+        </view>
+        <view class="table-content" wx:else>
+          <!-- 排名类型切换 -->
+          <view class="table-type-switcher">
+            <view class="type-btn {{tableType === 'total' ? 'active' : ''}}" bindtap="onTableTypeChange" data-type="total">
+              <text>全部</text>
+            </view>
+            <view class="type-btn {{tableType === 'home' ? 'active' : ''}}" bindtap="onTableTypeChange" data-type="home">
+              <text>主</text>
+            </view>
+            <view class="type-btn {{tableType === 'away' ? 'active' : ''}}" bindtap="onTableTypeChange" data-type="away">
+              <text>客</text>
+            </view>
+          </view>
+
+          <!-- 排名表格 -->
+          <view class="table-wrapper">
+            <view class="table-header">
+              <text class="col rank">排行</text>
+              <text class="col team">队名</text>
+              <text class="col matches">赛</text>
+              <text class="col win">胜</text>
+              <text class="col draw">平</text>
+              <text class="col loss">负</text>
+              <text class="col goals">进</text>
+              <text class="col ga">失</text>
+              <text class="col points">积分</text>
+            </view>
+            <view class="table-body">
+              <view class="table-row" wx:for="{{tableType === 'total' ? tableData.total : tableType === 'home' ? tableData.home : tableData.away}}" wx:key="uniformTeamId">
+                <text class="col rank">{{item.ranking}}</text>
+                <text class="col team">{{item.teamAbbrCnName}}</text>
+                <text class="col matches">{{item.winGoalMatchCnt + item.drawMatchCnt + item.lossGoalMatchCnt}}</text>
+                <text class="col win">{{item.winGoalMatchCnt}}</text>
+                <text class="col draw">{{item.drawMatchCnt}}</text>
+                <text class="col loss">{{item.lossGoalMatchCnt}}</text>
+                <text class="col goals">{{item.goalCnt}}</text>
+                <text class="col ga">{{item.lossGoalCnt}}</text>
+                <text class="col points">{{item.points}}</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+
       <!-- 最近比赛 -->
       <view class="tab-panel" wx:if="{{activeTab === 'recent'}}">
         <view class="loading-tip" wx:if="{{tabLoading.recent}}">

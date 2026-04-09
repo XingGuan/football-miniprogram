@@ -96,33 +96,57 @@ Page({
     const multiple = record.multiple || 1
     const passTypes = record.passTypes || []
 
-    // 收集所有选中且命中的选项
-    let hitOptions = []
+    // 收集每场比赛选中且命中的选项赔率
+    // hitOddsByMatch[matchId] = 命中选项的赔率（每场只有一个能命中）
+    const hitOddsByMatch = {}
+    const matchIds = []
+
     for (const match of record.matchDetails) {
       if (!match.options) continue
+      const matchId = String(match.matchId)
+      matchIds.push(matchId)
+
       for (const opt of match.options) {
         // 只计算 checked=true 且命中的选项
         if (opt.checked !== false && opt.isHit === true) {
-          hitOptions.push(opt.odds || 1)
+          hitOddsByMatch[matchId] = opt.odds || 1
+          break // 每场只有一个选项能命中
         }
       }
     }
-    if (hitOptions.length === 0) return 0
+
+    // 检查是否所有场次都命中
+    const allMatchesHit = matchIds.every(id => hitOddsByMatch[id] !== undefined)
+    if (!allMatchesHit) return 0
 
     let totalBonus = 0
 
-    // 如果包含单关，每个命中选项单独计算
-    if (passTypes.includes('single')) {
-      for (const odds of hitOptions) {
-        totalBonus += odds * 2 * multiple
+    // 遍历每种过关方式计算奖金
+    for (const passType of passTypes) {
+      if (passType === 'single') {
+        // 单关：每个命中选项单独计算
+        for (const matchId of matchIds) {
+          if (hitOddsByMatch[matchId]) {
+            totalBonus += hitOddsByMatch[matchId] * 2 * multiple
+          }
+        }
+      } else {
+        // 串关：计算所有 m 场组合的奖金
+        const [m] = passType.split('_').map(Number)
+        if (matchIds.length < m) continue
+
+        // 获取所有 m 场组合
+        const combinations = this.getCombinations(matchIds, m)
+
+        for (const combo of combinations) {
+          // 计算这个组合的赔率乘积
+          let oddsProduct = 1
+          for (const matchId of combo) {
+            oddsProduct *= hitOddsByMatch[matchId]
+          }
+          totalBonus += oddsProduct * 2 * multiple
+        }
       }
-    } else {
-      // 串关：所有命中赔率相乘
-      let totalOdds = 1
-      for (const odds of hitOptions) {
-        totalOdds *= odds
-      }
-      totalBonus = totalOdds * 2 * multiple
     }
 
     return totalBonus.toFixed(2)
@@ -484,7 +508,7 @@ Page({
     return value
   },
 
-  // 推荐方案
+  // 分享方案
   async onRecommend() {
     const { record } = this.data
     if (!record) {
@@ -502,15 +526,15 @@ Page({
       this.setData({ recommending: false })
 
       wx.showToast({
-        title: '推荐成功',
+        title: '分享成功',
         icon: 'success'
       })
     } catch (err) {
-      console.error('推荐失败:', err)
+      console.error('分享失败:', err)
       this.setData({ recommending: false })
 
       wx.showToast({
-        title: err.message || '推荐失败',
+        title: err.message || '分享失败',
         icon: 'error'
       })
     }
