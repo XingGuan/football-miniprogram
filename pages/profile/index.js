@@ -97,18 +97,28 @@ Page({
       // 打印原始数据便于调试
       console.log('勋章原始数据:', JSON.stringify(medalList))
 
+      // 先筛选出已获得的勋章，找到最高等级
+      const acquiredList = medalList.filter(medal => {
+        const acquireTime = medal.acquireTime
+        return acquireTime && acquireTime !== 'null' && acquireTime !== ''
+      })
+
+      // 找到最高等级勋章的level
+      const topLevel = acquiredList.length > 0
+        ? Math.max(...acquiredList.map(m => m.level || 0))
+        : 0
+
       // 处理勋章数据，添加图标和样式
       const processedMedals = medalList.map(medal => {
         // 判断是否已获得：acquireTime 有实际值（排除 null、undefined、空字符串、字符串"null"）
         const acquireTime = medal.acquireTime
         const isAcquired = acquireTime && acquireTime !== 'null' && acquireTime !== ''
 
-        // 判断是否佩戴中
-        const isCurrent = medal.isCurrent === 1 || medal.isCurrent === true || medal.isCurrent === '1' || medal.isCurrent === 'true'
-        const isWorn = isAcquired && isCurrent
+        // 佩戴中：只有最高等级的已获得勋章才显示为佩戴中
+        const isWorn = isAcquired && medal.level === topLevel
 
         const colorClass = isAcquired ? this.getMedalColorClass(medal.level) : 'medal-locked'
-        console.log(`勋章[${medal.medalName}]: level=${medal.level}, colorClass=${colorClass}, isAcquired=${isAcquired}`)
+        console.log(`勋章[${medal.medalName}]: level=${medal.level}, colorClass=${colorClass}, isAcquired=${isAcquired}, isWorn=${isWorn}`)
 
         return {
           ...medal,
@@ -123,9 +133,7 @@ Page({
       const acquiredMedals = processedMedals.filter(m => m.isAcquired)
 
       // 获取最高等级的勋章
-      const topMedal = acquiredMedals.length > 0
-        ? acquiredMedals.reduce((max, m) => (m.level || 0) > (max.level || 0) ? m : max, acquiredMedals[0])
-        : null
+      const topMedal = wornMedals.length > 0 ? wornMedals[0] : null
 
       // 为最高等级勋章添加累计中奖金额描述
       if (topMedal) {
