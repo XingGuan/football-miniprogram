@@ -147,6 +147,15 @@ function updateUserName(userId, userName) {
   return post('/api/user/info/update/name', { userId, userName })
 }
 
+/**
+ * 获取用户勋章列表
+ * @param {string} userId 用户ID
+ * @returns {Promise<Array>} 勋章列表
+ */
+function getUserMedals(userId) {
+  return get(`/api/user/medal/my/${userId}?_t=${Date.now()}`, {}, { showLoading: false })
+}
+
 module.exports = {
   sendSms,
   login,
@@ -162,5 +171,6 @@ module.exports = {
   wxLogin,
   updateUserInfoWithPhone,
   getPointDetailList,
-  updateUserName
+  updateUserName,
+  getUserMedals
 }

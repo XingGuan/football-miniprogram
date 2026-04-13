@@ -10,7 +10,16 @@
         mode="aspectFill"
       />
       <view class="info">
-        <text class="name">{{userInfo.userName || '用户'}}</text>
+        <view class="name-row">
+          <text class="name">{{userInfo.userName || '用户'}}</text>
+          <!-- 最高等级勋章 -->
+          <view class="top-medal-wrapper" wx:if="{{topMedal}}" catchtap="onTopMedalTap">
+            <view class="top-medal-item {{topMedal.colorClass}}">
+              <text class="top-medal-icon">{{topMedal.icon}}</text>
+            </view>
+            <view class="top-medal-tooltip">累计中奖{{topMedal.bonusDesc}}</view>
+          </view>
+        </view>
         <text class="phone">{{userInfo.phone || ''}}</text>
       </view>
       <view class="edit-arrow">›</view>
@@ -46,6 +55,24 @@
           </view>
         </view>
       </view>
+    </view>
+
+    <!-- 我的勋章入口 -->
+    <view class="medal-entry" wx:if="{{isLoggedIn && userInfo && medals.length > 0}}" bindtap="onOpenMedalPopup">
+      <view class="medal-entry-left">
+        <view class="medal-entry-icon">🏅</view>
+        <view class="medal-entry-info">
+          <text class="medal-entry-title">我的勋章</text>
+          <text class="medal-entry-desc">已获得 {{acquiredCount}} 枚勋章</text>
+        </view>
+      </view>
+      <!-- 已获得的勋章预览 -->
+      <view class="medal-entry-preview">
+        <view class="preview-medal {{item.colorClass}}" wx:for="{{acquiredMedals}}" wx:key="medalId" wx:if="{{index < 4}}">
+          <text>{{item.icon}}</text>
+        </view>
+      </view>
+      <view class="medal-entry-arrow">›</view>
     </view>
 
     <!-- 任务中心 -->
@@ -247,6 +274,68 @@
           {{updateNameLoading ? '修改中...' : '确认修改'}}
         </view>
       </view>
+    </view>
+  </view>
+
+  <!-- 我的勋章弹窗 -->
+  <view class="medal-popup-mask" wx:if="{{showMedalPopup}}" catchtap="onCloseMedalPopup">
+    <view class="medal-popup-container" catchtap="preventTap">
+      <!-- 头部 -->
+      <view class="medal-popup-header">
+        <view class="medal-popup-close" catchtap="onCloseMedalPopup">
+          <text class="close-icon">×</text>
+        </view>
+        <view class="medal-popup-title-area">
+          <text class="medal-popup-title">🏅 我的勋章</text>
+        </view>
+        <!-- 统计信息 -->
+        <view class="medal-stats-row">
+          <view class="stat-badge">
+            <text class="stat-badge-num">{{medals.length}}</text>
+            <text class="stat-badge-label">全部</text>
+          </view>
+          <view class="stat-badge acquired">
+            <text class="stat-badge-num">{{acquiredCount}}</text>
+            <text class="stat-badge-label">已获得</text>
+          </view>
+          <view class="stat-badge worn">
+            <text class="stat-badge-num">{{wornMedals.length}}</text>
+            <text class="stat-badge-label">佩戴中</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 勋章列表 -->
+      <scroll-view class="medal-popup-scroll" scroll-y enhanced show-scrollbar="{{false}}">
+        <view class="medal-grid-list">
+          <view
+            class="medal-grid-item {{item.isAcquired ? 'acquired' : 'locked'}}"
+            wx:for="{{medals}}"
+            wx:key="medalId"
+            bindtap="onMedalTap"
+            data-medal="{{item}}"
+          >
+            <!-- 勋章图标 -->
+            <view class="medal-icon-box {{item.colorClass}}">
+              <text class="medal-icon-text">{{item.icon}}</text>
+              <view class="medal-shine" wx:if="{{item.isAcquired}}"></view>
+            </view>
+
+            <!-- 状态标签 -->
+            <view class="medal-tag worn" wx:if="{{item.isWorn}}">佩戴中</view>
+            <view class="medal-tag lock" wx:elif="{{!item.isAcquired}}">🔒</view>
+
+            <!-- 勋章名称 -->
+            <text class="medal-name">{{item.medalName}}</text>
+            <text class="medal-desc">{{item.medalMeaning}}</text>
+          </view>
+        </view>
+
+        <!-- 底部提示 -->
+        <view class="medal-footer-tip">
+          <text>点击已解锁勋章查看详情</text>
+        </view>
+      </scroll-view>
     </view>
   </view>
 </view>

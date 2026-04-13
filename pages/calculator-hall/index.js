@@ -1,5 +1,6 @@
 // pages/calculator-hall/index.js - 推荐方案大厅
 const matchApi = require('../../api/match')
+const userApi = require('../../api/user')
 const userStore = require('../../store/user')
 
 Page({
@@ -65,18 +66,24 @@ Page({
 
       // 按用户ID分组，统计用户战绩和中奖金额
       const userStats = {}
+      // 存储每个用户的中奖记录列表，用于上报
+      const userBonusList = {}
+
       rawRecords.forEach(item => {
         const userId = item.userId
         if (!userStats[userId]) {
           userStats[userId] = {
+            oduserId: userId,
             userName: item.userName || `用户${userId}`,
             avatar: item.avatar || '',
             totalRecords: 0,
             winRecords: 0,
             loseRecords: 0,
             pendingRecords: 0,
-            totalBonus: 0 // 总中奖金额
+            totalBonus: 0, // 总中奖金额
+            medals: [] // 用户勋章
           }
+          userBonusList[userId] = []
         }
 
         if (item.status === 1) {
@@ -88,6 +95,12 @@ Page({
             bonus = this.calculateActualBonus(item)
           }
           userStats[userId].totalBonus += bonus
+
+          // 记录中奖明细
+          userBonusList[userId].push({
+            amount: bonus,
+            schemeNo: item.schemeNo || item.id
+          })
         } else if (item.status === 2) {
           userStats[userId].loseRecords++
           userStats[userId].totalRecords++
@@ -95,6 +108,12 @@ Page({
           userStats[userId].pendingRecords++
         }
       })
+
+      // 上报中奖统计数据到后端
+      this.reportBonusStats(userStats, userBonusList)
+
+      // 获取每个用户的勋章数据
+      await this.loadUserMedals(userStats)
 
       const recommendations = rawRecords.map(item => ({
         ...item,
@@ -130,13 +149,82 @@ Page({
         .sort((a, b) => b.totalBonus - a.totalBonus) // 按金额从高到低
         .slice(0, 3)
 
-      console.log('中奖金额排行榜数据:', bonusRankList)
-      console.log('用户统计:', userStats)
       this.setData({ recommendations, rankList, bonusRankList, loading: false, error: null })
     } catch (error) {
       console.error('加载推荐列表失败:', error)
       this.setData({ loading: false, error: '加载失败，请重试' })
     }
+  },
+
+  // 上报中奖统计数据到后端
+  async reportBonusStats(userStats, userBonusList) {
+    try {
+      // 遍历所有有中奖记录的用户，上报数据
+      for (const userId of Object.keys(userStats)) {
+        const stats = userStats[userId]
+        const bonusList = userBonusList[userId] || []
+
+        // 只上报有中奖记录的用户
+        if (stats.totalBonus > 0 && bonusList.length > 0) {
+          await matchApi.saveBonusStats({
+            userId: userId,
+            bonusList: bonusList,
+            totalBonus: stats.totalBonus
+          })
+        }
+      }
+    } catch (error) {
+      // 上报失败不影响页面展示，静默处理
+      console.error('上报中奖统计失败:', error)
+    }
+  },
+
+  // 加载用户勋章数据
+  async loadUserMedals(userStats) {
+    const userIds = Object.keys(userStats)
+
+    // 并行获取所有用户的勋章
+    const medalPromises = userIds.map(async (userId) => {
+      try {
+        const medals = await userApi.getUserMedals(userId)
+        const medalList = Array.isArray(medals) ? medals : ((medals && medals.data) || [])
+
+        // 筛选已获得的勋章（acquireTime 有值），按等级降序排序，取最高等级的一个
+        const acquiredMedals = medalList
+          .filter(m => m.acquireTime && m.acquireTime !== 'null' && m.acquireTime !== '')
+          .sort((a, b) => (b.level || 0) - (a.level || 0))
+
+        // 只保留最高等级的勋章
+        const topMedal = acquiredMedals.length > 0 ? acquiredMedals[0] : null
+        userStats[userId].topMedal = topMedal ? {
+          ...topMedal,
+          icon: this.getMedalIcon(topMedal.level),
+          colorClass: this.getMedalColorClass(topMedal.level)
+        } : null
+      } catch (e) {
+        console.error(`获取用户${userId}勋章失败:`, e)
+        userStats[userId].topMedal = null
+      }
+    })
+
+    await Promise.all(medalPromises)
+  },
+
+  // 获取勋章图标
+  getMedalIcon(level) {
+    const iconMap = {
+      1: '🌱', 2: '🎊', 3: '💎', 4: '🎁', 5: '☀️', 6: '🏆', 7: '👑'
+    }
+    return iconMap[level] || '🏅'
+  },
+
+  // 获取勋章颜色样式类
+  getMedalColorClass(level) {
+    const colorMap = {
+      1: 'medal-green', 2: 'medal-blue', 3: 'medal-purple',
+      4: 'medal-pink', 5: 'medal-orange', 6: 'medal-gold', 7: 'medal-rainbow'
+    }
+    return colorMap[level] || 'medal-default'
   },
 
   // 计算胜率

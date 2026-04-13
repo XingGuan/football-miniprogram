@@ -45,11 +45,11 @@ Page({
       }
 
       const userInfo = userStore.getUserInfo()
-      const isLeader = group.leaderId === userInfo?.id
+      const isLeader = group.leaderId === (userInfo && userInfo.id)
       let isJoined = isLeader
 
       if (!isJoined && group.members && Array.isArray(group.members)) {
-        isJoined = group.members.some(m => m.userId === userInfo?.id)
+        isJoined = group.members.some(m => m.userId === (userInfo && userInfo.id))
       }
 
       const canJoin = group.currentSize < group.groupSize && group.status === 0 && !isJoined
