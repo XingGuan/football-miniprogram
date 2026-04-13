@@ -55,7 +55,12 @@
             <view class="avatar-fallback" wx:else>{{item.userName[0]}}</view>
           </view>
           <view class="rank-user">
-            <text class="rank-name">{{item.userName}}</text>
+            <view class="rank-name-row">
+              <text class="rank-name">{{item.userName}}</text>
+              <view class="rank-medal-icon {{item.topMedal.colorClass}}" wx:if="{{item.topMedal}}">
+                <text>{{item.topMedal.icon}}</text>
+              </view>
+            </view>
             <text class="rank-stats">{{item.winRecords}}中/{{item.totalRecords}}单</text>
           </view>
           <view class="rank-rate">
@@ -80,7 +85,12 @@
             <view class="avatar-fallback" wx:else>{{item.userName[0]}}</view>
           </view>
           <view class="rank-user">
-            <text class="rank-name">{{item.userName}}</text>
+            <view class="rank-name-row">
+              <text class="rank-name">{{item.userName}}</text>
+              <view class="rank-medal-icon {{item.topMedal.colorClass}}" wx:if="{{item.topMedal}}">
+                <text>{{item.topMedal.icon}}</text>
+              </view>
+            </view>
             <text class="rank-stats">{{item.winRecords}}次中奖</text>
           </view>
           <view class="rank-bonus">
@@ -115,7 +125,13 @@
 
           <view class="user-meta">
             <view class="user-header">
-              <text class="user-name">{{item.userStats.userName}}</text>
+              <view class="user-name-medals">
+                <text class="user-name">{{item.userStats.userName}}</text>
+                <!-- 最高等级勋章 -->
+                <view class="user-medal-item {{item.userStats.topMedal.colorClass}}" wx:if="{{item.userStats.topMedal}}">
+                  <text class="medal-icon">{{item.userStats.topMedal.icon}}</text>
+                </view>
+              </view>
               <view class="badge {{item.status === 1 ? 'win' : (item.status === 2 ? 'lose' : 'pending')}}">
                 <text class="badge-icon">{{item.status === 1 ? '✓' : (item.status === 2 ? '✗' : '⏳')}}</text>
                 <text class="badge-text">{{item.statusDesc}}</text>

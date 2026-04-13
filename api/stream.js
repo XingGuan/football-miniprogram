@@ -145,7 +145,7 @@ function streamChatPolling(options) {
         sessionId = res.data.data.sessionId
         startPolling()
       } else {
-        onError && onError(new Error(res.data?.message || '启动对话失败'))
+        onError && onError(new Error((res.data && res.data.message) || '启动对话失败'))
       }
     },
     fail: (err) => {
@@ -190,7 +190,7 @@ function streamChatPolling(options) {
             pollTimer = setTimeout(poll, 100)
           }
         } else {
-          onError && onError(new Error(res.data?.message || '获取消息失败'))
+          onError && onError(new Error((res.data && res.data.message) || '获取消息失败'))
         }
       },
       fail: (err) => {

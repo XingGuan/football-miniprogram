@@ -67,7 +67,7 @@ Page({
   loadUserPoints() {
     const userInfo = userStore.getUserInfo()
     this.setData({
-      userPoints: userInfo?.point || 0
+      userPoints: (userInfo && userInfo.point) || 0
     })
   },
 
@@ -87,7 +87,7 @@ Page({
     try {
       const result = await userApi.checkInformationUnlock(matchId, userInfo.id)
       this.setData({
-        informationUnlocked: result?.unlocked || result === true
+        informationUnlocked: (result && result.unlocked) || result === true
       })
     } catch (e) {
       console.error('检查情报解锁状态失败:', e)
@@ -188,7 +188,7 @@ Page({
 
         case 'xg':
           const xgResult = await analysisApi.getXgData(matchId)
-          this.setData({ xgData: xgResult?.data || xgResult })
+          this.setData({ xgData: (xgResult && xgResult.data) || xgResult })
           break
         case 'information':
           const informationResult = await analysisApi.getInformationData(matchId)
@@ -202,7 +202,7 @@ Page({
 
         case 'odds':
           const oddsResult = await analysisApi.getOddsData(matchId)
-          this.setData({ oddsData: oddsResult?.history || oddsResult || [] })
+          this.setData({ oddsData: (oddsResult && oddsResult.history) || oddsResult || [] })
           break
       }
 
@@ -232,14 +232,32 @@ Page({
       // 调用API获取排名数据
       const result = await matchApi.getTableData(matchId)
 
+      // 获取当前比赛的主客队名称用于标记
+      const { match } = this.data
+      const homeTeamName = (match && match.homeTeam) || ''
+      const awayTeamName = (match && match.awayTeam) || ''
+
       if (result && Array.isArray(result)) {
-        // 按tableType准确分组排名数据
-        // total: tableType 为 'total' 的数据
-        tableData.total = result.filter(item => item.tableType === 'total')
-        // home: tableType 为 'home' 的数据
-        tableData.home = result.filter(item => item.tableType === 'home')
-        // away: tableType 为 'away' 的数据
-        tableData.away = result.filter(item => item.tableType === 'away')
+        // 标记主客队的函数
+        const markTeamType = (item) => {
+          let teamType = ''
+          // 通过队名匹配判断是主队还是客队
+          if (homeTeamName && item.teamAbbrCnName && item.teamAbbrCnName.includes(homeTeamName)) {
+            teamType = 'home'
+          } else if (awayTeamName && item.teamAbbrCnName && item.teamAbbrCnName.includes(awayTeamName)) {
+            teamType = 'away'
+          } else if (homeTeamName && item.teamAbbrCnName && homeTeamName.includes(item.teamAbbrCnName)) {
+            teamType = 'home'
+          } else if (awayTeamName && item.teamAbbrCnName && awayTeamName.includes(item.teamAbbrCnName)) {
+            teamType = 'away'
+          }
+          return { ...item, teamType }
+        }
+
+        // 按tableType准确分组排名数据，并标记主客队
+        tableData.total = result.filter(item => item.tableType === 'total').map(markTeamType)
+        tableData.home = result.filter(item => item.tableType === 'home').map(markTeamType)
+        tableData.away = result.filter(item => item.tableType === 'away').map(markTeamType)
 
         // 每种类型的数据按排名排序
         tableData.total.sort((a, b) => (a.ranking || 999) - (b.ranking || 999))
@@ -326,7 +344,7 @@ Page({
     }
 
     const userInfo = userStore.getUserInfo()
-    const userPoints = userInfo?.point || 0
+    const userPoints = (userInfo && userInfo.point) || 0
     const pointsNeeded = 1
 
     // 检查积分是否充足
@@ -379,7 +397,7 @@ Page({
       // 更新本地状态
       this.setData({
         informationUnlocked: true,
-        userPoints: latestUserInfo?.point || 0
+        userPoints: (latestUserInfo && latestUserInfo.point) || 0
       })
 
       // 显示成功提示

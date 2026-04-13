@@ -87,7 +87,7 @@ Component({
       // 如果未解锁，先弹窗确认扣减积分
       if (!isUnlocked) {
         const userInfo = userStore.getUserInfo()
-        const userPoints = userInfo?.point || 0
+        const userPoints = (userInfo && userInfo.point) || 0
         const pointsNeeded = 1 // 需要的积分
 
         if (userPoints < pointsNeeded) {

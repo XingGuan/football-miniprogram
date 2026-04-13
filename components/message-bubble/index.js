@@ -57,7 +57,7 @@ Component({
         const app = getApp()
         const userInfo = app.globalData.userInfo
         this.setData({
-          avatarUrl: userInfo?.avatar || '/images/icons/user-avatar.png'
+          avatarUrl: (userInfo && userInfo.avatar) || '/images/icons/user-avatar.png'
         })
       } else {
         // AI 头像

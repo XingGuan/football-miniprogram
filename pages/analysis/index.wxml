@@ -109,9 +109,12 @@
               <text class="col points">积分</text>
             </view>
             <view class="table-body">
-              <view class="table-row" wx:for="{{tableType === 'total' ? tableData.total : tableType === 'home' ? tableData.home : tableData.away}}" wx:key="uniformTeamId">
+              <view class="table-row {{item.teamType === 'home' ? 'home-team' : item.teamType === 'away' ? 'away-team' : ''}}" wx:for="{{tableType === 'total' ? tableData.total : tableType === 'home' ? tableData.home : tableData.away}}" wx:key="uniformTeamId">
                 <text class="col rank">{{item.ranking}}</text>
-                <text class="col team">{{item.teamAbbrCnName}}</text>
+                <view class="col team">
+                  <text class="team-marker {{item.teamType}}" wx:if="{{item.teamType}}">{{item.teamType === 'home' ? '主' : '客'}}</text>
+                  <text class="team-name">{{item.teamAbbrCnName}}</text>
+                </view>
                 <text class="col matches">{{item.winGoalMatchCnt + item.drawMatchCnt + item.lossGoalMatchCnt}}</text>
                 <text class="col win">{{item.winGoalMatchCnt}}</text>
                 <text class="col draw">{{item.drawMatchCnt}}</text>

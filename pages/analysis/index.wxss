@@ -746,6 +746,49 @@
   text-align: left;
   padding-left: 16rpx;
   font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+}
+
+/* 主客队标记 */
+.team-marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28rpx;
+  height: 28rpx;
+  border-radius: 4rpx;
+  font-size: 18rpx;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.team-marker.home {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff8c8c 100%);
+  color: #fff;
+}
+
+.team-marker.away {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  color: #fff;
+}
+
+.team-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 主队行高亮 */
+.table-row.home-team {
+  background: rgba(255, 107, 107, 0.08);
+}
+
+/* 客队行高亮 */
+.table-row.away-team {
+  background: rgba(79, 172, 254, 0.08);
 }
 
 .table-row .col.matches,

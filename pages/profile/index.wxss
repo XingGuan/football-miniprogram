@@ -48,10 +48,71 @@
   gap: 8rpx;
 }
 
+.name-row {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  flex-wrap: wrap;
+}
+
 .name {
   font-size: 36rpx;
   font-weight: 500;
   color: #333;
+}
+
+/* 最高等级勋章 */
+.top-medal-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.top-medal-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48rpx;
+  height: 48rpx;
+  border-radius: 50%;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.2);
+}
+
+.top-medal-icon {
+  font-size: 26rpx;
+  line-height: 1;
+}
+
+/* 勋章悬浮提示 */
+.top-medal-tooltip {
+  position: absolute;
+  top: 56rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  font-size: 20rpx;
+  padding: 8rpx 16rpx;
+  border-radius: 8rpx;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.top-medal-wrapper:active .top-medal-tooltip {
+  opacity: 1;
+}
+
+/* 提示箭头 */
+.top-medal-tooltip::before {
+  content: '';
+  position: absolute;
+  top: -8rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 8rpx solid transparent;
+  border-right: 8rpx solid transparent;
+  border-bottom: 8rpx solid rgba(0, 0, 0, 0.8);
 }
 
 .phone {
@@ -493,6 +554,551 @@
   font-size: 24rpx;
   color: #52c41a;
   font-weight: 500;
+}
+
+/* 我的勋章入口 */
+.medal-entry {
+  margin-top: 20rpx;
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s;
+}
+
+.medal-entry:active {
+  background: #f9f9f9;
+}
+
+.medal-entry-left {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.medal-entry-icon {
+  font-size: 40rpx;
+}
+
+.medal-entry-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.medal-entry-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.medal-entry-desc {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.medal-entry-preview {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8rpx;
+  margin-right: 12rpx;
+}
+
+.preview-medal {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22rpx;
+}
+
+.medal-entry-arrow {
+  font-size: 36rpx;
+  color: #ccc;
+}
+
+/* 勋章弹窗 */
+.medal-popup-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-end;
+}
+
+.medal-popup-container {
+  width: 100%;
+  height: 75vh;
+  background: linear-gradient(180deg, #f8f9ff 0%, #ffffff 100%);
+  border-radius: 40rpx 40rpx 0 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* 弹窗头部 */
+.medal-popup-header {
+  position: relative;
+  padding: 32rpx 32rpx 24rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.medal-popup-close {
+  position: absolute;
+  top: 24rpx;
+  right: 24rpx;
+  width: 56rpx;
+  height: 56rpx;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.medal-popup-close .close-icon {
+  font-size: 36rpx;
+  color: #fff;
+  line-height: 1;
+}
+
+.medal-popup-title-area {
+  text-align: center;
+  margin-bottom: 24rpx;
+}
+
+.medal-popup-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* 统计徽章 */
+.medal-stats-row {
+  display: flex;
+  justify-content: center;
+  gap: 24rpx;
+}
+
+.stat-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16rpx 32rpx;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 16rpx;
+  min-width: 120rpx;
+}
+
+.stat-badge-num {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #fff;
+}
+
+.stat-badge-label {
+  font-size: 22rpx;
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: 4rpx;
+}
+
+.stat-badge.acquired {
+  background: rgba(82, 196, 26, 0.3);
+}
+
+.stat-badge.worn {
+  background: rgba(255, 107, 107, 0.3);
+}
+
+/* 勋章滚动区域 */
+.medal-popup-scroll {
+  flex: 1;
+  height: 0;
+  padding: 24rpx;
+  box-sizing: border-box;
+}
+
+/* 勋章网格列表 */
+.medal-grid-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+
+/* 勋章网格项 */
+.medal-grid-item {
+  position: relative;
+  width: calc(50% - 10rpx);
+  padding: 28rpx 20rpx;
+  background: #fff;
+  border-radius: 20rpx;
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.3s;
+  box-sizing: border-box;
+}
+
+.medal-grid-item:active {
+  transform: scale(0.97);
+}
+
+.medal-grid-item.locked {
+  background: #f5f5f5;
+}
+
+/* 勋章图标盒子 */
+.medal-icon-box {
+  position: relative;
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16rpx;
+  box-shadow: 0 6rpx 20rpx rgba(0, 0, 0, 0.15);
+}
+
+.medal-icon-text {
+  font-size: 52rpx;
+  z-index: 1;
+}
+
+/* 闪光效果 */
+.medal-shine {
+  position: absolute;
+  top: 8rpx;
+  left: 8rpx;
+  width: 24rpx;
+  height: 24rpx;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+}
+
+/* 锁定状态 */
+.medal-grid-item.locked .medal-icon-box {
+  background: #e0e0e0 !important;
+  box-shadow: none;
+}
+
+.medal-grid-item.locked .medal-icon-text {
+  filter: grayscale(100%);
+  opacity: 0.4;
+}
+
+/* 状态标签 */
+.medal-tag {
+  position: absolute;
+  top: 12rpx;
+  right: 12rpx;
+  font-size: 20rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 12rpx;
+}
+
+.medal-tag.worn {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+  color: #fff;
+  font-weight: 500;
+}
+
+.medal-tag.lock {
+  background: rgba(0, 0, 0, 0.06);
+  font-size: 18rpx;
+  padding: 4rpx 8rpx;
+}
+
+/* 勋章名称 */
+.medal-name {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 6rpx;
+  text-align: center;
+}
+
+.medal-grid-item.locked .medal-name {
+  color: #999;
+}
+
+/* 勋章描述 */
+.medal-desc {
+  font-size: 22rpx;
+  color: #888;
+  text-align: center;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.medal-grid-item.locked .medal-desc {
+  color: #bbb;
+}
+
+/* 底部提示 */
+.medal-footer-tip {
+  text-align: center;
+  padding: 32rpx 0 calc(32rpx + env(safe-area-inset-bottom));
+  color: #bbb;
+  font-size: 24rpx;
+}
+
+/* 勋章网格 */
+.medal-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16rpx;
+}
+
+.medal-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: calc(25% - 12rpx);
+  padding: 20rpx 8rpx 16rpx;
+  border-radius: 12rpx;
+  transition: all 0.3s ease;
+  background: #f5f5f5;
+  border: 2rpx solid transparent;
+}
+
+.medal-item:active {
+  transform: scale(0.95);
+}
+
+.medal-item-icon-wrapper {
+  position: relative;
+  margin-bottom: 8rpx;
+}
+
+.medal-item-icon {
+  font-size: 44rpx;
+}
+
+/* 佩戴标记 */
+.medal-worn-badge {
+  position: absolute;
+  bottom: -4rpx;
+  right: -8rpx;
+  width: 28rpx;
+  height: 28rpx;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+  border-radius: 50%;
+  font-size: 16rpx;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2rpx 6rpx rgba(255, 107, 107, 0.4);
+}
+
+.medal-item-name {
+  font-size: 22rpx;
+  color: #666;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* 未获得勋章的锁定图标 */
+.medal-item-lock {
+  position: absolute;
+  top: 8rpx;
+  right: 8rpx;
+  font-size: 18rpx;
+  opacity: 0.6;
+}
+
+/* 佩戴中的勋章样式 */
+.medal-item.is-worn {
+  border-color: #ff6b6b;
+  box-shadow: 0 4rpx 12rpx rgba(255, 107, 107, 0.2);
+}
+
+/* 勋章颜色样式 */
+/* 未获得 - 灰色锁定 */
+.medal-locked {
+  background: #f0f0f0;
+}
+.medal-item.medal-locked {
+  background: #f5f5f5;
+  border: 2rpx dashed #ddd;
+}
+.medal-item.medal-locked .medal-item-icon {
+  filter: grayscale(100%);
+  opacity: 0.5;
+}
+.medal-item.medal-locked .medal-item-name {
+  color: #bbb;
+}
+.worn-medal-item.medal-locked {
+  background: #e0e0e0;
+}
+
+/* 百元 - 绿色系 */
+.medal-green {
+  background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+}
+.medal-item.medal-green {
+  background: linear-gradient(135deg, rgba(86, 171, 47, 0.15) 0%, rgba(168, 224, 99, 0.15) 100%);
+  border: 2rpx solid rgba(86, 171, 47, 0.3);
+}
+.medal-item.medal-green .medal-item-name {
+  color: #56ab2f;
+}
+.worn-medal-item.medal-green {
+  background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+}
+
+/* 千元 - 蓝色系 */
+.medal-blue {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+.medal-item.medal-blue {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+  border: 2rpx solid rgba(102, 126, 234, 0.3);
+}
+.medal-item.medal-blue .medal-item-name {
+  color: #667eea;
+}
+.worn-medal-item.medal-blue {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* 1万 - 紫色系 */
+.medal-purple {
+  background: linear-gradient(135deg, #9d50bb 0%, #6e48aa 100%);
+}
+.medal-item.medal-purple {
+  background: linear-gradient(135deg, rgba(157, 80, 187, 0.15) 0%, rgba(110, 72, 170, 0.15) 100%);
+  border: 2rpx solid rgba(157, 80, 187, 0.3);
+}
+.medal-item.medal-purple .medal-item-name {
+  color: #9d50bb;
+}
+.worn-medal-item.medal-purple {
+  background: linear-gradient(135deg, #9d50bb 0%, #6e48aa 100%);
+}
+
+/* 2万 - 粉色系 */
+.medal-pink {
+  background: linear-gradient(135deg, #f857a6 0%, #ff5858 100%);
+}
+.medal-item.medal-pink {
+  background: linear-gradient(135deg, rgba(248, 87, 166, 0.15) 0%, rgba(255, 88, 88, 0.15) 100%);
+  border: 2rpx solid rgba(248, 87, 166, 0.3);
+}
+.medal-item.medal-pink .medal-item-name {
+  color: #f857a6;
+}
+.worn-medal-item.medal-pink {
+  background: linear-gradient(135deg, #f857a6 0%, #ff5858 100%);
+}
+
+/* 3万 - 橙色系 */
+.medal-orange {
+  background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+}
+.medal-item.medal-orange {
+  background: linear-gradient(135deg, rgba(247, 151, 30, 0.15) 0%, rgba(255, 210, 0, 0.15) 100%);
+  border: 2rpx solid rgba(247, 151, 30, 0.3);
+}
+.medal-item.medal-orange .medal-item-name {
+  color: #f7971e;
+}
+.worn-medal-item.medal-orange {
+  background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+}
+
+/* 5万 - 金色系 */
+.medal-gold {
+  background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%);
+  box-shadow: 0 4rpx 16rpx rgba(242, 153, 74, 0.3);
+}
+.medal-item.medal-gold {
+  background: linear-gradient(135deg, rgba(242, 153, 74, 0.2) 0%, rgba(242, 201, 76, 0.2) 100%);
+  border: 2rpx solid rgba(242, 153, 74, 0.4);
+}
+.medal-item.medal-gold .medal-item-name {
+  color: #f2994a;
+  font-weight: 500;
+}
+.worn-medal-item.medal-gold {
+  background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%);
+}
+
+/* 10万 - 彩虹/红金 */
+.medal-rainbow {
+  background: linear-gradient(135deg, #eb3349 0%, #f45c43 50%, #ffd700 100%);
+  box-shadow: 0 6rpx 20rpx rgba(235, 51, 73, 0.35);
+}
+.medal-item.medal-rainbow {
+  background: linear-gradient(135deg, rgba(235, 51, 73, 0.15) 0%, rgba(244, 92, 67, 0.15) 50%, rgba(255, 215, 0, 0.15) 100%);
+  border: 2rpx solid #eb3349;
+}
+.medal-item.medal-rainbow .medal-item-name {
+  color: #eb3349;
+  font-weight: 600;
+}
+.worn-medal-item.medal-rainbow {
+  background: linear-gradient(135deg, #eb3349 0%, #f45c43 50%, #ffd700 100%);
+}
+
+/* 默认勋章样式 */
+.medal-default {
+  background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%);
+}
+.medal-item.medal-default {
+  background: rgba(189, 195, 199, 0.15);
+  border: 2rpx solid rgba(189, 195, 199, 0.3);
+}
+.worn-medal-item.medal-default {
+  background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%);
+}
+
+/* 勋章图标颜色 - 弹窗内 */
+.medal-icon-box.medal-green {
+  background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+}
+.medal-icon-box.medal-blue {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+.medal-icon-box.medal-purple {
+  background: linear-gradient(135deg, #9d50bb 0%, #6e48aa 100%);
+}
+.medal-icon-box.medal-pink {
+  background: linear-gradient(135deg, #f857a6 0%, #ff5858 100%);
+}
+.medal-icon-box.medal-orange {
+  background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+}
+.medal-icon-box.medal-gold {
+  background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%);
+}
+.medal-icon-box.medal-rainbow {
+  background: linear-gradient(135deg, #eb3349 0%, #f45c43 50%, #ffd700 100%);
+}
+.medal-icon-box.medal-default {
+  background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%);
+}
+.medal-icon-box.medal-locked {
+  background: #e0e0e0;
 }
 
 /* 拼团活动 */

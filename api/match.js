@@ -149,6 +149,17 @@ function formatDate(date) {
   return `${year}-${month}-${day}`
 }
 
+/**
+ * 上报中奖统计数据
+ * @param {Object} data 统计数据
+ * @param {string|number} data.userId 用户ID
+ * @param {Array} data.bonusList 中奖列表 [{amount, schemeNo}]
+ * @param {number} data.totalBonus 中奖总金额
+ */
+function saveBonusStats(data) {
+  return post('/api/user/bonus/stats', data)
+}
+
 module.exports = {
   getMatchList,
   getMatchDetail,
@@ -166,5 +177,6 @@ module.exports = {
   getMatchLive,
   getDragonAnalysis,
   getTableData,
-  checkFeatures
+  checkFeatures,
+  saveBonusStats
 }

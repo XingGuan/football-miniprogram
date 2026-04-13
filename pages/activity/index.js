@@ -76,19 +76,19 @@ Page({
     let displayGroups = []
     if (activeTab === 'created') {
       // 我发起的拼团
-      displayGroups = groups.filter(g => g.leaderId === userInfo?.id)
+      displayGroups = groups.filter(g => g.leaderId === (userInfo && userInfo.id))
     } else {
       // 我加入的拼团
       displayGroups = groups.filter(g => {
-        if (g.leaderId === userInfo?.id) return false
-        return g.members && Array.isArray(g.members) && g.members.some(m => m.userId === userInfo?.id)
+        if (g.leaderId === (userInfo && userInfo.id)) return false
+        return g.members && Array.isArray(g.members) && g.members.some(m => m.userId === (userInfo && userInfo.id))
       })
     }
 
     // 添加其他信息
     displayGroups = displayGroups.map(g => ({
       ...g,
-      isLeader: g.leaderId === userInfo?.id,
+      isLeader: g.leaderId === (userInfo && userInfo.id),
       progressPercent: Math.round((g.currentSize / g.groupSize) * 100),
       remainMembers: g.groupSize - g.currentSize
     }))
