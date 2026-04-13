@@ -27,13 +27,23 @@
       </view>
     </view>
 
-    <!-- 胜率排行榜 -->
-    <view class="rank-section" wx:if="{{rankList.length > 0}}">
-      <view class="rank-header" bindtap="onToggleRank">
-        <text class="rank-title">🏆 胜率排行榜</text>
-        <text class="rank-toggle">{{rankExpanded ? '收起' : '展开'}}</text>
+    <!-- 排行榜区域 -->
+    <view class="rank-section" wx:if="{{rankList.length > 0 || bonusRankList.length > 0}}">
+      <!-- 排行榜头部：切换按钮 + 展开收起 -->
+      <view class="rank-header">
+        <view class="rank-type-switcher">
+          <view class="rank-type-btn {{rankType === 'winRate' ? 'active' : ''}}" bindtap="onSwitchRankType" data-type="winRate">
+            <text>🏆 胜率榜</text>
+          </view>
+          <view class="rank-type-btn {{rankType === 'bonus' ? 'active' : ''}}" bindtap="onSwitchRankType" data-type="bonus">
+            <text>💰 金额榜</text>
+          </view>
+        </view>
+        <text class="rank-toggle" bindtap="onToggleRank">{{rankExpanded ? '收起' : '展开'}}</text>
       </view>
-      <view class="rank-list {{rankExpanded ? '' : 'collapsed'}}">
+
+      <!-- 胜率排行榜内容 -->
+      <view class="rank-list {{rankExpanded ? '' : 'collapsed'}}" wx:if="{{rankType === 'winRate'}}">
         <view class="rank-item" wx:for="{{rankList}}" wx:key="userName">
           <view class="rank-medal">
             <text wx:if="{{index === 0}}">🥇</text>
@@ -51,6 +61,34 @@
           <view class="rank-rate">
             <text class="rate-num">{{item.winRate}}%</text>
           </view>
+        </view>
+        <view class="rank-empty" wx:if="{{rankList.length === 0}}">
+          <text>暂无数据</text>
+        </view>
+      </view>
+
+      <!-- 中奖金额排行榜内容 -->
+      <view class="rank-list {{rankExpanded ? '' : 'collapsed'}}" wx:if="{{rankType === 'bonus'}}">
+        <view class="rank-item" wx:for="{{bonusRankList}}" wx:key="userName">
+          <view class="rank-medal">
+            <text wx:if="{{index === 0}}">🥇</text>
+            <text wx:elif="{{index === 1}}">🥈</text>
+            <text wx:else>🥉</text>
+          </view>
+          <view class="rank-avatar">
+            <image class="avatar-img" src="{{item.avatar}}" mode="aspectFill" wx:if="{{item.avatar}}"></image>
+            <view class="avatar-fallback" wx:else>{{item.userName[0]}}</view>
+          </view>
+          <view class="rank-user">
+            <text class="rank-name">{{item.userName}}</text>
+            <text class="rank-stats">{{item.winRecords}}次中奖</text>
+          </view>
+          <view class="rank-bonus">
+            <text class="bonus-num">¥{{item.totalBonusStr}}</text>
+          </view>
+        </view>
+        <view class="rank-empty" wx:if="{{bonusRankList.length === 0}}">
+          <text>暂无中奖数据</text>
         </view>
       </view>
     </view>
