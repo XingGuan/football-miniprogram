@@ -1,5 +1,12 @@
 <!-- pages/profile/index.wxml -->
 <view class="profile-page">
+  <!-- 积分充值按钮 - 可拖动 -->
+  <movable-area class="credits-area" wx:if="{{showCreditsButton}}">
+    <movable-view class="credits-btn" direction="all" x="{{creditsX}}" y="{{creditsY}}" bindchange="onCreditsMove" bindtap="onCredits">
+      <text class="credits-icon">💳</text>
+      <text class="credits-text">积分充值</text>
+    </movable-view>
+  </movable-area>
   <!-- 用户信息区域 -->
   <view class="user-section">
     <!-- 已登录 -->

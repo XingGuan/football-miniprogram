@@ -17,7 +17,8 @@
     "pages/ai-analysis/index",
     "pages/profile/index",
     "pages/tool/index",
-    "pages/agreement/index"
+    "pages/agreement/index",
+    "pages/credits/index"
   ],
   "window": {
     "navigationBarTextStyle": "black",

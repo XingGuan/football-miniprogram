@@ -33,7 +33,11 @@ Page({
     acquiredCount: 0,
     topMedal: null, // 最高等级勋章
     medalsLoading: false,
-    showMedalPopup: false
+    showMedalPopup: false,
+    // 积分充值悬浮按钮
+    showCreditsButton: false,
+    creditsX: 500,
+    creditsY: 120
   },
 
   onLoad() {
@@ -43,9 +47,23 @@ Page({
   onShow() {
     this.updateUserState()
     this.loadUserMedals()
+    this.checkFeatures()
 
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ selected: 3 })
+    }
+  },
+
+  // 检查功能开关
+  async checkFeatures() {
+    try {
+      const matchApi = require('../../api/match')
+      const result = await matchApi.checkFeatures()
+      const showCreditsButton = result === true
+      this.setData({ showCreditsButton })
+    } catch (error) {
+      console.error('检查功能开关失败:', error)
+      this.setData({ showCreditsButton: false })
     }
   },
 
@@ -118,7 +136,6 @@ Page({
         const isWorn = isAcquired && medal.level === topLevel
 
         const colorClass = isAcquired ? this.getMedalColorClass(medal.level) : 'medal-locked'
-        console.log(`勋章[${medal.medalName}]: level=${medal.level}, colorClass=${colorClass}, isAcquired=${isAcquired}, isWorn=${isWorn}`)
 
         return {
           ...medal,
@@ -691,6 +708,25 @@ Page({
     if (this._bindCountdownTimer) {
       clearInterval(this._bindCountdownTimer)
     }
+  },
+
+  // 积分充值按钮拖动
+  onCreditsMove(e) {
+    // 记录最新位置，防止tap事件被误触
+    this._lastMoveTime = Date.now()
+  },
+
+  // 点击积分充值按钮
+  onCredits() {
+    // 如果刚拖动过，忽略点击
+    if (this._lastMoveTime && Date.now() - this._lastMoveTime < 300) {
+      return
+    }
+
+    // 跳转到积分充值页面
+    wx.navigateTo({
+      url: '/pages/credits/index'
+    })
   },
 
   // 分享给好友
