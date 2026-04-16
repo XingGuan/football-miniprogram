@@ -12,7 +12,8 @@
       "Bash(git commit -m \"$\\(cat <<''EOF''\n简化大厅卡片布局\n\n- 删除右上角的时间显示\n- 删除投注金额和中奖奖金行\n- 保留比赛数、过关方式、投注注数三项基本信息\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(git commit:*)",
       "Bash(git restore:*)",
-      "Bash(git checkout:*)"
+      "Bash(git checkout:*)",
+      "WebFetch(domain:ai-football.cn)"
     ]
   }
 }
