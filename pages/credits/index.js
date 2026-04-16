@@ -8,7 +8,7 @@ Page({
         id: 1,
         points: 100,
         price: 30,
-        firstPrice: 15,
+        firstPrice: 19.9,
         icon: '💰',
         selected: false
       },
@@ -16,7 +16,7 @@ Page({
         id: 2,
         points: 500,
         price: 150,
-        firstPrice: 75,
+        firstPrice: 59.9,
         icon: '💎',
         selected: false,
         popular: true
