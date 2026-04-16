@@ -28,7 +28,7 @@
 
           <!-- 首次半价标签 -->
           <view class="first-price-badge" wx:if="{{isFirstPurchase}}">
-            <text>首次半价</text>
+            <text>首次优惠</text>
           </view>
 
           <!-- 占位符 - 保持高度一致 -->
