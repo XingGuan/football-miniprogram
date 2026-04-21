@@ -1368,8 +1368,12 @@ Page({
   // 获取选项值显示名称
   getValueName(type, value) {
     // 胜平负、让球胜平负
-    if (type === 'had' || type === 'hhad') {
+    if (type === 'had' ) {
       const map = { 'H': '胜', 'D': '平', 'A': '负' }
+      return map[value] || value
+    }
+    if(type === 'hhad'){
+      const map = { 'H': '让胜', 'D': '让平', 'A': '让负' }
       return map[value] || value
     }
     // 总进球
