@@ -4,6 +4,48 @@
   background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
 }
 
+/* Tab切换 */
+.tab-header {
+  display: flex;
+  background: #fff;
+  border-bottom: 1rpx solid #e2e8f0;
+}
+
+.tab-item {
+  flex: 1;
+  padding: 20rpx 0;
+  text-align: center;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.tab-text {
+  font-size: 28rpx;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+.tab-item.active .tab-text {
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.tab-item.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Tab内容 */
+.tab-content {
+  min-height: 100vh;
+}
+
 /* 统计信息 */
 .stats-bar {
   padding: 24rpx 32rpx;
@@ -83,6 +125,289 @@
 .no-more-text {
   font-size: 26rpx;
   color: #cbd5e1;
+}
+
+/* 模型列表 */
+.models-list {
+  padding: 12rpx 0;
+}
+
+.model-item {
+  display: flex;
+  align-items: center;
+  padding: 20rpx 24rpx;
+  background: #fff;
+  border-bottom: 1rpx solid #f0f0f0;
+  transition: all 0.2s ease;
+}
+
+.model-item.active {
+  cursor: pointer;
+}
+
+.model-item.active:active {
+  background: #f9f9f9;
+}
+
+.model-item.inactive {
+  opacity: 0.6;
+}
+
+/* 左侧类型标签 */
+.model-left {
+  margin-right: 16rpx;
+}
+
+.model-type {
+  width: 56rpx;
+  height: 56rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12rpx;
+  font-size: 22rpx;
+  font-weight: 600;
+  color: #fff;
+}
+
+.model-type.type-result {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.model-type.type-score {
+  background: #c0c0c0;
+}
+
+/* 中间内容 */
+.model-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4rpx;
+}
+
+.model-title {
+  font-size: 28rpx;
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.model-desc {
+  font-size: 22rpx;
+  color: #94a3b8;
+}
+
+/* 右侧箭头或提示 */
+.model-right {
+  margin-left: 12rpx;
+  min-width: 40rpx;
+  text-align: right;
+}
+
+.arrow {
+  font-size: 32rpx;
+  color: #667eea;
+  font-weight: 300;
+}
+
+.soon {
+  font-size: 20rpx;
+  color: #cbd5e1;
+  font-style: italic;
+}
+
+/* 模态框 */
+.modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: flex-end;
+  z-index: 999;
+  animation: slideIn 0.3s ease;
+}
+
+@keyframes slideIn {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.modal-content {
+  width: 100%;
+  background: #fff;
+  border-radius: 24rpx 24rpx 0 0;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+
+.modal-close {
+  position: absolute;
+  top: 16rpx;
+  right: 20rpx;
+  font-size: 44rpx;
+  color: #999;
+  z-index: 10;
+}
+
+.modal-loading,
+.modal-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 40rpx;
+  gap: 24rpx;
+}
+
+.modal-error {
+  gap: 32rpx;
+}
+
+.error-text {
+  font-size: 26rpx;
+  color: #666;
+  text-align: center;
+}
+
+.error-retry {
+  padding: 12rpx 32rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border-radius: 8rpx;
+  font-size: 26rpx;
+  font-weight: 500;
+}
+
+/* 统计详情 */
+.stats-detail {
+  padding: 32rpx 24rpx;
+  padding-top: 60rpx;
+}
+
+.stats-title {
+  margin-bottom: 20rpx;
+}
+
+.title-text {
+  font-size: 32rpx;
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.stats-time {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 0;
+  margin-bottom: 24rpx;
+  border-bottom: 1rpx solid #e2e8f0;
+}
+
+.time-label {
+  font-size: 24rpx;
+  color: #64748b;
+}
+
+.time-value {
+  font-size: 24rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+/* 统计区块 */
+.stats-section {
+  margin-bottom: 32rpx;
+}
+
+.section-title {
+  font-size: 26rpx;
+  color: #1e293b;
+  font-weight: 600;
+  margin-bottom: 16rpx;
+  padding-bottom: 12rpx;
+  border-bottom: 2rpx solid #667eea;
+}
+
+/* 总体统计网格 */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12rpx;
+}
+
+.stat-item {
+  background: #f8fafc;
+  padding: 16rpx;
+  border-radius: 8rpx;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.stat-label {
+  font-size: 22rpx;
+  color: #64748b;
+}
+
+.stat-value {
+  font-size: 28rpx;
+  color: #333;
+  font-weight: 600;
+}
+
+.stat-value.accuracy {
+  color: #667eea;
+}
+
+/* 分类统计 */
+.classify-item {
+  background: #f8fafc;
+  border-radius: 8rpx;
+  overflow: hidden;
+  margin-bottom: 12rpx;
+}
+
+.classify-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 12rpx 16rpx;
+}
+
+.classify-name {
+  font-size: 24rpx;
+  color: #fff;
+  font-weight: 600;
+}
+
+.classify-info {
+  padding: 12rpx 16rpx;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8rpx 0;
+}
+
+.info-label {
+  font-size: 22rpx;
+  color: #64748b;
+}
+
+.info-value {
+  font-size: 22rpx;
+  color: #333;
+  font-weight: 500;
 }
 
 /* 安全区域 */

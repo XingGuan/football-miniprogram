@@ -1,0 +1,184 @@
+<!-- pages/credits/index.wxml -->
+<view class="credits-page">
+  <!-- 头部 -->
+  <view class="header">
+    <view class="header-content">
+      <text class="header-title">积分充值</text>
+      <text class="header-desc">让您的分析更强大</text>
+    </view>
+  </view>
+
+  <!-- 套餐选择 -->
+  <view class="packages-section">
+    <text class="section-title">选择套餐</text>
+    <view class="packages-container">
+      <view
+        class="package-card {{item.selected ? 'selected' : ''}} {{item.popular ? 'popular' : ''}}"
+        wx:for="{{packages}}"
+        wx:key="id"
+        data-id="{{item.id}}"
+        bindtap="onSelectPackage"
+      >
+        <!-- 徽章位置占位符 -->
+        <view class="badges-container">
+          <!-- 热销标签 -->
+          <view class="popular-badge" wx:if="{{item.popular}}">
+            <text>超值</text>
+          </view>
+
+          <!-- 首次半价标签 -->
+          <view class="first-price-badge" wx:if="{{isFirstPurchase}}">
+            <text>首次优惠</text>
+          </view>
+
+          <!-- 占位符 - 保持高度一致 -->
+          <view class="badge-placeholder" wx:if="{{!item.popular && !isFirstPurchase}}"></view>
+        </view>
+
+        <!-- 卡片内容 -->
+        <view class="package-icon">{{item.icon}}</view>
+
+        <!-- 积分显示 -->
+        <view class="package-points-large">
+          <text class="points-value-large">{{item.points}}</text>
+          <text class="points-unit-large">积分</text>
+        </view>
+
+        <!-- 价格信息 -->
+        <view class="package-price-info">
+          <text class="original-price" wx:if="{{isFirstPurchase}}">原价¥{{item.price}}</text>
+          <text class="current-price {{isFirstPurchase ? 'discount' : ''}}">
+            ¥{{isFirstPurchase ? item.firstPrice : item.price}}
+          </text>
+        </view>
+
+        <!-- 选中标记 -->
+        <view class="check-mark" wx:if="{{selectedPackage && selectedPackage.id === item.id}}">
+          <text>✓</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 功能说明 -->
+  <view class="features-section">
+    <text class="section-title">积分用途</text>
+    <view class="features-list">
+      <view class="feature-item">
+        <view class="feature-icon">🤖</view>
+        <view class="feature-text">
+          <text class="feature-name">AI分析</text>
+          <text class="feature-desc">消耗1积分解锁每场比赛AI智能分析</text>
+        </view>
+      </view>
+      <view class="feature-item">
+        <view class="feature-icon">📰</view>
+        <view class="feature-text">
+          <text class="feature-name">赛事情报</text>
+          <text class="feature-desc">消耗积分解锁专业情报分析报告</text>
+        </view>
+      </view>
+      <view class="feature-item">
+        <view class="feature-icon">🎯</view>
+        <view class="feature-text">
+          <text class="feature-name">客服</text>
+          <text class="feature-desc">24小时专属客服，定制需求</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 二维码和联系方式 -->
+  <view class="contact-section">
+    <text class="section-title">充值方式</text>
+
+    <!-- 充值步骤 -->
+    <view class="steps-container">
+      <view class="step-item">
+        <view class="step-number">1</view>
+        <view class="step-content">
+          <text class="step-title">选择套餐</text>
+          <text class="step-desc">选择{{selectedPackage ? selectedPackage.points + '积分' : '合适的套餐'}}</text>
+        </view>
+      </view>
+      <view class="step-item">
+        <view class="step-number">2</view>
+        <view class="step-content">
+          <text class="step-title">扫码添加微信</text>
+          <text class="step-desc">告诉客服要充{{selectedPackage ? selectedPackage.points + '积分' : '哪个套餐'}}</text>
+        </view>
+      </view>
+      <view class="step-item">
+        <view class="step-number">3</view>
+        <view class="step-content">
+          <text class="step-title">转账充值</text>
+          <text class="step-desc">转账¥{{selectedPackage ? (isFirstPurchase ? selectedPackage.firstPrice : selectedPackage.price) : '待选择'}} 即可到账</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 二维码 -->
+    <view class="qrcode-box">
+      <text class="qrcode-title">添加微信二维码</text>
+      <image class="qrcode-image" src="https://ai-football.cn/me.png" mode="aspectFit" />
+      <text class="qrcode-desc">或通过微信号联系客服</text>
+    </view>
+
+    <!-- 客服按钮 -->
+    <view class="contact-buttons">
+      <button
+        class="contact-btn"
+        open-type="contact"
+        session-from="credits_page"
+      >
+        <text class="btn-icon">💬</text>
+        <text class="btn-text">联系客服</text>
+      </button>
+    </view>
+  </view>
+
+  <!-- 联系方式弹窗 -->
+  <view class="modal-mask" wx:if="{{showContactModal}}" bindtap="onCloseContactModal">
+    <view class="modal-content" catchtap="preventTap">
+      <view class="modal-header">
+        <text class="modal-title">{{selectedPackage ? '充值¥' + selectedPackage.price : '选择套餐'}}</text>
+        <view class="modal-close" bindtap="onCloseContactModal">×</view>
+      </view>
+
+      <view class="modal-body">
+        <view class="modal-item" wx:if="{{selectedPackage}}">
+          <text class="label">套餐：</text>
+          <text class="value">{{selectedPackage.price}}元 / {{selectedPackage.points}}积分</text>
+        </view>
+
+        <view class="modal-item">
+          <text class="label">微信号：</text>
+          <view class="input-with-btn">
+            <input class="modal-input" type="text" placeholder="向客服说明您选择的套餐" />
+            <view class="copy-btn" bindtap="onCopyWechat">
+              <text>复制微信</text>
+            </view>
+          </view>
+        </view>
+
+        <view class="modal-tips">
+          <text class="tips-title">充值流程：</text>
+          <text class="tips-item">1. 复制客服微信号，在微信中添加</text>
+          <text class="tips-item">2. 告诉客服您选择的套餐和用户ID</text>
+          <text class="tips-item">3. 按价格转账给客服</text>
+          <text class="tips-item">4. 客服确认收款后为您充值积分</text>
+        </view>
+      </view>
+
+      <view class="modal-footer">
+        <view class="modal-btn cancel" bindtap="onCloseContactModal">关闭</view>
+        <button class="modal-btn confirm" open-type="contact" session-from="credits_charge">
+          {{selectedPackage ? '联系客服充值' : '先选择套餐'}}
+        </button>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部安全区域 -->
+  <view class="safe-area-bottom"></view>
+</view>

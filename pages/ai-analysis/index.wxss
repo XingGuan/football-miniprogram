@@ -137,11 +137,152 @@
   padding-bottom: env(safe-area-inset-bottom);
 }
 
+/* 生成时间栏 */
+.generate-time-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  padding: 18rpx 24rpx;
+  background: #fff;
+  margin: 24rpx 24rpx 0;
+  border-radius: 12rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.04);
+}
+
+.time-icon {
+  font-size: 28rpx;
+}
+
+.time-text {
+  font-size: 24rpx;
+  color: #888;
+}
+
+/* 流式传输状态栏 */
+.streaming-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12rpx;
+  padding: 20rpx 24rpx;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  margin: 24rpx 24rpx 0;
+  border-radius: 12rpx;
+  border: 1rpx solid rgba(102, 126, 234, 0.2);
+}
+
+.streaming-indicator {
+  display: flex;
+  gap: 6rpx;
+}
+
+.streaming-dot {
+  width: 12rpx;
+  height: 12rpx;
+  background: #667eea;
+  border-radius: 50%;
+  animation: streamPulse 1.4s ease-in-out infinite;
+}
+
+.streaming-dot:nth-child(1) { animation-delay: 0s; }
+.streaming-dot:nth-child(2) { animation-delay: 0.2s; }
+.streaming-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes streamPulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.streaming-text {
+  font-size: 26rpx;
+  color: #667eea;
+  font-weight: 500;
+}
+
 /* 操作栏 */
 .action-bar {
   display: flex;
+  align-items: center;
   justify-content: flex-end;
   padding: 20rpx 24rpx;
+  gap: 16rpx;
+}
+
+/* 获取最新分析按钮 */
+.refresh-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  padding: 12rpx 24rpx;
+  border-radius: 24rpx;
+  font-size: 26rpx;
+  font-weight: 500;
+  box-shadow: 0 4rpx 12rpx rgba(102, 126, 234, 0.3);
+  margin-right: auto;
+}
+
+.refresh-btn:active {
+  opacity: 0.9;
+  transform: scale(0.98);
+}
+
+/* VIP样式 */
+.refresh-btn.vip {
+  background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+  box-shadow: 0 4rpx 12rpx rgba(255, 140, 0, 0.3);
+}
+
+/* 非VIP置灰 */
+.refresh-btn.disabled {
+  background: linear-gradient(135deg, #bbb 0%, #999 100%);
+  box-shadow: none;
+}
+
+.refresh-btn.disabled:active {
+  transform: none;
+}
+
+/* 加载状态 */
+.refresh-btn.loading {
+  opacity: 0.8;
+}
+
+/* VIP角标 */
+.vip-badge {
+  position: absolute;
+  top: -12rpx;
+  right: -12rpx;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+  color: #fff;
+  font-size: 18rpx;
+  font-weight: bold;
+  padding: 4rpx 10rpx;
+  border-radius: 12rpx;
+  box-shadow: 0 2rpx 8rpx rgba(238, 90, 36, 0.4);
+}
+
+/* 迷你加载动画 */
+.loading-spinner-mini {
+  width: 24rpx;
+  height: 24rpx;
+  border: 3rpx solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
 }
 
 .action-btn {
@@ -153,7 +294,6 @@
   box-shadow: 0 2rpx 8rpx rgba(0,0,0,0.06);
   border: none;
   line-height: 1.4;
-  margin: 0 0 0 16rpx;
 }
 
 .action-btn::after {
@@ -175,6 +315,20 @@
   border-radius: 20rpx;
   padding: 32rpx;
   box-shadow: 0 4rpx 20rpx rgba(0,0,0,0.05);
+  min-height: 200rpx;
+}
+
+/* 流式传输等待中 */
+.stream-waiting {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60rpx 0;
+}
+
+.waiting-text {
+  font-size: 28rpx;
+  color: #999;
 }
 
 /* Markdown 样式 */
@@ -247,6 +401,59 @@
 
 .md-space {
   height: 12rpx;
+}
+
+/* 有序列表数字 */
+.list-num {
+  color: #667eea;
+  font-size: 28rpx;
+  font-weight: 600;
+  margin-right: 12rpx;
+  min-width: 32rpx;
+}
+
+/* 引用样式 */
+.md-quote {
+  font-size: 28rpx;
+  color: #666;
+  line-height: 1.8;
+  margin: 16rpx 0;
+  padding: 16rpx 20rpx;
+  background: #f8f9fc;
+  border-left: 6rpx solid #667eea;
+  border-radius: 0 8rpx 8rpx 0;
+  font-style: italic;
+}
+
+/* 代码块样式 */
+.md-code {
+  font-size: 24rpx;
+  color: #e83e8c;
+  line-height: 1.6;
+  margin: 16rpx 0;
+  padding: 20rpx;
+  background: #f6f8fa;
+  border-radius: 10rpx;
+  font-family: Consolas, Monaco, 'Courier New', monospace;
+  white-space: pre-wrap;
+  word-break: break-all;
+  overflow-x: auto;
+}
+
+/* 打字光标效果 */
+.typing-cursor {
+  display: inline-block;
+  width: 4rpx;
+  height: 32rpx;
+  background: #667eea;
+  margin-left: 4rpx;
+  animation: blink 1s infinite;
+  vertical-align: middle;
+}
+
+@keyframes blink {
+  0%, 50% { opacity: 1; }
+  51%, 100% { opacity: 0; }
 }
 
 .safe-bottom {

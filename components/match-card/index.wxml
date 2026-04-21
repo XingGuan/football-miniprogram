@@ -1,5 +1,8 @@
 <!-- components/match-card/index.wxml -->
-<view class="match-card">
+<view class="match-card {{isVip ? 'vip-card' : ''}}">
+  <!-- VIP专属光效 -->
+  <view class="vip-glow" wx:if="{{isVip}}"></view>
+
   <!-- 单场角标 -->
   <view class="single-badge" wx:if="{{match.isSingleMatch}}">单</view>
 
@@ -10,6 +13,11 @@
       <text class="league-tag" style="background-color: #{{match.leagueColor || '667eea'}}">{{match.league}}</text>
     </view>
     <view class="header-right">
+      <!-- VIP标识 -->
+      <view class="vip-tag" wx:if="{{isVip}}">
+        <view class="vip-tag-diamond"></view>
+        <text>VIP</text>
+      </view>
       <text class="match-time">{{formattedTime}}</text>
     </view>
   </view>
@@ -29,11 +37,15 @@
 
   <!-- AI分析 + 欧赔 (4列) -->
   <view class="odds-row">
-    <view class="odds-cell action-cell {{isUnlocked ? 'unlocked' : 'locked'}}" catchtap="onAnalyze">
+    <view class="odds-cell action-cell {{isVip ? 'vip-unlocked' : (isUnlocked ? 'unlocked' : 'locked')}}" catchtap="onAnalyze">
       <view class="action-content">
-        <text class="action-tag">AI</text>
+        <text class="action-tag {{isVip ? 'vip-tag-text' : ''}}">AI</text>
         <text class="action-text">分析</text>
-        <text class="lock-icon" wx:if="{{!isUnlocked}}">🔒</text>
+        <!-- VIP用户显示VIP图标，非VIP未解锁显示锁 -->
+        <view class="vip-free-icon" wx:if="{{isVip}}">
+          <view class="mini-diamond"></view>
+        </view>
+        <text class="lock-icon" wx:elif="{{!isUnlocked}}">🔒</text>
       </view>
     </view>
     <view class="odds-cell">

@@ -4,6 +4,7 @@
     "pages/calculator/index",
     "pages/calculator-detail/index",
     "pages/calculator-hall/index",
+    "pages/dragon-analysis/index",
     "pages/match-result/index",
     "pages/point-detail/index",
     "pages/activity/index",
@@ -16,7 +17,9 @@
     "pages/ai-analysis/index",
     "pages/profile/index",
     "pages/tool/index",
-    "pages/agreement/index"
+    "pages/agreement/index",
+    "pages/credits/index",
+    "pages/vip/index"
   ],
   "window": {
     "navigationBarTextStyle": "black",

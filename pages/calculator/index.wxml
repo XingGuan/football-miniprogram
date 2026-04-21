@@ -229,6 +229,21 @@
               <view class="score-item {{selectedMap[currentMatch.matchId + '_crs_4:0'] ? 'active' : ''}}" data-score="4:0" data-odds="{{currentMatch.crsS04s00}}" bindtap="onSelectScore">
                 <text class="s-label">4:0</text><text class="s-odds">{{currentMatch.crsS04s00}}</text>
               </view>
+              <view class="score-item {{selectedMap[currentMatch.matchId + '_crs_4:1'] ? 'active' : ''}}" data-score="4:1" data-odds="{{currentMatch.crsS04s01}}" bindtap="onSelectScore">
+                <text class="s-label">4:1</text><text class="s-odds">{{currentMatch.crsS04s01}}</text>
+              </view>
+              <view class="score-item {{selectedMap[currentMatch.matchId + '_crs_4:2'] ? 'active' : ''}}" data-score="4:2" data-odds="{{currentMatch.crsS04s02}}" bindtap="onSelectScore">
+                <text class="s-label">4:2</text><text class="s-odds">{{currentMatch.crsS04s02}}</text>
+              </view>
+              <view class="score-item {{selectedMap[currentMatch.matchId + '_crs_5:0'] ? 'active' : ''}}" data-score="5:0" data-odds="{{currentMatch.crsS05s00}}" bindtap="onSelectScore">
+                <text class="s-label">5:0</text><text class="s-odds">{{currentMatch.crsS05s00}}</text>
+              </view>
+              <view class="score-item {{selectedMap[currentMatch.matchId + '_crs_5:1'] ? 'active' : ''}}" data-score="5:1" data-odds="{{currentMatch.crsS05s01}}" bindtap="onSelectScore">
+                <text class="s-label">5:1</text><text class="s-odds">{{currentMatch.crsS05s01}}</text>
+              </view>
+              <view class="score-item {{selectedMap[currentMatch.matchId + '_crs_5:2'] ? 'active' : ''}}" data-score="5:2" data-odds="{{currentMatch.crsS05s02}}" bindtap="onSelectScore">
+                <text class="s-label">5:2</text><text class="s-odds">{{currentMatch.crsS05s02}}</text>
+              </view>
               <view class="score-item {{selectedMap[currentMatch.matchId + '_crs_胜其他'] ? 'active' : ''}}" data-score="胜其他" data-odds="{{currentMatch.crsS1sh}}" bindtap="onSelectScore">
                 <text class="s-label">胜其他</text><text class="s-odds">{{currentMatch.crsS1sh}}</text>
               </view>
@@ -280,6 +295,23 @@
               <view class="score-item {{selectedMap[currentMatch.matchId + '_crs_0:4'] ? 'active' : ''}}" data-score="0:4" data-odds="{{currentMatch.crsS00s04}}" bindtap="onSelectScore">
                 <text class="s-label">0:4</text><text class="s-odds">{{currentMatch.crsS00s04}}</text>
               </view>
+
+              <view class="score-item {{selectedMap[currentMatch.matchId + '_crs_1:4'] ? 'active' : ''}}" data-score="1:4" data-odds="{{currentMatch.crsS01s04}}" bindtap="onSelectScore">
+                <text class="s-label">1:4</text><text class="s-odds">{{currentMatch.crsS01s04}}</text>
+              </view>
+              <view class="score-item {{selectedMap[currentMatch.matchId + '_crs_2:4'] ? 'active' : ''}}" data-score="2:4" data-odds="{{currentMatch.crsS02s04}}" bindtap="onSelectScore">
+                <text class="s-label">2:4</text><text class="s-odds">{{currentMatch.crsS02s04}}</text>
+              </view>
+              <view class="score-item {{selectedMap[currentMatch.matchId + '_crs_0:5'] ? 'active' : ''}}" data-score="0:5" data-odds="{{currentMatch.crsS00s05}}" bindtap="onSelectScore">
+                <text class="s-label">0:5</text><text class="s-odds">{{currentMatch.crsS00s05}}</text>
+              </view>
+              <view class="score-item {{selectedMap[currentMatch.matchId + '_crs_1:5'] ? 'active' : ''}}" data-score="1:5" data-odds="{{currentMatch.crsS01s05}}" bindtap="onSelectScore">
+                <text class="s-label">1:5</text><text class="s-odds">{{currentMatch.crsS01s05}}</text>
+              </view>
+              <view class="score-item {{selectedMap[currentMatch.matchId + '_crs_2:5'] ? 'active' : ''}}" data-score="2:5" data-odds="{{currentMatch.crsS02s05}}" bindtap="onSelectScore">
+                <text class="s-label">2:5</text><text class="s-odds">{{currentMatch.crsS02s05}}</text>
+              </view>
+
               <view class="score-item {{selectedMap[currentMatch.matchId + '_crs_负其他'] ? 'active' : ''}}" data-score="负其他" data-odds="{{currentMatch.crsS1sa}}" bindtap="onSelectScore">
                 <text class="s-label">负其他</text><text class="s-odds">{{currentMatch.crsS1sa}}</text>
               </view>

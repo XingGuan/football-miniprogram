@@ -17,6 +17,7 @@ Page({
     // 标签页
     tabs: [
       { key: 'recent', name: '战绩' },
+      { key: 'table', name: '排名' },
       { key: 'history', name: '交锋' },
       { key: 'information', name: '情报' },
       { key: 'xg', name: 'XG' },
@@ -28,6 +29,8 @@ Page({
     // 各标签页数据
     recentData: null,
     historyData: [],
+    tableData: { total: [], home: [], away: [] },
+    tableType: 'total', // 排名类型：total（全部）/home（主）/away（客）
     xgData: null,
     informationData: null,
     similarData: [],
@@ -36,7 +39,9 @@ Page({
     tabLoading: {},
     // 情报解锁相关
     informationUnlocked: false,
-    userPoints: 0
+    userPoints: 0,
+    // VIP状态
+    isVip: false
   },
 
   onLoad(options) {
@@ -60,35 +65,47 @@ Page({
     this.loadUserPoints()
   },
 
-  // 加载用户积分
+  // 加载用户积分和VIP状态
   loadUserPoints() {
     const userInfo = userStore.getUserInfo()
+    const isVip = userInfo && userInfo.isVip === true
     this.setData({
-      userPoints: userInfo?.point || 0
+      userPoints: (userInfo && userInfo.point) || 0,
+      isVip: isVip,
+      // VIP用户默认解锁情报
+      informationUnlocked: isVip ? true : this.data.informationUnlocked
     })
   },
 
   // 检查情报解锁状态
   async checkInformationUnlockStatus(matchId) {
     if (!userStore.isLoggedIn()) {
-      this.setData({ informationUnlocked: false })
+      this.setData({ informationUnlocked: false, isVip: false })
       return
     }
 
     const userInfo = userStore.getUserInfo()
     if (!userInfo || !userInfo.id) {
-      this.setData({ informationUnlocked: false })
+      this.setData({ informationUnlocked: false, isVip: false })
+      return
+    }
+
+    // VIP用户直接解锁
+    const isVip = userInfo.isVip === true
+    if (isVip) {
+      this.setData({ informationUnlocked: true, isVip: true })
       return
     }
 
     try {
       const result = await userApi.checkInformationUnlock(matchId, userInfo.id)
       this.setData({
-        informationUnlocked: result?.unlocked || result === true
+        informationUnlocked: (result && result.unlocked) || result === true,
+        isVip: false
       })
     } catch (e) {
       console.error('检查情报解锁状态失败:', e)
-      this.setData({ informationUnlocked: false })
+      this.setData({ informationUnlocked: false, isVip: false })
     }
   },
 
@@ -174,6 +191,10 @@ Page({
           this.setData({ recentData: data || null })
           break
 
+        case 'table':
+          await this.loadTableData(matchId)
+          break
+
         case 'history':
           data = await analysisApi.getHistoryData(matchId)
           this.setData({ historyData: data || [] })
@@ -181,7 +202,7 @@ Page({
 
         case 'xg':
           const xgResult = await analysisApi.getXgData(matchId)
-          this.setData({ xgData: xgResult?.data || xgResult })
+          this.setData({ xgData: (xgResult && xgResult.data) || xgResult })
           break
         case 'information':
           const informationResult = await analysisApi.getInformationData(matchId)
@@ -195,7 +216,7 @@ Page({
 
         case 'odds':
           const oddsResult = await analysisApi.getOddsData(matchId)
-          this.setData({ oddsData: oddsResult?.history || oddsResult || [] })
+          this.setData({ oddsData: (oddsResult && oddsResult.history) || oddsResult || [] })
           break
       }
 
@@ -212,6 +233,72 @@ Page({
   },
 
 
+
+  // 加载排名数据
+  async loadTableData(matchId) {
+    try {
+      const tableData = {
+        total: [],
+        home: [],
+        away: []
+      }
+
+      // 调用API获取排名数据
+      const result = await matchApi.getTableData(matchId)
+
+      // 获取当前比赛的主客队名称用于标记
+      const { match } = this.data
+      const homeTeamName = (match && match.homeTeam) || ''
+      const awayTeamName = (match && match.awayTeam) || ''
+
+      if (result && Array.isArray(result)) {
+        // 标记主客队的函数
+        const markTeamType = (item) => {
+          let teamType = ''
+          // 通过队名匹配判断是主队还是客队
+          if (homeTeamName && item.teamAbbrCnName && item.teamAbbrCnName.includes(homeTeamName)) {
+            teamType = 'home'
+          } else if (awayTeamName && item.teamAbbrCnName && item.teamAbbrCnName.includes(awayTeamName)) {
+            teamType = 'away'
+          } else if (homeTeamName && item.teamAbbrCnName && homeTeamName.includes(item.teamAbbrCnName)) {
+            teamType = 'home'
+          } else if (awayTeamName && item.teamAbbrCnName && awayTeamName.includes(item.teamAbbrCnName)) {
+            teamType = 'away'
+          }
+          return { ...item, teamType }
+        }
+
+        // 按tableType准确分组排名数据，并标记主客队
+        tableData.total = result.filter(item => item.tableType === 'total').map(markTeamType)
+        tableData.home = result.filter(item => item.tableType === 'home').map(markTeamType)
+        tableData.away = result.filter(item => item.tableType === 'away').map(markTeamType)
+
+        // 每种类型的数据按排名排序
+        tableData.total.sort((a, b) => (a.ranking || 999) - (b.ranking || 999))
+        tableData.home.sort((a, b) => (a.ranking || 999) - (b.ranking || 999))
+        tableData.away.sort((a, b) => (a.ranking || 999) - (b.ranking || 999))
+
+        console.log('排名数据分组结果:', {
+          total: tableData.total.length,
+          home: tableData.home.length,
+          away: tableData.away.length
+        })
+      }
+
+      this.setData({
+        tableData,
+        tableType: 'total'
+      })
+    } catch (e) {
+      console.error('加载排名数据失败:', e)
+    }
+  },
+
+  // 切换排名类型
+  onTableTypeChange(e) {
+    const type = e.currentTarget.dataset.type
+    this.setData({ tableType: type })
+  },
 
   // 格式化日期
   formatDate(date) {
@@ -241,7 +328,7 @@ Page({
 
     // 跳转到分析页面
     wx.navigateTo({
-      url: `/pages/analysis/index?matchId=${match.matchId}`
+      url: `/pages/analysis/index?matchId=${match.sportteryMatchId}`
     })
   },
 
@@ -271,16 +358,28 @@ Page({
     }
 
     const userInfo = userStore.getUserInfo()
-    const userPoints = userInfo?.point || 0
+
+    // VIP用户直接解锁
+    if (userInfo && userInfo.isVip) {
+      this.setData({ informationUnlocked: true })
+      return
+    }
+
+    const userPoints = (userInfo && userInfo.point) || 0
     const pointsNeeded = 1
 
     // 检查积分是否充足
     if (userPoints < pointsNeeded) {
       wx.showModal({
         title: '积分不足',
-        content: `解锁情报需要消耗 ${pointsNeeded} 积分，您当前积分为 ${userPoints}，请先获取更多积分`,
-        confirmText: '我知道了',
-        showCancel: false
+        content: `解锁情报需要消耗 ${pointsNeeded} 积分，您当前积分为 ${userPoints}。\n\n开通会员可免费查看所有情报！`,
+        confirmText: '开通会员',
+        cancelText: '取消',
+        success: (res) => {
+          if (res.confirm) {
+            wx.navigateTo({ url: '/pages/vip/index' })
+          }
+        }
       })
       return
     }
@@ -288,7 +387,7 @@ Page({
     // 弹窗确认解锁
     wx.showModal({
       title: '解锁情报',
-      content: `本次解锁将消耗 ${pointsNeeded} 积分，是否继续？`,
+      content: `本次解锁将消耗 ${pointsNeeded} 积分，是否继续？\n\n提示：开通会员可免费查看所有情报`,
       confirmText: '确认',
       cancelText: '取消',
       success: async (res) => {
@@ -324,7 +423,7 @@ Page({
       // 更新本地状态
       this.setData({
         informationUnlocked: true,
-        userPoints: latestUserInfo?.point || 0
+        userPoints: (latestUserInfo && latestUserInfo.point) || 0
       })
 
       // 显示成功提示
@@ -342,5 +441,12 @@ Page({
         duration: 2000
       })
     }
+  },
+
+  // 跳转到VIP页面
+  goToVip() {
+    wx.navigateTo({
+      url: '/pages/vip/index'
+    })
   }
 })

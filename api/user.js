@@ -147,6 +147,43 @@ function updateUserName(userId, userName) {
   return post('/api/user/info/update/name', { userId, userName })
 }
 
+/**
+ * 获取用户勋章列表
+ * @param {string} userId 用户ID
+ * @returns {Promise<Array>} 勋章列表
+ */
+function getUserMedals(userId) {
+  return get(`/api/user/medal/my/${userId}?_t=${Date.now()}`, {}, { showLoading: false })
+}
+
+/**
+ * 购买会员
+ * @param {string} userId 用户ID
+ * @param {number} packageId 套餐ID
+ * @param {string} code 验证码
+ */
+function buyVipPackage(userId, packageId, code) {
+  return post('/api/user/vip/purchase', { userId, packageId, code })
+}
+
+/**
+ * 续费会员
+ * @param {string} userId 用户ID
+ * @param {number} packageId 套餐ID
+ * @param {string} code 验证码
+ */
+function renewVip(userId, packageId, code) {
+  return post('/api/user/vip/renew', { userId, packageId, code })
+}
+
+/**
+ * 检查用户VIP状态
+ * @param {string} userId 用户ID
+ */
+function checkVipStatus(userId) {
+  return get(`/api/user/vip/status/${userId}`, {}, { showLoading: false })
+}
+
 module.exports = {
   sendSms,
   login,
@@ -162,5 +199,9 @@ module.exports = {
   wxLogin,
   updateUserInfoWithPhone,
   getPointDetailList,
-  updateUserName
+  updateUserName,
+  getUserMedals,
+  buyVipPackage,
+  renewVip,
+  checkVipStatus
 }

@@ -1,0 +1,198 @@
+<!-- pages/dragon-analysis/index.wxml -->
+<view class="dragon-page">
+  <!-- 页面背景 -->
+  <view class="page-bg"></view>
+
+  <!-- 加载状态 -->
+  <view class="loading-wrapper" wx:if="{{loading}}">
+    <view class="loading-spinner"></view>
+    <text class="loading-text">分析中...</text>
+  </view>
+
+  <!-- 错误状态 -->
+  <view class="error-wrapper" wx:elif="{{error}}">
+    <text class="error-icon">⚠️</text>
+    <text class="error-text">{{error}}</text>
+    <view class="retry-btn" bindtap="onRetry">重试</view>
+  </view>
+
+  <!-- 主要内容 -->
+  <scroll-view class="content-scroll" scroll-y wx:else>
+    <!-- 头部 -->
+    <view class="dragon-header">
+      <text class="header-title">🐉 单关斩龙计划</text>
+      <text class="header-desc">精准分析单关龙位</text>
+    </view>
+
+    <!-- 样本大小选择 -->
+    <view class="size-selector">
+      <view class="size-item {{selectedSize === item ? 'active' : ''}}"
+            wx:for="{{sampleSizes}}"
+            wx:key="this"
+            bindtap="onSampleSizeChange"
+            data-size="{{item}}">
+        <text class="size-text">{{item}}期</text>
+      </view>
+    </view>
+
+    <!-- 分析结果卡片 -->
+    <view class="analysis-card" wx:if="{{analysisData}}">
+      <!-- 当前龙位 -->
+      <view class="dragon-section">
+        <text class="section-title">🎯 当前龙位</text>
+        <view class="dragon-items">
+          <view class="dragon-item home">
+            <text class="dragon-name">主胜</text>
+            <text class="dragon-gap">{{analysisData.gapsSinceLastHomeWin}}</text>
+            <text class="dragon-unit">场未出</text>
+          </view>
+          <view class="dragon-item draw">
+            <text class="dragon-name">平局</text>
+            <text class="dragon-gap">{{analysisData.gapsSinceLastDraw}}</text>
+            <text class="dragon-unit">场未出</text>
+          </view>
+          <view class="dragon-item away">
+            <text class="dragon-name">客胜</text>
+            <text class="dragon-gap">{{analysisData.gapsSinceLastAwayWin}}</text>
+            <text class="dragon-unit">场未出</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 赔率龙位 -->
+      <view class="dragon-section">
+        <text class="section-title">💰 赔率龙位</text>
+        <view class="odds-dragon-items">
+          <view class="odds-dragon-item max">
+            <text class="odds-dragon-label">最高赔率龙</text>
+            <text class="odds-dragon-gap">{{analysisData.gapsSinceLastMaxOdds}}</text>
+            <text class="odds-dragon-unit">场未出</text>
+            <text class="odds-dragon-rate">{{analysisData.maxOddsWinRate}}%</text>
+          </view>
+          <view class="odds-dragon-item min">
+            <text class="odds-dragon-label">最低赔率龙</text>
+            <text class="odds-dragon-gap">{{analysisData.gapsSinceLastMinOdds}}</text>
+            <text class="odds-dragon-unit">场未出</text>
+            <text class="odds-dragon-rate">{{analysisData.minOddsWinRate}}%</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 历史龙纪录 -->
+      <view class="dragon-section">
+        <text class="section-title">📊 历史龙纪录</text>
+        <view class="record-items">
+          <view class="record-item">
+            <text class="record-label">主胜最长</text>
+            <text class="record-value">{{analysisData.maxHomeWinDragon}}场</text>
+          </view>
+          <view class="record-item">
+            <text class="record-label">平局最长</text>
+            <text class="record-value">{{analysisData.maxDrawDragon}}场</text>
+          </view>
+          <view class="record-item">
+            <text class="record-label">客胜最长</text>
+            <text class="record-value">{{analysisData.maxAwayWinDragon}}场</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 出现率统计 -->
+      <view class="dragon-section">
+        <text class="section-title">📈 出现率</text>
+        <view class="rate-items">
+          <view class="rate-item">
+            <view class="rate-header">
+              <text class="rate-label">主胜</text>
+              <text class="rate-num">{{analysisData.homeWinRate}}%</text>
+            </view>
+            <view class="rate-bar">
+              <view class="rate-fill" style="width: {{analysisData.homeWinRate}}%"></view>
+            </view>
+            <text class="rate-count">{{analysisData.homeWinCount}}次</text>
+          </view>
+          <view class="rate-item">
+            <view class="rate-header">
+              <text class="rate-label">平局</text>
+              <text class="rate-num">{{analysisData.drawRate}}%</text>
+            </view>
+            <view class="rate-bar">
+              <view class="rate-fill draw" style="width: {{analysisData.drawRate}}%"></view>
+            </view>
+            <text class="rate-count">{{analysisData.drawCount}}次</text>
+          </view>
+          <view class="rate-item">
+            <view class="rate-header">
+              <text class="rate-label">客胜</text>
+              <text class="rate-num">{{analysisData.awayWinRate}}%</text>
+            </view>
+            <view class="rate-bar">
+              <view class="rate-fill away" style="width: {{analysisData.awayWinRate}}%"></view>
+            </view>
+            <text class="rate-count">{{analysisData.awayWinCount}}次</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 关联比赛 -->
+      <view class="dragon-section" wx:if="{{analysisData.matchDetails && analysisData.matchDetails.length > 0}}">
+        <text class="section-title">🎮 关联比赛</text>
+        <view class="match-list">
+          <view class="match-item" wx:for="{{analysisData.matchDetails}}" wx:key="matchId">
+            <!-- 左侧：比赛信息 -->
+            <view class="match-left">
+              <text class="match-num">{{item.matchNumStr}}</text>
+              <view class="team-info">
+                <text class="team-name home-team">{{item.homeTeam}}</text>
+                <text class="vs-text">VS</text>
+                <text class="team-name away-team">{{item.awayTeam}}</text>
+              </view>
+              <text class="match-time">{{item.matchTime}}</text>
+            </view>
+            <!-- 中间：结果、赔率、标签 -->
+            <view class="match-middle">
+              <view class="result-badge {{item.result === 'H' ? 'home' : (item.result === 'D' ? 'draw' : 'away')}}">
+                <text class="result-text">{{item.resultDesc}}</text>
+              </view>
+              <view class="odds-display">
+                <view class="odds-row">
+                  <text class="odds-value {{item.winningOdds === item.homeOdds ? 'winning' : ''}}">{{item.homeOdds}}</text>
+                  <text class="odds-sep">/</text>
+                  <text class="odds-value {{item.winningOdds === item.drawOdds ? 'winning' : ''}}">{{item.drawOdds}}</text>
+                  <text class="odds-sep">/</text>
+                  <text class="odds-value {{item.winningOdds === item.awayOdds ? 'winning' : ''}}">{{item.awayOdds}}</text>
+                </view>
+              </view>
+              <view class="odds-tags">
+                <text class="odds-tag max" wx:if="{{item.isMaxOdds}}">最高</text>
+                <text class="odds-tag min" wx:if="{{item.isMinOdds}}">最低</text>
+              </view>
+            </view>
+            <!-- 右侧：间隔 -->
+            <view class="match-right">
+              <text class="gap-text">{{item.gapFromNow}}场前</text>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部按钮 -->
+    <view class="bottom-actions" wx:if="{{analysisData}}">
+      <view class="action-btn copy-btn" bindtap="onCopy">
+        <text class="btn-icon">📋</text>
+        <text class="btn-text">复制</text>
+      </view>
+      <button class="action-btn share-btn" open-type="share">
+        <text class="btn-icon">📤</text>
+        <text class="btn-text">分享</text>
+      </button>
+    </view>
+
+    <!-- 复制提示 -->
+    <view class="copy-tip" wx:if="{{showCopyTip}}">已复制到剪贴板</view>
+
+    <!-- 底部占位 -->
+    <view class="bottom-placeholder"></view>
+  </scroll-view>
+</view>

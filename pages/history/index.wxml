@@ -13,16 +13,6 @@
     </view>
   </view>
 
-  <!-- 未登录 -->
-  <empty-state
-    wx:elif="{{error === '请先登录'}}"
-    type="empty"
-    title="未登录"
-    description="登录后查看历史记录"
-    button-text="去登录"
-    bind:buttonTap="onLogin"
-  />
-
   <!-- 错误状态 -->
   <empty-state
     wx:elif="{{error}}"
@@ -58,7 +48,7 @@
     </view>
 
     <!-- 没有更多 -->
-    <view class="no-more" wx:else>
+    <view class="no-more" wx:elif="{{!hasMore}}">
       <text class="no-more-text">没有更多了</text>
     </view>
   </view>

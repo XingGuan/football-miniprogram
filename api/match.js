@@ -114,6 +114,31 @@ function getMatchLive() {
 }
 
 /**
+ * 获取单关斩龙计划分析数据
+ * @param {number} sampleSize 样本数量 (10, 20, 30)
+ */
+function getDragonAnalysis(sampleSize = 10) {
+  const timestamp = Date.now()
+  return get(`/api/dragon/analysis/analyze?sampleSize=${sampleSize}&t=${timestamp}`)
+}
+
+/**
+ * 检查功能开关状态
+ * @returns {Promise} 返回功能开关配置
+ */
+function checkFeatures() {
+  return post('/api/match/check/config')
+}
+
+/**
+ * 获取球队排名信息
+ * @param {string|number} matchId 比赛ID
+ */
+function getTableData(matchId) {
+  return get(`/api/match/table/${matchId}`)
+}
+
+/**
  * 格式化日期
  * @param {Date} date 日期对象
  */
@@ -122,6 +147,17 @@ function formatDate(date) {
   const month = String(date.getMonth() + 1).padStart(2, '0')
   const day = String(date.getDate()).padStart(2, '0')
   return `${year}-${month}-${day}`
+}
+
+/**
+ * 上报中奖统计数据
+ * @param {Object} data 统计数据
+ * @param {string|number} data.userId 用户ID
+ * @param {Array} data.bonusList 中奖列表 [{amount, schemeNo}]
+ * @param {number} data.totalBonus 中奖总金额
+ */
+function saveBonusStats(data) {
+  return post('/api/user/bonus/stats', data)
 }
 
 module.exports = {
@@ -138,5 +174,9 @@ module.exports = {
   recommendCalculatorRecord,
   getCalculatorRecommendList,
   getMatchResults,
-  getMatchLive
+  getMatchLive,
+  getDragonAnalysis,
+  getTableData,
+  checkFeatures,
+  saveBonusStats
 }

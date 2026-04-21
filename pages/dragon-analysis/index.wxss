@@ -1,0 +1,754 @@
+/* pages/dragon-analysis/index.wxss */
+
+.dragon-page {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  position: relative;
+}
+
+.page-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 280rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  z-index: 0;
+}
+
+/* 加载状态 */
+.loading-wrapper {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-spinner {
+  width: 80rpx;
+  height: 80rpx;
+  border: 4rpx solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 30rpx;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loading-text {
+  color: #fff;
+  font-size: 28rpx;
+}
+
+/* 错误状态 */
+.error-wrapper {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx;
+  text-align: center;
+}
+
+.error-icon {
+  font-size: 80rpx;
+  margin-bottom: 30rpx;
+}
+
+.error-text {
+  color: #666;
+  font-size: 28rpx;
+  margin-bottom: 40rpx;
+  line-height: 1.5;
+}
+
+.retry-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  padding: 20rpx 50rpx;
+  border-radius: 10rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+/* 内容区域 */
+.content-scroll {
+  position: relative;
+  z-index: 1;
+  padding-top: 20rpx;
+  padding-bottom: 200rpx;
+}
+
+/* 页面头部 */
+.dragon-header {
+  padding: 40rpx 30rpx;
+  color: #fff;
+  text-align: center;
+}
+
+.header-title {
+  display: block;
+  font-size: 36rpx;
+  font-weight: bold;
+  margin-bottom: 15rpx;
+}
+
+.header-desc {
+  display: block;
+  font-size: 24rpx;
+  opacity: 0.9;
+}
+
+/* 样本大小选择器 */
+.size-selector {
+  display: flex;
+  justify-content: center;
+  gap: 20rpx;
+  padding: 0 30rpx 30rpx;
+  flex-wrap: wrap;
+}
+
+.size-item {
+  flex: 1;
+  min-width: 100rpx;
+  padding: 16rpx 24rpx;
+  border-radius: 10rpx;
+  background-color: #fff;
+  border: 2rpx solid #ddd;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.size-item.active {
+  background: linear-gradient(135deg, #c41d1d 0%, #d32f2f 100%);
+  border-color: #c41d1d;
+}
+
+.size-text {
+  font-size: 24rpx;
+  color: #666;
+  display: block;
+}
+
+.size-item.active .size-text {
+  color: #fff;
+  font-weight: 500;
+}
+
+/* 分析结果卡片 */
+.analysis-card {
+  margin: 0 20rpx 30rpx;
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+}
+
+/* 统计块 */
+.stat-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30rpx;
+  border-radius: 12rpx;
+  background-color: #f9f9f9;
+  margin-bottom: 30rpx;
+  text-align: center;
+}
+
+.stat-block.highlight {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+}
+
+.stat-label {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+  margin-bottom: 15rpx;
+}
+
+.stat-block.highlight .stat-label {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.stat-big {
+  display: block;
+  font-size: 56rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 10rpx;
+}
+
+.stat-block.highlight .stat-big {
+  color: #fff;
+}
+
+.stat-unit {
+  display: block;
+  font-size: 20rpx;
+  color: #999;
+}
+
+.stat-block.highlight .stat-unit {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* 龙位区域 */
+.dragon-section {
+  margin-bottom: 30rpx;
+  padding-bottom: 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.dragon-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.section-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20rpx;
+}
+
+/* 龙位项目 */
+.dragon-items {
+  display: flex;
+  gap: 15rpx;
+  justify-content: space-between;
+}
+
+.dragon-item {
+  flex: 1;
+  padding: 20rpx;
+  border-radius: 10rpx;
+  text-align: center;
+  background-color: #f9f9f9;
+  border-left: 4rpx solid #999;
+}
+
+.dragon-item.home {
+  border-left-color: #c41d1d;
+  background: linear-gradient(to bottom, rgba(196, 29, 29, 0.1), rgba(196, 29, 29, 0.05));
+}
+
+.dragon-item.draw {
+  border-left-color: #ff9800;
+  background: linear-gradient(to bottom, rgba(255, 152, 0, 0.1), rgba(255, 152, 0, 0.05));
+}
+
+.dragon-item.away {
+  border-left-color: #1976d2;
+  background: linear-gradient(to bottom, rgba(25, 118, 210, 0.1), rgba(25, 118, 210, 0.05));
+}
+
+.dragon-name {
+  display: block;
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 10rpx;
+}
+
+.dragon-gap {
+  display: block;
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.dragon-unit {
+  display: block;
+  font-size: 20rpx;
+  color: #999;
+}
+
+.dragon-current {
+  display: block;
+  font-size: 18rpx;
+  color: #c41d1d;
+  font-weight: 600;
+  margin-top: 4rpx;
+}
+
+/* 历史龙纪录 */
+.record-items {
+  display: flex;
+  gap: 15rpx;
+  justify-content: space-between;
+}
+
+.record-item {
+  flex: 1;
+  padding: 20rpx;
+  background-color: #f9f9f9;
+  border-radius: 10rpx;
+  text-align: center;
+}
+
+.record-label {
+  display: block;
+  font-size: 22rpx;
+  color: #999;
+  margin-bottom: 12rpx;
+}
+
+.record-value {
+  display: block;
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+/* 出现率统计 */
+.rate-items {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+.rate-item {
+  padding: 20rpx;
+  background-color: #f9f9f9;
+  border-radius: 10rpx;
+}
+
+.rate-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12rpx;
+}
+
+.rate-label {
+  font-size: 24rpx;
+  color: #666;
+  font-weight: 500;
+}
+
+.rate-num {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.rate-bar {
+  height: 12rpx;
+  background-color: #e0e0e0;
+  border-radius: 6rpx;
+  overflow: hidden;
+  margin-bottom: 10rpx;
+}
+
+.rate-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #c41d1d 0%, #d32f2f 100%);
+  border-radius: 6rpx;
+  transition: width 0.3s ease;
+}
+
+.rate-fill.draw {
+  background: linear-gradient(90deg, #ff9800 0%, #fb8c00 100%);
+}
+
+.rate-fill.away {
+  background: linear-gradient(90deg, #1976d2 0%, #1565c0 100%);
+}
+
+.rate-count {
+  display: block;
+  font-size: 20rpx;
+  color: #999;
+}
+
+/* 赔率分析 */
+.odds-items {
+  display: flex;
+  gap: 15rpx;
+  justify-content: space-between;
+}
+
+.odds-item {
+  flex: 1;
+  padding: 20rpx;
+  background-color: #f9f9f9;
+  border-radius: 10rpx;
+  text-align: center;
+  border-left: 4rpx solid #c41d1d;
+}
+
+.odds-label {
+  display: block;
+  font-size: 22rpx;
+  color: #999;
+  margin-bottom: 10rpx;
+}
+
+.odds-value {
+  display: block;
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #c41d1d;
+  margin-bottom: 8rpx;
+}
+
+.odds-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+  margin-top: 10rpx;
+}
+
+.odds-count {
+  display: block;
+  font-size: 20rpx;
+  color: #666;
+}
+
+.odds-gap {
+  display: block;
+  font-size: 18rpx;
+  color: #999;
+}
+
+/* 赔率龙位 */
+.odds-dragon-items {
+  display: flex;
+  gap: 15rpx;
+  justify-content: space-between;
+}
+
+.odds-dragon-item {
+  flex: 1;
+  padding: 20rpx;
+  border-radius: 10rpx;
+  text-align: center;
+  border: 2rpx solid transparent;
+  position: relative;
+}
+
+.odds-dragon-item.max {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 215, 0, 0.08) 100%);
+  border-color: #ffd700;
+}
+
+.odds-dragon-item.min {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.15) 0%, rgba(76, 175, 80, 0.08) 100%);
+  border-color: #4caf50;
+}
+
+.odds-dragon-label {
+  display: block;
+  font-size: 22rpx;
+  color: #666;
+  margin-bottom: 10rpx;
+  font-weight: 500;
+}
+
+.odds-dragon-gap {
+  display: block;
+  font-size: 40rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 8rpx;
+}
+
+.odds-dragon-unit {
+  display: block;
+  font-size: 20rpx;
+  color: #999;
+  margin-bottom: 8rpx;
+}
+
+.odds-dragon-rate {
+  display: block;
+  font-size: 24rpx;
+  font-weight: 600;
+  color: #c41d1d;
+}
+
+/* 底部按钮 */
+.bottom-actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-top: 1rpx solid #f0f0f0;
+  display: flex;
+  gap: 15rpx;
+  padding: 20rpx 30rpx;
+  padding-bottom: max(20rpx, env(safe-area-inset-bottom));
+  z-index: 50;
+}
+
+.action-btn {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 16rpx;
+  border-radius: 10rpx;
+  background-color: #f5f5f5;
+  border: none;
+  transition: all 0.3s ease;
+  margin: 0;
+  height: auto;
+  line-height: 1;
+}
+
+.action-btn::after {
+  border: none;
+}
+
+.action-btn:active {
+  opacity: 0.8;
+  transform: scale(0.98);
+}
+
+.copy-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.share-btn {
+  background: linear-gradient(135deg, #c41d1d 0%, #d32f2f 100%);
+}
+
+.btn-icon {
+  display: block;
+  font-size: 32rpx;
+  margin-bottom: 8rpx;
+}
+
+.btn-text {
+  display: block;
+  font-size: 22rpx;
+  color: #fff;
+  font-weight: 500;
+}
+
+/* 复制提示 */
+.copy-tip {
+  position: fixed;
+  bottom: 120rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding: 16rpx 32rpx;
+  border-radius: 10rpx;
+  font-size: 24rpx;
+  z-index: 100;
+  animation: fadeInOut 2s ease-in-out;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10rpx);
+  }
+  10% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  90% {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10rpx);
+  }
+}
+
+/* 底部占位 */
+/* 关联比赛 */
+.match-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12rpx;
+}
+
+.match-item {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  padding: 16rpx;
+  background-color: #f9f9f9;
+  border-radius: 10rpx;
+  border-left: 4rpx solid #667eea;
+}
+
+.match-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6rpx;
+}
+
+.match-num {
+  font-size: 20rpx;
+  color: #667eea;
+  font-weight: 600;
+}
+
+.team-info {
+  display: flex;
+  align-items: center;
+  gap: 2rpx;
+  font-size: 20rpx;
+  color: #333;
+}
+
+.team-name {
+  font-size: 20rpx;
+  color: #333;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-team {
+  flex: 1;
+}
+
+.away-team {
+  flex: 1;
+  text-align: right;
+}
+
+.vs-text {
+  font-size: 16rpx;
+  color: #999;
+  margin: 0 4rpx;
+  flex-shrink: 0;
+}
+
+.match-time {
+  font-size: 18rpx;
+  color: #999;
+}
+
+.match-middle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4rpx;
+  min-width: 100rpx;
+}
+
+.result-badge {
+  padding: 6rpx 12rpx;
+  border-radius: 8rpx;
+  font-size: 18rpx;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 4rpx;
+}
+
+.result-badge.home {
+  background: linear-gradient(135deg, #c41d1d 0%, #d32f2f 100%);
+}
+
+.result-badge.draw {
+  background: linear-gradient(135deg, #ff9800 0%, #fb8c00 100%);
+}
+
+.result-badge.away {
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+}
+
+.odds-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.odds-row {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  font-size: 20rpx;
+}
+
+.odds-value {
+  font-size: 20rpx;
+  color: #666;
+  min-width: 40rpx;
+  text-align: center;
+  font-weight: 500;
+}
+
+.odds-value.winning {
+  color: #c41d1d;
+  font-weight: bold;
+  font-size: 22rpx;
+}
+
+.odds-sep {
+  font-size: 18rpx;
+  color: #ddd;
+}
+
+.odds-tags {
+  display: flex;
+  gap: 3rpx;
+  justify-content: center;
+}
+
+.odds-tag {
+  font-size: 12rpx;
+  padding: 3rpx 6rpx;
+  border-radius: 3rpx;
+  color: #fff;
+  font-weight: 600;
+}
+
+.odds-tag.max {
+  background-color: #ffd700;
+  color: #333;
+}
+
+.odds-tag.min {
+  background-color: #4caf50;
+  color: #fff;
+}
+
+.match-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 60rpx;
+}
+
+.gap-text {
+  font-size: 18rpx;
+  color: #999;
+  text-align: center;
+}
+
+.bottom-placeholder {
+  height: 20rpx;
+}

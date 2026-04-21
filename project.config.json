@@ -1,54 +1,10 @@
 {
-  "description": "足球分析助手微信小程序",
-  "packOptions": {
-    "ignore": [],
-    "include": []
-  },
-  "setting": {
-    "localPlugins": false,
-    "urlCheck": true,
-    "es6": true,
-    "enhance": true,
-    "postcss": true,
-    "preloadBackgroundData": false,
-    "minified": true,
-    "newFeature": true,
-    "coverView": true,
-    "nodeModules": false,
-    "autoAudits": false,
-    "showShadowRootInWxmlPanel": true,
-    "scopeDataCheck": false,
-    "uglifyFileName": false,
-    "checkInvalidKey": true,
-    "checkSiteMap": true,
-    "uploadWithSourceMap": true,
-    "compileHotReLoad": false,
-    "lazyloadPlaceholderEnable": false,
-    "useMultiFrameRuntime": true,
-    "useApiHook": true,
-    "useApiHostProcess": false,
-    "babelSetting": {
-      "ignore": [],
-      "disablePlugins": [],
-      "outputPath": ""
-    },
-    "enableEngineNative": false,
-    "useIsolateContext": true,
-    "userConfirmedBundleSwitch": false,
-    "packNpmManually": false,
-    "packNpmRelationList": [],
-    "minifyWXSS": true,
-    "showES6CompileOption": false,
-    "minifyWXML": true
+  "simulatorPluginLibVersion": {
+    "wxext14566970e7e9f62": "2.27.3"
   },
   "compileType": "miniprogram",
-  "libVersion": "3.3.4",
-  "appid": "wxec827e71879e6a27",
-  "projectname": "football-analysis-miniprogram",
-  "editorSetting": {
-    "tabIndent": "insertSpaces",
-    "tabSize": 2
-  },
-  "simulatorPluginLibVersion": {},
-  "condition": {}
+  "projectArchitecture": "multiPlatform",
+  "setting": {
+    "condition": true
+  }
 }

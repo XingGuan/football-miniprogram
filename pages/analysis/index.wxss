@@ -628,3 +628,254 @@
   font-size: 22rpx;
   color: #999;
 }
+
+/* VIP开通提示 */
+.vip-unlock-tip {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-top: 8rpx;
+}
+
+.vip-unlock-tip text {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.vip-link {
+  color: #ff8c00 !important;
+  font-weight: 500;
+}
+
+/* VIP情报标识 */
+.info-section.vip-section {
+  border: 2rpx solid transparent;
+  background: linear-gradient(#fff, #fff) padding-box,
+              linear-gradient(135deg, #ffd700, #ff8c00) border-box;
+}
+
+.vip-info-tag {
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+  background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+  padding: 6rpx 14rpx;
+  border-radius: 20rpx;
+}
+
+.vip-info-tag text {
+  font-size: 20rpx;
+  color: #fff;
+  font-weight: bold;
+}
+
+.vip-info-diamond {
+  width: 16rpx;
+  height: 16rpx;
+  position: relative;
+}
+
+.vip-info-diamond::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8rpx solid transparent;
+  border-right: 8rpx solid transparent;
+  border-bottom: 6rpx solid #fff;
+}
+
+.vip-info-diamond::after {
+  content: '';
+  position: absolute;
+  top: 6rpx;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8rpx solid transparent;
+  border-right: 8rpx solid transparent;
+  border-top: 10rpx solid #fff;
+}
+
+/* 排名表格 */
+.table-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.table-type-switcher {
+  display: flex;
+  gap: 12rpx;
+  margin-bottom: 20rpx;
+}
+
+.type-btn {
+  flex: 1;
+  padding: 12rpx 16rpx;
+  background: #f5f5f5;
+  border-radius: 8rpx;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+.type-btn.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+}
+
+.type-btn text {
+  font-size: 26rpx;
+  font-weight: 500;
+  color: #666;
+}
+
+.type-btn.active text {
+  color: #fff;
+}
+
+.table-wrapper {
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  border-radius: 10rpx;
+  overflow: hidden;
+}
+
+.table-header {
+  display: flex;
+  background: #f8f9fa;
+  border-bottom: 2rpx solid #e8e8e8;
+  padding: 12rpx 0;
+}
+
+.table-header .col {
+  font-size: 22rpx;
+  color: #666;
+  font-weight: 600;
+  text-align: center;
+  padding: 8rpx;
+}
+
+.table-header .col.rank {
+  flex: 0.6;
+}
+
+.table-header .col.team {
+  flex: 1.5;
+  text-align: left;
+  padding-left: 16rpx;
+}
+
+.table-header .col.matches,
+.table-header .col.win,
+.table-header .col.draw,
+.table-header .col.loss,
+.table-header .col.goals,
+.table-header .col.ga,
+.table-header .col.points {
+  flex: 0.7;
+}
+
+.table-body {
+  display: flex;
+  flex-direction: column;
+}
+
+.table-row {
+  display: flex;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #f0f0f0;
+  align-items: center;
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-row:active {
+  background: #f9f9f9;
+}
+
+.table-row .col {
+  font-size: 24rpx;
+  color: #333;
+  text-align: center;
+  padding: 0 8rpx;
+}
+
+.table-row .col.rank {
+  flex: 0.6;
+  font-weight: 600;
+  color: #667eea;
+}
+
+.table-row .col.team {
+  flex: 1.5;
+  text-align: left;
+  padding-left: 16rpx;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6rpx;
+}
+
+/* 主客队标记 */
+.team-marker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28rpx;
+  height: 28rpx;
+  border-radius: 4rpx;
+  font-size: 18rpx;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.team-marker.home {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ff8c8c 100%);
+  color: #fff;
+}
+
+.team-marker.away {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  color: #fff;
+}
+
+.team-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 主队行高亮 */
+.table-row.home-team {
+  background: rgba(255, 107, 107, 0.08);
+}
+
+/* 客队行高亮 */
+.table-row.away-team {
+  background: rgba(79, 172, 254, 0.08);
+}
+
+.table-row .col.matches,
+.table-row .col.win,
+.table-row .col.draw,
+.table-row .col.loss,
+.table-row .col.goals,
+.table-row .col.ga {
+  flex: 0.7;
+  font-size: 22rpx;
+  color: #666;
+}
+
+.table-row .col.points {
+  flex: 0.7;
+  font-weight: 600;
+  color: #ff6b6b;
+}

@@ -25,7 +25,23 @@ Page({
     // 修改用户名相关
     showNamePopup: false,
     newUserName: '',
-    updateNameLoading: false
+    updateNameLoading: false,
+    // 勋章相关
+    medals: [],
+    wornMedals: [],
+    acquiredMedals: [],
+    acquiredCount: 0,
+    topMedal: null, // 最高等级勋章
+    medalsLoading: false,
+    showMedalPopup: false,
+    // 积分充值悬浮按钮
+    showCreditsButton: false,
+    creditsX: 500,
+    creditsY: 120,
+    // VIP到期时间格式化
+    vipExpireTimeStr: '',
+    // 会员入口显示
+    showVipButton: false
   },
 
   onLoad() {
@@ -34,9 +50,30 @@ Page({
 
   onShow() {
     this.updateUserState()
+    this.loadUserMedals()
+    this.checkFeatures()
 
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
       this.getTabBar().setData({ selected: 3 })
+    }
+  },
+
+  // 检查功能开关
+  async checkFeatures() {
+    try {
+      const matchApi = require('../../api/match')
+      const result = await matchApi.checkFeatures()
+      const showFeatures = result === true
+      this.setData({
+        showCreditsButton: showFeatures,
+        showVipButton: showFeatures
+      })
+    } catch (error) {
+      console.error('检查功能开关失败:', error)
+      this.setData({
+        showCreditsButton: false,
+        showVipButton: false
+      })
     }
   },
 
@@ -65,10 +102,194 @@ Page({
       }
     }
 
+    // 格式化VIP到期时间
+    let vipExpireTimeStr = ''
+    if (userInfo && userInfo.isVip && userInfo.vipExpireTime) {
+      vipExpireTimeStr = this.formatExpireTime(userInfo.vipExpireTime)
+    }
+
     this.setData({
       isLoggedIn,
-      userInfo
+      userInfo,
+      vipExpireTimeStr
     })
+  },
+
+  // 加载用户勋章
+  async loadUserMedals() {
+    const userInfo = userStore.getUserInfo()
+    if (!userStore.isLoggedIn() || !userInfo || !userInfo.id) {
+      this.setData({ medals: [], wornMedals: [], acquiredMedals: [], acquiredCount: 0 })
+      return
+    }
+
+    this.setData({ medalsLoading: true })
+
+    try {
+      const medals = await userApi.getUserMedals(userInfo.id)
+      const medalList = Array.isArray(medals) ? medals : ((medals && medals.data) || [])
+
+      // 打印原始数据便于调试
+      console.log('勋章原始数据:', JSON.stringify(medalList))
+
+      // 先筛选出已获得的勋章，找到最高等级
+      const acquiredList = medalList.filter(medal => {
+        const acquireTime = medal.acquireTime
+        return acquireTime && acquireTime !== 'null' && acquireTime !== ''
+      })
+
+      // 找到最高等级勋章的level
+      const topLevel = acquiredList.length > 0
+        ? Math.max(...acquiredList.map(m => m.level || 0))
+        : 0
+
+      // 处理勋章数据，添加图标和样式
+      const processedMedals = medalList.map(medal => {
+        // 判断是否已获得：acquireTime 有实际值（排除 null、undefined、空字符串、字符串"null"）
+        const acquireTime = medal.acquireTime
+        const isAcquired = acquireTime && acquireTime !== 'null' && acquireTime !== ''
+
+        // 佩戴中：只有最高等级的已获得勋章才显示为佩戴中
+        const isWorn = isAcquired && medal.level === topLevel
+
+        const colorClass = isAcquired ? this.getMedalColorClass(medal.level) : 'medal-locked'
+
+        return {
+          ...medal,
+          icon: this.getMedalIcon(medal.level),
+          colorClass,
+          isAcquired,
+          isWorn
+        }
+      })
+
+      const wornMedals = processedMedals.filter(m => m.isWorn)
+      const acquiredMedals = processedMedals.filter(m => m.isAcquired)
+
+      // 获取最高等级的勋章
+      const topMedal = wornMedals.length > 0 ? wornMedals[0] : null
+
+      // 为最高等级勋章添加累计中奖金额描述
+      if (topMedal) {
+        topMedal.bonusDesc = this.getMedalBonusDesc(topMedal.level)
+      }
+
+      this.setData({
+        medals: processedMedals,
+        wornMedals,
+        acquiredMedals,
+        acquiredCount: acquiredMedals.length,
+        topMedal,
+        medalsLoading: false
+      })
+    } catch (error) {
+      console.error('获取用户勋章失败:', error)
+      this.setData({
+        medals: [],
+        wornMedals: [],
+        acquiredMedals: [],
+        acquiredCount: 0,
+        medalsLoading: false
+      })
+    }
+  },
+
+  // 获取勋章图标
+  getMedalIcon(level) {
+    const iconMap = {
+      1: '🌱', // 百元 - 幸运萌芽
+      2: '🎊', // 千元 - 千喜临门
+      3: '💎', // 1万 - 万中无一
+      4: '🎁', // 2万 - 双喜盈门
+      5: '☀️', // 3万 - 三阳开泰
+      6: '🏆', // 5万 - 五福聚宝
+      7: '👑'  // 10万 - 十全鸿运
+    }
+    return iconMap[level] || '🏅'
+  },
+
+  // 获取勋章颜色样式类
+  getMedalColorClass(level) {
+    const colorMap = {
+      1: 'medal-green',    // 百元 - 绿色
+      2: 'medal-blue',     // 千元 - 蓝色
+      3: 'medal-purple',   // 1万 - 紫色
+      4: 'medal-pink',     // 2万 - 粉色
+      5: 'medal-orange',   // 3万 - 橙色
+      6: 'medal-gold',     // 5万 - 金色
+      7: 'medal-rainbow'   // 10万 - 彩虹/红金
+    }
+    return colorMap[level] || 'medal-default'
+  },
+
+  // 获取勋章对应的累计中奖金额描述
+  getMedalBonusDesc(level) {
+    const bonusMap = {
+      1: '100元',
+      2: '1,000元',
+      3: '10,000元',
+      4: '20,000元',
+      5: '30,000元',
+      6: '50,000元',
+      7: '100,000元'
+    }
+    return bonusMap[level] || ''
+  },
+
+  // 点击最高等级勋章显示累计中奖金额
+  onTopMedalTap() {
+    const { topMedal } = this.data
+    if (!topMedal) return
+
+    wx.showToast({
+      title: `累计中奖${topMedal.bonusDesc}`,
+      icon: 'none',
+      duration: 2000
+    })
+  },
+
+  // 打开勋章弹窗
+  onOpenMedalPopup() {
+    if (!this.data.isLoggedIn) {
+      wx.showToast({ title: '请先登录', icon: 'none' })
+      return
+    }
+    this.setData({ showMedalPopup: true })
+    // 每次打开弹窗时刷新勋章数据
+    this.loadUserMedals()
+  },
+
+  // 关闭勋章弹窗
+  onCloseMedalPopup() {
+    this.setData({ showMedalPopup: false })
+  },
+
+  // 点击勋章查看详情
+  onMedalTap(e) {
+    const medal = e.currentTarget.dataset.medal
+    if (!medal) return
+
+    if (!medal.isAcquired) {
+      wx.showToast({ title: '勋章尚未解锁', icon: 'none' })
+      return
+    }
+
+    wx.showModal({
+      title: medal.medalName,
+      content: `${medal.medalMeaning}\n\n获得时间: ${this.formatMedalTime(medal.acquireTime)}`,
+      showCancel: false,
+      confirmText: '知道了'
+    })
+  },
+
+  // 格式化勋章获得时间
+  formatMedalTime(timeStr) {
+    if (!timeStr) return '未知'
+    const date = new Date(timeStr)
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
   },
 
   // 跳转登录
@@ -504,6 +725,63 @@ Page({
     if (this._bindCountdownTimer) {
       clearInterval(this._bindCountdownTimer)
     }
+  },
+
+  // 积分充值按钮拖动
+  onCreditsMove(e) {
+    // 记录最新位置，防止tap事件被误触
+    this._lastMoveTime = Date.now()
+  },
+
+  // 点击积分充值按钮
+  onCredits() {
+    // 如果刚拖动过，忽略点击
+    if (this._lastMoveTime && Date.now() - this._lastMoveTime < 300) {
+      return
+    }
+
+    // 跳转到积分充值页面
+    wx.navigateTo({
+      url: '/pages/credits/index'
+    })
+  },
+
+  // 点击VIP图标
+  onVipBadgeTap() {
+    const { userInfo } = this.data
+    if (userInfo && userInfo.isVip && userInfo.vipExpireTime) {
+      wx.showModal({
+        title: '会员信息',
+        content: `您已是会员\n\n到期时间: ${this.formatExpireTime(userInfo.vipExpireTime)}`,
+        showCancel: false,
+        confirmText: '知道了'
+      })
+    }
+  },
+
+  // 进入会员中心
+  onVipCenter() {
+    const { isLoggedIn } = this.data
+    if (!isLoggedIn) {
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none'
+      })
+      return
+    }
+    wx.navigateTo({
+      url: '/pages/vip/index'
+    })
+  },
+
+  // 格式化到期时间
+  formatExpireTime(timeStr) {
+    if (!timeStr) return '未知'
+    const date = new Date(timeStr)
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
   },
 
   // 分享给好友
