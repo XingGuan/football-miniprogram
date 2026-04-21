@@ -27,8 +27,8 @@
           <text class="benefit-icon">🎯</text>
         </view>
         <view class="benefit-info">
-          <text class="benefit-name">全部比赛分析</text>
-          <text class="benefit-desc">无需解锁直接查看</text>
+          <text class="benefit-name">比赛</text>
+          <text class="benefit-desc">无限分析，核心XG</text>
         </view>
       </view>
       <view class="benefit-item">
@@ -37,7 +37,7 @@
         </view>
         <view class="benefit-info">
           <text class="benefit-name">情报</text>
-          <text class="benefit-desc">无需解锁直接查看</text>
+          <text class="benefit-desc">无需解锁</text>
         </view>
       </view>
       <view class="benefit-item">
@@ -51,11 +51,30 @@
       </view>
       <view class="benefit-item">
         <view class="benefit-icon-wrapper">
+          <text class="benefit-icon">💎</text>
+        </view>
+        <view class="benefit-info">
+          <text class="benefit-name">积分</text>
+          <text class="benefit-desc">10倍积分获取</text>
+        </view>
+      </view>
+     
+      <view class="benefit-item">
+        <view class="benefit-icon-wrapper">
           <text class="benefit-icon">👨‍💼</text>
         </view>
         <view class="benefit-info">
           <text class="benefit-name">专属客服</text>
           <text class="benefit-desc">7×24小时服务</text>
+        </view>
+      </view>
+      <view class="benefit-item">
+        <view class="benefit-icon-wrapper">
+          <text class="benefit-icon">🎁</text>
+        </view>
+        <view class="benefit-info">
+          <text class="benefit-name">更多权益</text>
+          <text class="benefit-desc">敬请期待</text>
         </view>
       </view>
     </view>
