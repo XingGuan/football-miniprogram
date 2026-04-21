@@ -55,7 +55,7 @@
         </view>
         <view class="benefit-info">
           <text class="benefit-name">积分</text>
-          <text class="benefit-desc">10倍积分获取</text>
+          <text class="benefit-desc">10倍积分</text>
         </view>
       </view>
      
