@@ -1,25 +1,12 @@
 <!-- pages/calculator-hall/index.wxml - 推荐方案大厅 -->
 <view class="hall-page">
-  <!-- 加载状态 -->
-  <view class="loading-wrapper" wx:if="{{loading}}">
-    <view class="loading-spinner"></view>
-    <text class="loading-text">加载中...</text>
-  </view>
-
-  <!-- 错误状态 -->
-  <view class="error-wrapper" wx:elif="{{error}}">
-    <text class="error-text">{{error}}</text>
-    <view class="retry-btn" bindtap="onRetry">重试</view>
-  </view>
-
-  <!-- 主内容 -->
-  <view class="main-content" wx:else>
+  <!-- 顶部区域（标题+Tab） -->
+  <view class="top-section">
     <!-- 页面标题 -->
     <view class="page-header">
       <view class="header-content">
         <view class="title-section">
-          <text class="page-title">🏆 分享大厅</text>
-          <text class="page-desc">浏览高手的中奖方案</text>
+          <text class="page-title">🏆 大厅</text>
         </view>
         <button class="header-share-btn" open-type="share">
           <text class="share-icon">📤</text>
@@ -27,178 +14,363 @@
       </view>
     </view>
 
-    <!-- 排行榜区域 -->
-    <view class="rank-section" wx:if="{{rankList.length > 0 || bonusRankList.length > 0}}">
-      <!-- 排行榜头部：切换按钮 + 展开收起 -->
-      <view class="rank-header">
-        <view class="rank-type-switcher">
-          <view class="rank-type-btn {{rankType === 'winRate' ? 'active' : ''}}" bindtap="onSwitchRankType" data-type="winRate">
-            <text>🏆 胜率榜</text>
-          </view>
-          <view class="rank-type-btn {{rankType === 'bonus' ? 'active' : ''}}" bindtap="onSwitchRankType" data-type="bonus">
-            <text>💰 金额榜</text>
-          </view>
-        </view>
-        <text class="rank-toggle" bindtap="onToggleRank">{{rankExpanded ? '收起' : '展开'}}</text>
+    <!-- Tab 切换 -->
+    <view class="tab-header">
+      <view class="tab-bg" style="transform: translateX({{currentTab === 'discovery' ? '100%' : '0'}})"></view>
+      <view class="tab-item {{currentTab === 'hall' ? 'active' : ''}}" data-tab="hall" bindtap="onTabChange">
+        <text class="tab-icon">🏆</text>
+        <text class="tab-text">分享方案</text>
       </view>
-
-      <!-- 胜率排行榜内容 -->
-      <view class="rank-list {{rankExpanded ? '' : 'collapsed'}}" wx:if="{{rankType === 'winRate'}}">
-        <view class="rank-item" wx:for="{{rankList}}" wx:key="userName">
-          <view class="rank-medal">
-            <text wx:if="{{index === 0}}">🥇</text>
-            <text wx:elif="{{index === 1}}">🥈</text>
-            <text wx:else>🥉</text>
-          </view>
-          <view class="rank-avatar">
-            <image class="avatar-img" src="{{item.avatar}}" mode="aspectFill" wx:if="{{item.avatar}}"></image>
-            <view class="avatar-fallback" wx:else>{{item.userName[0]}}</view>
-          </view>
-          <view class="rank-user">
-            <view class="rank-name-row">
-              <text class="rank-name">{{item.userName}}</text>
-              <view class="rank-medal-icon {{item.topMedal.colorClass}}" wx:if="{{item.topMedal}}">
-                <text>{{item.topMedal.icon}}</text>
-              </view>
-            </view>
-            <text class="rank-stats">{{item.winRecords}}中/{{item.totalRecords}}单</text>
-          </view>
-          <view class="rank-rate">
-            <text class="rate-num">{{item.winRate}}%</text>
-          </view>
-        </view>
-        <view class="rank-empty" wx:if="{{rankList.length === 0}}">
-          <text>暂无数据</text>
-        </view>
-      </view>
-
-      <!-- 中奖金额排行榜内容 -->
-      <view class="rank-list {{rankExpanded ? '' : 'collapsed'}}" wx:if="{{rankType === 'bonus'}}">
-        <view class="rank-item" wx:for="{{bonusRankList}}" wx:key="userName">
-          <view class="rank-medal">
-            <text wx:if="{{index === 0}}">🥇</text>
-            <text wx:elif="{{index === 1}}">🥈</text>
-            <text wx:else>🥉</text>
-          </view>
-          <view class="rank-avatar">
-            <image class="avatar-img" src="{{item.avatar}}" mode="aspectFill" wx:if="{{item.avatar}}"></image>
-            <view class="avatar-fallback" wx:else>{{item.userName[0]}}</view>
-          </view>
-          <view class="rank-user">
-            <view class="rank-name-row">
-              <text class="rank-name">{{item.userName}}</text>
-              <view class="rank-medal-icon {{item.topMedal.colorClass}}" wx:if="{{item.topMedal}}">
-                <text>{{item.topMedal.icon}}</text>
-              </view>
-            </view>
-            <text class="rank-stats">{{item.winRecords}}次中奖</text>
-          </view>
-          <view class="rank-bonus">
-            <text class="bonus-num">¥{{item.totalBonusStr}}</text>
-          </view>
-        </view>
-        <view class="rank-empty" wx:if="{{bonusRankList.length === 0}}">
-          <text>暂无中奖数据</text>
-        </view>
+      <view class="tab-item {{currentTab === 'discovery' ? 'active' : ''}}" data-tab="discovery" bindtap="onTabChange">
+        <text class="tab-icon">📊</text>
+        <text class="tab-text">数据发现</text>
       </view>
     </view>
-
-    <!-- 空状态 -->
-    <view class="empty-state" wx:if="{{recommendations.length === 0}}">
-      <text class="empty-icon">📭</text>
-      <text class="empty-text">暂无分享方案</text>
-      <text class="empty-tip">分享你的中奖方案给大家吧</text>
-    </view>
-
-    <!-- 方案列表 -->
-    <scroll-view class="recommendations-scroll" scroll-y wx:else>
-      <view class="scheme-item" wx:for="{{recommendations}}" wx:key="id" bindtap="onRecordTap" data-record="{{item}}">
-        <!-- 顶部背景条 - 根据状态显示颜色 -->
-        <view class="scheme-status-bar {{item.status === 1 ? 'win' : (item.status === 2 ? 'lose' : 'pending')}}"></view>
-
-        <!-- 用户信息区 -->
-        <view class="scheme-user-section">
-          <view class="user-avatar-wrapper">
-            <image class="user-avatar" src="{{item.userStats.avatar}}" mode="aspectFill" wx:if="{{item.userStats.avatar}}"></image>
-            <view class="user-avatar-fallback" wx:else>{{item.userStats.userName[0]}}</view>
-          </view>
-
-          <view class="user-meta">
-            <view class="user-header">
-              <view class="user-name-medals">
-                <text class="user-name">{{item.userStats.userName}}</text>
-                <!-- 最高等级勋章 -->
-                <view class="user-medal-item {{item.userStats.topMedal.colorClass}}" wx:if="{{item.userStats.topMedal}}">
-                  <text class="medal-icon">{{item.userStats.topMedal.icon}}</text>
-                </view>
-              </view>
-              <view class="badge {{item.status === 1 ? 'win' : (item.status === 2 ? 'lose' : 'pending')}}">
-                <text class="badge-icon">{{item.status === 1 ? '✓' : (item.status === 2 ? '✗' : '⏳')}}</text>
-                <text class="badge-text">{{item.statusDesc}}</text>
-              </view>
-            </view>
-            <view class="user-stats-row">
-              <view class="stat-box">
-                <text class="stat-label">中奖</text>
-                <text class="stat-value win-color">{{item.userStats.winRecords}}</text>
-              </view>
-              <view class="stat-box">
-                <text class="stat-label">未中</text>
-                <text class="stat-value lose-color">{{item.userStats.loseRecords}}</text>
-              </view>
-              <view class="stat-box highlight">
-                <text class="stat-label">胜率</text>
-                <text class="stat-value rate-color">{{item.winRate}}%</text>
-              </view>
-            </view>
-          </view>
-        </view>
-
-        <!-- 分割线 -->
-        <view class="divider"></view>
-
-        <!-- 方案信息区 -->
-        <view class="scheme-detail-section">
-          <view class="detail-row">
-            <view class="detail-item">
-              <text class="detail-label">比赛数</text>
-              <text class="detail-value">{{item.matchCount}}场</text>
-            </view>
-            <view class="detail-item">
-              <text class="detail-label">过关</text>
-              <text class="detail-value">{{item.passTypesStr}}</text>
-            </view>
-            <view class="detail-item">
-              <text class="detail-label">投注</text>
-              <text class="detail-value">{{item.totalBets}}注</text>
-            </view>
-            <view class="detail-item">
-              <text class="detail-label">投注金额</text>
-              <text class="detail-value">{{item.totalAmount}}</text>
-            </view>
-          </view>
-        </view>
-
-        <!-- 查看箭头 -->
-        <view class="scheme-arrow">›</view>
-      </view>
-
-      <!-- 底部占位 -->
-      <view class="bottom-placeholder"></view>
-    </scroll-view>
   </view>
 
-  <!-- 单关计划悬浮按钮 -->
-  <view class="dragon-floating-btn"
-        wx:if="{{showDragon}}"
-        style="left: {{dragX}}px; top: {{dragY}}px;"
-        bindtap="onDragonAnalysis"
-        bindtouchstart="onDragonBtnTouchStart"
-        bindtouchmove="onDragonBtnTouchMove"
-        bindtouchend="onDragonBtnTouchEnd">
-    <view class="dragon-btn-inner">
-      <text class="dragon-icon">📊</text>
-      <text class="dragon-text">单关计划</text>
+  <!-- 分享大厅 Tab -->
+  <view class="tab-content" wx:if="{{currentTab === 'hall'}}">
+    <!-- 加载状态 -->
+    <view class="loading-wrapper" wx:if="{{loading}}">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
     </view>
+
+    <!-- 错误状态 -->
+    <view class="error-wrapper" wx:elif="{{error}}">
+      <text class="error-text">{{error}}</text>
+      <view class="retry-btn" bindtap="onRetry">重试</view>
+    </view>
+
+    <!-- 主内容 -->
+    <view class="main-content" wx:else>
+
+      <!-- 排行榜区域 -->
+      <view class="rank-section" wx:if="{{rankList.length > 0 || bonusRankList.length > 0}}">
+        <!-- 排行榜头部：切换按钮 + 展开收起 -->
+        <view class="rank-header">
+          <view class="rank-type-switcher">
+            <view class="rank-type-btn {{rankType === 'winRate' ? 'active' : ''}}" bindtap="onSwitchRankType" data-type="winRate">
+              <text>🏆 胜率榜</text>
+            </view>
+            <view class="rank-type-btn {{rankType === 'bonus' ? 'active' : ''}}" bindtap="onSwitchRankType" data-type="bonus">
+              <text>💰 金额榜</text>
+            </view>
+          </view>
+          <text class="rank-toggle" bindtap="onToggleRank">{{rankExpanded ? '收起' : '展开'}}</text>
+        </view>
+
+        <!-- 胜率排行榜内容 -->
+        <view class="rank-list {{rankExpanded ? '' : 'collapsed'}}" wx:if="{{rankType === 'winRate'}}">
+          <view class="rank-item" wx:for="{{rankList}}" wx:key="userName">
+            <view class="rank-medal">
+              <text wx:if="{{index === 0}}">🥇</text>
+              <text wx:elif="{{index === 1}}">🥈</text>
+              <text wx:else>🥉</text>
+            </view>
+            <view class="rank-avatar">
+              <image class="avatar-img" src="{{item.avatar}}" mode="aspectFill" wx:if="{{item.avatar}}"></image>
+              <view class="avatar-fallback" wx:else>{{item.userName[0]}}</view>
+            </view>
+            <view class="rank-user">
+              <view class="rank-name-row">
+                <text class="rank-name">{{item.userName}}</text>
+                <view class="rank-medal-icon {{item.topMedal.colorClass}}" wx:if="{{item.topMedal}}">
+                  <text>{{item.topMedal.icon}}</text>
+                </view>
+              </view>
+              <text class="rank-stats">{{item.winRecords}}中/{{item.totalRecords}}单</text>
+            </view>
+            <view class="rank-rate">
+              <text class="rate-num">{{item.winRate}}%</text>
+            </view>
+          </view>
+          <view class="rank-empty" wx:if="{{rankList.length === 0}}">
+            <text>暂无数据</text>
+          </view>
+        </view>
+
+        <!-- 中奖金额排行榜内容 -->
+        <view class="rank-list {{rankExpanded ? '' : 'collapsed'}}" wx:if="{{rankType === 'bonus'}}">
+          <view class="rank-item" wx:for="{{bonusRankList}}" wx:key="userName">
+            <view class="rank-medal">
+              <text wx:if="{{index === 0}}">🥇</text>
+              <text wx:elif="{{index === 1}}">🥈</text>
+              <text wx:else>🥉</text>
+            </view>
+            <view class="rank-avatar">
+              <image class="avatar-img" src="{{item.avatar}}" mode="aspectFill" wx:if="{{item.avatar}}"></image>
+              <view class="avatar-fallback" wx:else>{{item.userName[0]}}</view>
+            </view>
+            <view class="rank-user">
+              <view class="rank-name-row">
+                <text class="rank-name">{{item.userName}}</text>
+                <view class="rank-medal-icon {{item.topMedal.colorClass}}" wx:if="{{item.topMedal}}">
+                  <text>{{item.topMedal.icon}}</text>
+                </view>
+              </view>
+              <text class="rank-stats">{{item.winRecords}}次中奖</text>
+            </view>
+            <view class="rank-bonus">
+              <text class="bonus-num">¥{{item.totalBonusStr}}</text>
+            </view>
+          </view>
+          <view class="rank-empty" wx:if="{{bonusRankList.length === 0}}">
+            <text>暂无中奖数据</text>
+          </view>
+        </view>
+      </view>
+
+      <!-- 空状态 -->
+      <view class="empty-state" wx:if="{{recommendations.length === 0}}">
+        <text class="empty-icon">📭</text>
+        <text class="empty-text">暂无分享方案</text>
+        <text class="empty-tip">分享你的中奖方案给大家吧</text>
+      </view>
+
+      <!-- 方案列表 -->
+      <scroll-view class="recommendations-scroll" scroll-y wx:else>
+        <view class="scheme-item" wx:for="{{recommendations}}" wx:key="id" bindtap="onRecordTap" data-record="{{item}}">
+          <!-- 顶部背景条 - 根据状态显示颜色 -->
+          <view class="scheme-status-bar {{item.status === 1 ? 'win' : (item.status === 2 ? 'lose' : 'pending')}}"></view>
+
+          <!-- 用户信息区 -->
+          <view class="scheme-user-section">
+            <view class="user-avatar-wrapper">
+              <image class="user-avatar" src="{{item.userStats.avatar}}" mode="aspectFill" wx:if="{{item.userStats.avatar}}"></image>
+              <view class="user-avatar-fallback" wx:else>{{item.userStats.userName[0]}}</view>
+            </view>
+
+            <view class="user-meta">
+              <view class="user-header">
+                <view class="user-name-medals">
+                  <text class="user-name">{{item.userStats.userName}}</text>
+                  <!-- 最高等级勋章 -->
+                  <view class="user-medal-item {{item.userStats.topMedal.colorClass}}" wx:if="{{item.userStats.topMedal}}">
+                    <text class="medal-icon">{{item.userStats.topMedal.icon}}</text>
+                  </view>
+                </view>
+                <view class="badge {{item.status === 1 ? 'win' : (item.status === 2 ? 'lose' : 'pending')}}">
+                  <text class="badge-icon">{{item.status === 1 ? '✓' : (item.status === 2 ? '✗' : '⏳')}}</text>
+                  <text class="badge-text">{{item.statusDesc}}</text>
+                </view>
+              </view>
+              <view class="user-stats-row">
+                <view class="stat-box">
+                  <text class="stat-label">中奖</text>
+                  <text class="stat-value win-color">{{item.userStats.winRecords}}</text>
+                </view>
+                <view class="stat-box">
+                  <text class="stat-label">未中</text>
+                  <text class="stat-value lose-color">{{item.userStats.loseRecords}}</text>
+                </view>
+                <view class="stat-box highlight">
+                  <text class="stat-label">胜率</text>
+                  <text class="stat-value rate-color">{{item.winRate}}%</text>
+                </view>
+              </view>
+            </view>
+          </view>
+
+          <!-- 分割线 -->
+          <view class="divider"></view>
+
+          <!-- 方案信息区 -->
+          <view class="scheme-detail-section">
+            <view class="detail-row">
+              <view class="detail-item">
+                <text class="detail-label">比赛数</text>
+                <text class="detail-value">{{item.matchCount}}场</text>
+              </view>
+              <view class="detail-item">
+                <text class="detail-label">过关</text>
+                <text class="detail-value">{{item.passTypesStr}}</text>
+              </view>
+              <view class="detail-item">
+                <text class="detail-label">投注</text>
+                <text class="detail-value">{{item.totalBets}}注</text>
+              </view>
+              <view class="detail-item">
+                <text class="detail-label">投注金额</text>
+                <text class="detail-value">{{item.totalAmount}}</text>
+              </view>
+            </view>
+          </view>
+
+          <!-- 查看箭头 -->
+          <view class="scheme-arrow">›</view>
+        </view>
+
+        <!-- 底部占位 -->
+        <view class="bottom-placeholder"></view>
+      </scroll-view>
+    </view>
+
+    <!-- 单关计划悬浮按钮 -->
+    <view class="dragon-floating-btn"
+          wx:if="{{showDragon}}"
+          style="left: {{dragX}}px; top: {{dragY}}px;"
+          bindtap="onDragonAnalysis"
+          bindtouchstart="onDragonBtnTouchStart"
+          bindtouchmove="onDragonBtnTouchMove"
+          bindtouchend="onDragonBtnTouchEnd">
+      <view class="dragon-btn-inner">
+        <text class="dragon-icon">📊</text>
+        <text class="dragon-text">单关计划</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 数据发现 Tab -->
+  <view class="tab-content discovery-tab" wx:if="{{currentTab === 'discovery'}}">
+    <!-- 联赛列表加载中 -->
+    <view class="loading-wrapper" wx:if="{{leaguesLoading}}">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载联赛中...</text>
+    </view>
+
+    <!-- 联赛列表错误 -->
+    <view class="error-wrapper" wx:elif="{{leaguesError}}">
+      <text class="error-text">{{leaguesError}}</text>
+      <view class="retry-btn" bindtap="onRetryLeagues">重试</view>
+    </view>
+
+    <!-- 联赛列表 -->
+    <scroll-view class="discovery-scroll" scroll-y wx:else>
+      <!-- 联赛选择区 -->
+      <view class="league-section">
+        <!-- 热门联赛 -->
+        <view class="league-category" wx:if="{{hotLeagues.length > 0}}">
+          <view class="category-header">
+            <text class="category-icon">🔥</text>
+            <text class="category-title">热门联赛</text>
+          </view>
+          <view class="league-grid">
+            <view
+              class="league-card {{selectedLeague && selectedLeague.id === item.id ? 'active' : ''}}"
+              wx:for="{{hotLeagues}}"
+              wx:key="id"
+              data-league="{{item}}"
+              bindtap="onSelectLeague"
+            >
+              <image class="league-logo" wx:if="{{item.logoUrl}}" src="{{item.logoUrl}}" mode="aspectFit" />
+              <view class="league-logo-placeholder" wx:else>{{item.firstChar}}</view>
+              <text class="league-name">{{item.leagueAbbrCnName || item.leagueName}}</text>
+            </view>
+          </view>
+        </view>
+
+        <!-- 其他联赛 -->
+        <view class="league-category" wx:if="{{otherLeagues.length > 0}}">
+          <view class="category-header" bindtap="onToggleOtherLeagues">
+            <text class="category-icon">⚽</text>
+            <text class="category-title">全部联赛</text>
+            <text class="category-count">{{otherLeagues.length}}个</text>
+            <view class="category-toggle {{otherLeaguesExpanded ? 'expanded' : ''}}">
+              <text>›</text>
+            </view>
+          </view>
+          <view class="league-grid {{otherLeaguesExpanded ? '' : 'collapsed'}}">
+            <view
+              class="league-card {{selectedLeague && selectedLeague.id === item.id ? 'active' : ''}}"
+              wx:for="{{otherLeagues}}"
+              wx:key="id"
+              data-league="{{item}}"
+              bindtap="onSelectLeague"
+            >
+              <image class="league-logo" wx:if="{{item.logoUrl}}" src="{{item.logoUrl}}" mode="aspectFit" />
+              <view class="league-logo-placeholder" wx:else>{{item.firstChar}}</view>
+              <text class="league-name">{{item.leagueAbbrCnName || item.leagueName}}</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 赛季选择区 -->
+      <view class="season-section" wx:if="{{selectedLeague}}">
+        <view class="section-title">{{selectedLeague.leagueName}} - 赛季</view>
+        <view class="season-loading" wx:if="{{seasonsLoading}}">
+          <view class="mini-spinner"></view>
+          <text>加载赛季...</text>
+        </view>
+        <scroll-view class="season-scroll" scroll-x enhanced show-scrollbar="{{false}}" wx:else>
+          <view class="season-list">
+            <view
+              class="season-item {{selectedSeason && selectedSeason.id === item.id ? 'active' : ''}}"
+              wx:for="{{seasons}}"
+              wx:key="seasonId"
+              data-season="{{item}}"
+              bindtap="onSelectSeason"
+            >
+              <text class="season-name">{{item.seasonName}}</text>
+            </view>
+          </view>
+        </scroll-view>
+      </view>
+
+      <!-- 排名区域 -->
+      <view class="standing-section" wx:if="{{selectedSeason}}">
+        <!-- 排名类型切换 -->
+        <view class="standing-type-tabs">
+          <view class="type-tab {{standingType === 'total' ? 'active' : ''}}" data-type="total" bindtap="onStandingTypeChange">
+            <text>总积分榜</text>
+          </view>
+          <view class="type-tab {{standingType === 'home' ? 'active' : ''}}" data-type="home" bindtap="onStandingTypeChange">
+            <text>主场</text>
+          </view>
+          <view class="type-tab {{standingType === 'away' ? 'active' : ''}}" data-type="away" bindtap="onStandingTypeChange">
+            <text>客场</text>
+          </view>
+        </view>
+
+        <!-- 排名表格 -->
+        <view class="standing-loading" wx:if="{{standingsLoading}}">
+          <view class="mini-spinner"></view>
+          <text>加载排名...</text>
+        </view>
+        <view class="standing-table" wx:elif="{{standings.length > 0}}">
+          <!-- 表头 -->
+          <view class="table-header">
+            <text class="col-rank">名</text>
+            <text class="col-team">球队</text>
+            <text class="col-played">场</text>
+            <text class="col-win">胜</text>
+            <text class="col-draw">平</text>
+            <text class="col-loss">负</text>
+            <text class="col-gf">进</text>
+            <text class="col-ga">失</text>
+            <text class="col-gd">净</text>
+            <text class="col-pts">分</text>
+          </view>
+          <!-- 表格内容 -->
+          <view class="table-body">
+            <view class="table-row {{index < 4 ? 'top-zone' : ''}} {{index >= standings.length - 3 ? 'bottom-zone' : ''}}" wx:for="{{standings}}" wx:key="id">
+              <text class="col-rank {{index < 4 ? 'rank-top' : ''}}">{{item.ranking}}</text>
+              <text class="col-team">{{item.teamAbbrCnName}}</text>
+              <text class="col-played">{{item.totalLegCnt}}</text>
+              <text class="col-win">{{item.winGoalMatchCnt}}</text>
+              <text class="col-draw">{{item.drawMatchCnt}}</text>
+              <text class="col-loss">{{item.lossGoalMatchCnt}}</text>
+              <text class="col-gf">{{item.goalCnt}}</text>
+              <text class="col-ga">{{item.lossGoalCnt}}</text>
+              <text class="col-gd {{item.netGoal > 0 ? 'positive' : ''}} {{item.netGoal < 0 ? 'negative' : ''}}">{{item.netGoal > 0 ? '+' : ''}}{{item.netGoal}}</text>
+              <text class="col-pts">{{item.points}}</text>
+            </view>
+          </view>
+        </view>
+        <view class="standing-empty" wx:else>
+          <text>暂无排名数据</text>
+        </view>
+      </view>
+
+      <!-- 未选择联赛时的提示 -->
+      <view class="discovery-tip" wx:if="{{!selectedLeague}}">
+        <text class="tip-icon">📊</text>
+        <text class="tip-text">请选择联赛查看积分榜</text>
+      </view>
+
+      <!-- 底部安全区域 -->
+      <view class="safe-bottom"></view>
+    </scroll-view>
   </view>
 </view>

@@ -37,7 +37,11 @@ Page({
     // 积分充值悬浮按钮
     showCreditsButton: false,
     creditsX: 500,
-    creditsY: 120
+    creditsY: 120,
+    // VIP到期时间格式化
+    vipExpireTimeStr: '',
+    // 会员入口显示
+    showVipButton: false
   },
 
   onLoad() {
@@ -59,11 +63,17 @@ Page({
     try {
       const matchApi = require('../../api/match')
       const result = await matchApi.checkFeatures()
-      const showCreditsButton = result === true
-      this.setData({ showCreditsButton })
+      const showFeatures = result === true
+      this.setData({
+        showCreditsButton: showFeatures,
+        showVipButton: showFeatures
+      })
     } catch (error) {
       console.error('检查功能开关失败:', error)
-      this.setData({ showCreditsButton: false })
+      this.setData({
+        showCreditsButton: false,
+        showVipButton: false
+      })
     }
   },
 
@@ -92,9 +102,16 @@ Page({
       }
     }
 
+    // 格式化VIP到期时间
+    let vipExpireTimeStr = ''
+    if (userInfo && userInfo.isVip && userInfo.vipExpireTime) {
+      vipExpireTimeStr = this.formatExpireTime(userInfo.vipExpireTime)
+    }
+
     this.setData({
       isLoggedIn,
-      userInfo
+      userInfo,
+      vipExpireTimeStr
     })
   },
 
@@ -727,6 +744,44 @@ Page({
     wx.navigateTo({
       url: '/pages/credits/index'
     })
+  },
+
+  // 点击VIP图标
+  onVipBadgeTap() {
+    const { userInfo } = this.data
+    if (userInfo && userInfo.isVip && userInfo.vipExpireTime) {
+      wx.showModal({
+        title: '会员信息',
+        content: `您已是会员\n\n到期时间: ${this.formatExpireTime(userInfo.vipExpireTime)}`,
+        showCancel: false,
+        confirmText: '知道了'
+      })
+    }
+  },
+
+  // 进入会员中心
+  onVipCenter() {
+    const { isLoggedIn } = this.data
+    if (!isLoggedIn) {
+      wx.showToast({
+        title: '请先登录',
+        icon: 'none'
+      })
+      return
+    }
+    wx.navigateTo({
+      url: '/pages/vip/index'
+    })
+  },
+
+  // 格式化到期时间
+  formatExpireTime(timeStr) {
+    if (!timeStr) return '未知'
+    const date = new Date(timeStr)
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    return `${year}-${month}-${day}`
   },
 
   // 分享给好友

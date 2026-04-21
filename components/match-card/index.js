@@ -23,17 +23,29 @@ Component({
   data: {
     formattedTime: '',
     statusInfo: null,
-    isUnlocked: false // 是否已解锁
+    isUnlocked: false, // 是否已解锁
+    isVip: false // 是否是VIP用户
+  },
+
+  lifetimes: {
+    attached() {
+      // 检查用户VIP状态
+      this.checkVipStatus()
+    }
   },
 
   observers: {
     'match': function(match) {
       if (match && match.fullMatchTime) {
+        const userInfo = userStore.getUserInfo()
+        const isVip = userInfo && userInfo.isVip === true
+
         this.setData({
           formattedTime: dateUtils.formatShortDateTime(match.fullMatchTime),
           statusInfo: matchUtils.getMatchStatus(match.status),
-          // 从match对象中获取解锁状态
-          isUnlocked: match.isUnlocked || false
+          // VIP用户默认解锁，否则从match对象中获取解锁状态
+          isUnlocked: isVip || match.isUnlocked || false,
+          isVip: isVip
         })
       }
     }
@@ -55,6 +67,13 @@ Component({
       wx.navigateTo({
         url: `/pages/analysis/index?matchId=${match.id}`
       })
+    },
+
+    // 检查VIP状态
+    checkVipStatus() {
+      const userInfo = userStore.getUserInfo()
+      const isVip = userInfo && userInfo.isVip === true
+      this.setData({ isVip })
     },
 
     async onAnalyze() {
@@ -82,7 +101,13 @@ Component({
         return
       }
 
-      const { isUnlocked } = this.data
+      const { isUnlocked, isVip } = this.data
+
+      // VIP用户直接跳转，无需解锁
+      if (isVip) {
+        this.navigateToAnalysis(match)
+        return
+      }
 
       // 如果未解锁，先弹窗确认扣减积分
       if (!isUnlocked) {
@@ -93,12 +118,12 @@ Component({
         if (userPoints < pointsNeeded) {
           wx.showModal({
             title: '积分不足',
-            content: `AI分析需要消耗 ${pointsNeeded} 积分，您当前积分为 ${userPoints}，请做任务或者联系客服获取积分。`,
-            confirmText: '我的页面',
+            content: `AI分析需要消耗 ${pointsNeeded} 积分，您当前积分为 ${userPoints}。\n\n开通会员可免费查看所有分析！`,
+            confirmText: '开通会员',
             cancelText: '取消',
             success: (res) => {
               if (res.confirm) {
-                wx.switchTab({ url: '/pages/profile/index' })
+                wx.navigateTo({ url: '/pages/vip/index' })
               }
             }
           })
@@ -108,7 +133,7 @@ Component({
         // 弹窗确认扣减积分
         wx.showModal({
           title: '解锁AI分析',
-          content: `本次分析将消耗 ${pointsNeeded} 积分，是否继续？`,
+          content: `本次分析将消耗 ${pointsNeeded} 积分，是否继续？\n\n提示：开通会员可免费查看所有分析`,
           confirmText: '确认',
           cancelText: '取消',
           success: async (res) => {

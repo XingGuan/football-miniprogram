@@ -18,7 +18,8 @@
     "pages/profile/index",
     "pages/tool/index",
     "pages/agreement/index",
-    "pages/credits/index"
+    "pages/credits/index",
+    "pages/vip/index"
   ],
   "window": {
     "navigationBarTextStyle": "black",

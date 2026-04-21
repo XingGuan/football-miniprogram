@@ -19,8 +19,13 @@
       <view class="info">
         <view class="name-row">
           <text class="name">{{userInfo.userName || '用户'}}</text>
+          <!-- VIP图标 -->
+          <view class="vip-badge" wx:if="{{userInfo.isVip}}" catchtap="onVipBadgeTap">
+            <view class="vip-diamond"></view>
+            <text class="vip-label">VIP</text>
+          </view>
           <!-- 最高等级勋章 -->
-          <view class="top-medal-wrapper" wx:if="{{topMedal}}" catchtap="onTopMedalTap">
+          <view class="top-medal-wrapper" wx:if="{{topMedal && !userInfo.isVip}}" catchtap="onTopMedalTap">
             <view class="top-medal-item {{topMedal.colorClass}}">
               <text class="top-medal-icon">{{topMedal.icon}}</text>
             </view>
@@ -28,6 +33,7 @@
           </view>
         </view>
         <text class="phone">{{userInfo.phone || ''}}</text>
+        <text class="vip-expire" wx:if="{{userInfo.isVip && vipExpireTimeStr}}">会员到期: {{vipExpireTimeStr}}</text>
       </view>
       <view class="edit-arrow">›</view>
     </view>
@@ -82,15 +88,15 @@
       <view class="medal-entry-arrow">›</view>
     </view>
 
-    <!-- 任务中心 -->
-    <view class="task-section" wx:if="{{isLoggedIn && userInfo}}">
+    <!-- 任务中心 - 仅在有未完成任务时显示 -->
+    <view class="task-section" wx:if="{{isLoggedIn && userInfo && !userInfo.phone}}">
       <view class="task-header">
         <text class="task-title">任务中心</text>
         <text class="task-subtitle">完成任务领积分</text>
       </view>
       <view class="task-list">
-        <!-- 完善手机号任务 -->
-        <view class="task-item {{userInfo.phone ? 'completed' : ''}}" bindtap="onBindPhone">
+        <!-- 完善手机号任务 - 仅未绑定时显示 -->
+        <view class="task-item" bindtap="onBindPhone">
           <view class="task-left">
             <view class="task-icon-wrapper">
               <text class="task-icon">📱</text>
@@ -101,10 +107,25 @@
             </view>
           </view>
           <view class="task-right">
-            <text class="task-reward" wx:if="{{!userInfo.phone}}">+5积分</text>
-            <text class="task-status" wx:else>已完成</text>
+            <text class="task-reward">+5积分</text>
           </view>
         </view>
+      </view>
+    </view>
+
+    <!-- 会员中心 -->
+    <view class="vip-entry-section" wx:if="{{isLoggedIn && userInfo && showVipButton}}">
+      <view class="vip-entry-card" bindtap="onVipCenter">
+        <view class="vip-entry-left">
+          <view class="vip-entry-icon-wrapper">
+            <view class="vip-entry-diamond"></view>
+          </view>
+          <view class="vip-entry-info">
+            <text class="vip-entry-title">{{userInfo.isVip ? '会员管理' : '升级为会员'}}</text>
+            <text class="vip-entry-desc">{{userInfo.isVip ? '管理会员权益' : '解锁全部最新AI分析'}}</text>
+          </view>
+        </view>
+        <view class="vip-entry-arrow">›</view>
       </view>
     </view>
 
