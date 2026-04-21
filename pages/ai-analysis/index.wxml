@@ -31,39 +31,54 @@
   </view>
 
   <!-- 分析结果 -->
-  <view class="result-wrapper" wx:elif="{{parsedContent.length > 0}}">
+  <view class="result-wrapper" wx:elif="{{analysisResult || streaming}}">
+    <!-- 生成时间 -->
+    <view class="generate-time-bar" wx:if="{{generateTime && !streaming}}">
+      <text class="time-icon">🕐</text>
+      <text class="time-text">生成时间: {{generateTime}}</text>
+    </view>
+
+    <!-- 流式传输状态提示 -->
+    <view class="streaming-bar" wx:if="{{streaming}}">
+      <view class="streaming-indicator">
+        <view class="streaming-dot"></view>
+        <view class="streaming-dot"></view>
+        <view class="streaming-dot"></view>
+      </view>
+      <text class="streaming-text">AI 正在生成分析...</text>
+    </view>
+
     <!-- 操作栏 -->
     <view class="action-bar">
-      <view class="action-btn" bindtap="onCopy">
+      <!-- 获取最新分析按钮 -->
+      <view class="refresh-btn {{isVip ? 'vip' : 'disabled'}} {{streaming ? 'loading' : ''}}" bindtap="onGetLatestAnalysis">
+        <view class="vip-badge" wx:if="{{!streaming}}">VIP</view>
+        <view class="loading-spinner-mini" wx:if="{{streaming}}"></view>
+        <text>{{streaming ? '生成中...' : '获取最新'}}</text>
+      </view>
+      <view class="action-btn" bindtap="onCopy" wx:if="{{!streaming}}">
         <text>复制</text>
       </view>
-      <button class="action-btn" open-type="share">
+      <button class="action-btn" open-type="share" wx:if="{{!streaming}}">
         <text>分享</text>
       </button>
-      <view class="action-btn delete-btn" wx:if="{{isAdmin}}" bindtap="onDelete">
+      <view class="action-btn delete-btn" wx:if="{{isAdmin && !streaming}}" bindtap="onDelete">
         <text>删除</text>
       </view>
     </view>
 
     <!-- 内容区域 -->
     <view class="content-card">
-      <block wx:for="{{parsedContent}}" wx:key="index">
-        <!-- 标题 -->
-        <view class="md-h1" wx:if="{{item.type === 'h1'}}">{{item.text}}</view>
-        <view class="md-h2" wx:elif="{{item.type === 'h2'}}">{{item.text}}</view>
-        <view class="md-h3" wx:elif="{{item.type === 'h3'}}">{{item.text}}</view>
-        <!-- 列表 -->
-        <view class="md-list" wx:elif="{{item.type === 'list'}}">
-          <text class="list-dot">•</text>
-          <text class="list-text">{{item.text}}</text>
-        </view>
-        <!-- 分隔线 -->
-        <view class="md-hr" wx:elif="{{item.type === 'hr'}}"></view>
-        <!-- 空行 -->
-        <view class="md-space" wx:elif="{{item.type === 'space'}}"></view>
-        <!-- 段落 -->
-        <view class="md-p" wx:elif="{{item.type === 'p'}}">{{item.text}}</view>
-      </block>
+      <!-- 流式传输中但还没内容时显示等待 -->
+      <view class="stream-waiting" wx:if="{{streaming && !analysisResult}}">
+        <text class="waiting-text">等待AI响应...</text>
+      </view>
+
+      <!-- 使用 markdown-viewer 组件渲染 -->
+      <markdown-viewer wx:if="{{analysisResult}}" content="{{analysisResult}}" />
+
+      <!-- 流式传输时的光标效果 -->
+      <view class="typing-cursor" wx:if="{{streaming && analysisResult}}"></view>
     </view>
 
     <view class="safe-bottom"></view>

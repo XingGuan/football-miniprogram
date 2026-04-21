@@ -1,0 +1,281 @@
+<!-- pages/vip/index.wxml -->
+<view class="vip-page">
+  <!-- 头部背景装饰 -->
+  <view class="header">
+    <view class="header-bg-decoration"></view>
+    <view class="header-bg-circle circle-1"></view>
+    <view class="header-bg-circle circle-2"></view>
+    <view class="header-content">
+      <view class="header-badge">
+        <text class="badge-icon">👑</text>
+        <text class="badge-text">VIP会员</text>
+      </view>
+      <text class="header-title">开通会员</text>
+      <text class="header-desc">解锁所有比赛、情报，畅享无限分析</text>
+    </view>
+  </view>
+
+  <!-- VIP权益展示 -->
+  <view class="benefits-section">
+    <view class="benefits-header">
+      <text class="benefits-title">会员专属权益</text>
+      <view class="benefits-line"></view>
+    </view>
+    <view class="benefits-grid">
+      <view class="benefit-item">
+        <view class="benefit-icon-wrapper">
+          <text class="benefit-icon">🎯</text>
+        </view>
+        <view class="benefit-info">
+          <text class="benefit-name">全部比赛分析</text>
+          <text class="benefit-desc">无需解锁直接查看</text>
+        </view>
+      </view>
+      <view class="benefit-item">
+        <view class="benefit-icon-wrapper">
+          <text class="benefit-icon">📰</text>
+        </view>
+        <view class="benefit-info">
+          <text class="benefit-name">情报</text>
+          <text class="benefit-desc">无需解锁直接查看</text>
+        </view>
+      </view>
+      <view class="benefit-item">
+        <view class="benefit-icon-wrapper">
+          <text class="benefit-icon">🚀</text>
+        </view>
+        <view class="benefit-info">
+          <text class="benefit-name">AI分析</text>
+          <text class="benefit-desc">实时获取最新分析</text>
+        </view>
+      </view>
+      <view class="benefit-item">
+        <view class="benefit-icon-wrapper">
+          <text class="benefit-icon">👨‍💼</text>
+        </view>
+        <view class="benefit-info">
+          <text class="benefit-name">专属客服</text>
+          <text class="benefit-desc">7×24小时服务</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 会员状态 - 已是会员 -->
+  <view class="status-section" wx:if="{{isLoggedIn && userInfo && userInfo.isVip}}">
+    <view class="vip-status-card">
+      <view class="status-bg-glow"></view>
+      <view class="status-crown-wrapper">
+        <view class="status-crown-diamond"></view>
+      </view>
+      <view class="status-center">
+        <text class="status-title">尊贵会员</text>
+        <text class="status-expire">到期时间: {{vipExpireTimeStr || '永久'}}</text>
+      </view>
+      <view class="status-renew-btn" bindtap="scrollToPackages">
+        <text>续费会员</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 套餐选择 -->
+  <view class="packages-section" wx:if="{{showVipPurchase}}">
+    <view class="section-header">
+      <text class="section-title">选择套餐</text>
+      <text class="section-subtitle">限时特惠 · 立省更多</text>
+    </view>
+    <view class="packages-container">
+      <!-- 月卡 -->
+      <view
+        class="package-card {{selectedPackage && selectedPackage.id === 1 ? 'selected' : ''}}"
+        data-id="{{1}}"
+        bindtap="onSelectPackage"
+      >
+        <view class="package-header">
+          <text class="package-name">月卡</text>
+        </view>
+        <view class="package-icon-box">
+          <text class="package-emoji">💳</text>
+        </view>
+        <view class="package-duration">
+          <text class="duration-num">1</text>
+          <text class="duration-unit">个月</text>
+        </view>
+        <view class="package-price">
+          <view class="price-original">
+            <text>¥</text>
+            <text class="original-num">69</text>
+          </view>
+          <view class="price-current">
+            <text class="currency">¥</text>
+            <text class="price-num">39</text>
+          </view>
+        </view>
+        <view class="package-save">
+          <text>立省¥30</text>
+        </view>
+        <view class="check-indicator" wx:if="{{selectedPackage && selectedPackage.id === 1}}">
+          <text>✓</text>
+        </view>
+      </view>
+
+      <!-- 年卡 -->
+      <view
+        class="package-card popular {{selectedPackage && selectedPackage.id === 2 ? 'selected' : ''}}"
+        data-id="{{2}}"
+        bindtap="onSelectPackage"
+      >
+        <view class="popular-ribbon">
+          <text>推荐</text>
+        </view>
+        <view class="package-header">
+          <text class="package-name">年卡</text>
+          <view class="best-value-tag">
+            <text>超值</text>
+          </view>
+        </view>
+        <view class="package-icon-box">
+          <text class="package-emoji">👑</text>
+        </view>
+        <view class="package-duration">
+          <text class="duration-num">12</text>
+          <text class="duration-unit">个月</text>
+        </view>
+        <view class="package-price">
+          <view class="price-original">
+            <text>¥</text>
+            <text class="original-num">599</text>
+          </view>
+          <view class="price-current">
+            <text class="currency">¥</text>
+            <text class="price-num">299</text>
+          </view>
+        </view>
+        <view class="package-save hot">
+          <text>立省¥300</text>
+        </view>
+        <view class="package-avg">
+          <text>约¥24.9/月</text>
+        </view>
+        <view class="check-indicator" wx:if="{{selectedPackage && selectedPackage.id === 2}}">
+          <text>✓</text>
+        </view>
+        <view class="card-shine"></view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 购买说明 -->
+  <view class="purchase-section" wx:if="{{showVipPurchase}}">
+    <view class="section-header">
+      <text class="section-title">购买流程</text>
+    </view>
+    <view class="purchase-steps">
+      <view class="step-item">
+        <view class="step-number">
+          <text>1</text>
+        </view>
+        <view class="step-line"></view>
+        <view class="step-content">
+          <text class="step-title">选择套餐</text>
+          <text class="step-desc">{{selectedPackage ? (selectedPackage.id === 1 ? '月卡会员 ¥39' : '年卡会员 ¥299') : '请选择套餐'}}</text>
+        </view>
+      </view>
+      <view class="step-item">
+        <view class="step-number">
+          <text>2</text>
+        </view>
+        <view class="step-line"></view>
+        <view class="step-content">
+          <text class="step-title">联系客服</text>
+          <text class="step-desc">扫码或点击下方按钮</text>
+        </view>
+      </view>
+      <view class="step-item">
+        <view class="step-number">
+          <text>3</text>
+        </view>
+        <view class="step-content">
+          <text class="step-title">支付开通</text>
+          <text class="step-desc">转账后即时开通</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 二维码区域 -->
+    <view class="qrcode-card">
+      <view class="qrcode-header">
+        <view class="qrcode-dot"></view>
+        <text class="qrcode-title">扫码添加客服微信</text>
+        <view class="qrcode-dot"></view>
+      </view>
+      <view class="qrcode-wrapper">
+        <image class="qrcode-image" src="https://ai-football.cn/me.png" mode="aspectFit" />
+      </view>
+      <text class="qrcode-tip">长按识别二维码</text>
+    </view>
+
+    <!-- 联系客服按钮 -->
+    <button class="contact-btn" open-type="contact" session-from="vip_purchase">
+      <view class="btn-content">
+        <text class="btn-icon">💬</text>
+        <text class="btn-text">在线联系客服</text>
+      </view>
+      <view class="btn-arrow">›</view>
+    </button>
+  </view>
+
+  <!-- FAQ -->
+  <view class="faq-section" wx:if="{{showVipPurchase}}">
+    <view class="section-header">
+      <text class="section-title">常见问题</text>
+    </view>
+    <view class="faq-list">
+      <view class="faq-item {{faqOpen[0] ? 'active' : ''}}" bindtap="toggleFaq" data-index="0">
+        <view class="faq-header">
+          <view class="faq-icon-wrapper">
+            <text class="faq-icon">❓</text>
+          </view>
+          <text class="faq-title">会员有效期是多久？</text>
+          <view class="faq-toggle {{faqOpen[0] ? 'open' : ''}}">
+            <text>›</text>
+          </view>
+        </view>
+        <view class="faq-content" wx:if="{{faqOpen[0]}}">
+          <text>月卡有效期为30天，年卡有效期为365天，从激活之日起计算。</text>
+        </view>
+      </view>
+      <view class="faq-item {{faqOpen[1] ? 'active' : ''}}" bindtap="toggleFaq" data-index="1">
+        <view class="faq-header">
+          <view class="faq-icon-wrapper">
+            <text class="faq-icon">🔄</text>
+          </view>
+          <text class="faq-title">会员过期后怎么办？</text>
+          <view class="faq-toggle {{faqOpen[1] ? 'open' : ''}}">
+            <text>›</text>
+          </view>
+        </view>
+        <view class="faq-content" wx:if="{{faqOpen[1]}}">
+          <text>会员过期后可随时续费，联系客服即可立即恢复会员权益。</text>
+        </view>
+      </view>
+      <view class="faq-item {{faqOpen[2] ? 'active' : ''}}" bindtap="toggleFaq" data-index="2">
+        <view class="faq-header">
+          <view class="faq-icon-wrapper">
+            <text class="faq-icon">💰</text>
+          </view>
+          <text class="faq-title">支持退款吗？</text>
+          <view class="faq-toggle {{faqOpen[2] ? 'open' : ''}}">
+            <text>›</text>
+          </view>
+        </view>
+        <view class="faq-content" wx:if="{{faqOpen[2]}}">
+          <text>虚拟商品不支持退款，建议先了解会员权益再购买。</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部安全区域 -->
+  <view class="safe-area-bottom"></view>
+</view>

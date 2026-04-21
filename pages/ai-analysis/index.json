@@ -1,4 +1,6 @@
 {
   "navigationBarTitleText": "AI 分析",
-  "usingComponents": {}
+  "usingComponents": {
+    "markdown-viewer": "/components/markdown-viewer/index"
+  }
 }

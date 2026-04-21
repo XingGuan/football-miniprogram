@@ -5,6 +5,10 @@ const userStore = require('../../store/user')
 
 Page({
   data: {
+    // Tab相关
+    currentTab: 'hall', // 'hall' 分享大厅 | 'discovery' 数据发现
+
+    // 分享大厅数据
     recommendations: [],
     rankList: [], // 胜率排行榜前三
     bonusRankList: [], // 中奖金额排行榜前三
@@ -19,7 +23,23 @@ Page({
     dragStartY: 0,
     isDragging: false,
     // 功能开关
-    showDragon: false // 是否显示斩龙按钮
+    showDragon: false, // 是否显示斩龙按钮
+
+    // 数据发现相关
+    leagues: [],           // 联赛列表
+    hotLeagues: [],        // 热门联赛
+    otherLeagues: [],      // 其他联赛
+    leaguesLoading: false, // 联赛加载中
+    leaguesError: null,    // 联赛加载错误
+    otherLeaguesExpanded: false, // 全部联赛是否展开
+    selectedLeague: null,  // 选中的联赛
+    seasons: [],           // 赛季列表
+    seasonsLoading: false, // 赛季加载中
+    selectedSeason: null,  // 选中的赛季
+    allStandings: [],      // 所有排名数据（缓存）
+    standings: [],         // 当前显示的排名数据
+    standingsLoading: false, // 排名加载中
+    standingType: 'total'  // 排名类型: total/home/away
   },
 
   onLoad() {
@@ -521,6 +541,175 @@ Page({
   onDragonBtnTouchEnd(e) {
     this.setData({
       isDragging: false
+    })
+  },
+
+  // ========== Tab 切换 ==========
+  onTabChange(e) {
+    const tab = e.currentTarget.dataset.tab
+    if (tab === this.data.currentTab) return
+
+    this.setData({ currentTab: tab })
+
+    // 切换到数据发现时加载联赛列表
+    if (tab === 'discovery' && this.data.leagues.length === 0) {
+      this.loadLeagues()
+    }
+  },
+
+  // ========== 数据发现相关方法 ==========
+
+  // 加载联赛列表
+  async loadLeagues() {
+    this.setData({ leaguesLoading: true, leaguesError: null })
+
+    try {
+      const leagueApi = require('../../api/league')
+      const leagues = await leagueApi.getLeagueList()
+      // 过滤启用的联赛，并添加首字母
+      const activeLeagues = (leagues || [])
+        .filter(item => item.status === 1)
+        .map(item => ({
+          ...item,
+          firstChar: (item.leagueAbbrCnName || item.leagueName || '').substring(0, 1)
+        }))
+
+      // 分类：热门联赛和其他联赛
+      const hotLeagues = activeLeagues
+        .filter(item => item.leagueCategory === 'hot')
+        .sort((a, b) => (a.displaySort || 999) - (b.displaySort || 999))
+
+      const otherLeagues = activeLeagues
+        .filter(item => item.leagueCategory !== 'hot')
+        .sort((a, b) => (a.displaySort || 999) - (b.displaySort || 999))
+
+      this.setData({
+        leagues: activeLeagues,
+        hotLeagues,
+        otherLeagues,
+        leaguesLoading: false
+      })
+    } catch (e) {
+      console.error('加载联赛列表失败:', e)
+      this.setData({
+        leaguesLoading: false,
+        leaguesError: e.message || '加载失败'
+      })
+    }
+  },
+
+  // 选择联赛
+  async onSelectLeague(e) {
+    const league = e.currentTarget.dataset.league
+    if (!league) return
+
+    // 如果点击的是已选中的联赛，取消选中
+    if (this.data.selectedLeague && this.data.selectedLeague.id === league.id) {
+      this.setData({
+        selectedLeague: null,
+        seasons: [],
+        selectedSeason: null,
+        standings: []
+      })
+      return
+    }
+
+    this.setData({
+      selectedLeague: league,
+      seasons: [],
+      selectedSeason: null,
+      standings: [],
+      seasonsLoading: true
+    })
+
+    try {
+      const leagueApi = require('../../api/league')
+      const seasons = await leagueApi.getSeasonList(league.id)
+      // 按年份倒序排列
+      const sortedSeasons = (seasons || [])
+        .filter(item => item.status === 1)
+        .sort((a, b) => (b.seasonYear || 0) - (a.seasonYear || 0))
+
+      this.setData({
+        seasons: sortedSeasons,
+        seasonsLoading: false
+      })
+
+      // 默认选中第一个赛季
+      if (sortedSeasons.length > 0) {
+        this.onSelectSeason({ currentTarget: { dataset: { season: sortedSeasons[0] } } })
+      }
+    } catch (e) {
+      console.error('加载赛季列表失败:', e)
+      this.setData({ seasonsLoading: false })
+      wx.showToast({ title: '加载赛季失败', icon: 'none' })
+    }
+  },
+
+  // 选择赛季
+  async onSelectSeason(e) {
+    const season = e.currentTarget.dataset.season
+    if (!season) return
+
+    const { selectedLeague, standingType } = this.data
+
+    this.setData({
+      selectedSeason: season,
+      allStandings: [],
+      standings: [],
+      standingsLoading: true
+    })
+
+    try {
+      const leagueApi = require('../../api/league')
+      const standings = await leagueApi.getStanding(selectedLeague.id, season.id)
+      // 缓存所有数据
+      const allStandings = (standings || []).filter(item => item.status === 1)
+      // 过滤出当前排名类型的数据
+      const filteredStandings = this.filterStandings(allStandings, standingType)
+
+      this.setData({
+        allStandings,
+        standings: filteredStandings,
+        standingsLoading: false
+      })
+    } catch (e) {
+      console.error('加载排名数据失败:', e)
+      this.setData({ standingsLoading: false })
+      wx.showToast({ title: '加载排名失败', icon: 'none' })
+    }
+  },
+
+  // 过滤排名数据
+  filterStandings(allStandings, type) {
+    return allStandings
+      .filter(item => item.tableType === type)
+      .sort((a, b) => (a.ranking || 999) - (b.ranking || 999))
+  },
+
+  // 切换排名类型（本地过滤，无需请求）
+  onStandingTypeChange(e) {
+    const type = e.currentTarget.dataset.type
+    if (type === this.data.standingType) return
+
+    const { allStandings } = this.data
+    const filteredStandings = this.filterStandings(allStandings, type)
+
+    this.setData({
+      standingType: type,
+      standings: filteredStandings
+    })
+  },
+
+  // 重试加载联赛
+  onRetryLeagues() {
+    this.loadLeagues()
+  },
+
+  // 切换全部联赛展开/折叠
+  onToggleOtherLeagues() {
+    this.setData({
+      otherLeaguesExpanded: !this.data.otherLeaguesExpanded
     })
   }
 })

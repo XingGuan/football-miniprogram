@@ -48,14 +48,18 @@
   overflow: hidden;
 }
 
+/* 顶部区域 */
+.top-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding-bottom: 20rpx;
+}
+
 /* 页面头部 */
 .page-header {
   display: flex;
   flex-direction: column;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20rpx 16rpx;
+  padding: 24rpx 24rpx 16rpx;
   color: #fff;
-  box-shadow: 0 4rpx 16rpx rgba(102, 126, 234, 0.2);
 }
 
 .header-content {
@@ -96,17 +100,10 @@
 }
 
 .page-title {
-  font-size: 30rpx;
+  font-size: 34rpx;
   color: #fff;
   font-weight: 700;
-  margin-bottom: 4rpx;
-  letter-spacing: 0.5rpx;
-}
-
-.page-desc {
-  font-size: 22rpx;
-  color: rgba(255, 255, 255, 0.8);
-  font-weight: 400;
+  letter-spacing: 1rpx;
 }
 
 /* 排行榜 */
@@ -638,4 +635,460 @@
   color: #fff;
   font-weight: 700;
   letter-spacing: 0.5rpx;
+}
+
+/* ========== Tab 切换 ========== */
+.tab-header {
+  position: relative;
+  display: flex;
+  background: rgba(255, 255, 255, 0.2);
+  margin: 0 24rpx;
+  padding: 6rpx;
+  border-radius: 12rpx;
+}
+
+.tab-bg {
+  position: absolute;
+  top: 6rpx;
+  left: 6rpx;
+  width: calc(50% - 6rpx);
+  height: calc(100% - 12rpx);
+  background: #fff;
+  border-radius: 8rpx;
+  transition: transform 0.3s ease;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.1);
+}
+
+.tab-item {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8rpx;
+  padding: 20rpx 0;
+  z-index: 1;
+  transition: all 0.3s;
+}
+
+.tab-icon {
+  font-size: 28rpx;
+  transition: all 0.3s;
+}
+
+.tab-text {
+  font-size: 26rpx;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.tab-item.active .tab-text {
+  color: #667eea;
+  font-weight: 600;
+}
+
+.tab-item.active .tab-icon {
+  transform: scale(1.1);
+}
+
+.tab-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* ========== 数据发现 Tab ========== */
+.discovery-tab {
+  background: linear-gradient(180deg, #f8f9fb 0%, #f5f7fa 100%);
+}
+
+.discovery-scroll {
+  flex: 1;
+  height: 0;
+  padding: 16rpx;
+}
+
+/* 联赛选择区 */
+.league-section {
+  display: flex;
+  flex-direction: column;
+  gap: 20rpx;
+}
+
+/* 联赛分类 */
+.league-category {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.category-header {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+  margin-bottom: 16rpx;
+  padding-bottom: 12rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.category-icon {
+  font-size: 28rpx;
+}
+
+.category-title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #333;
+}
+
+.category-count {
+  font-size: 22rpx;
+  color: #999;
+  margin-left: auto;
+}
+
+.category-toggle {
+  width: 32rpx;
+  height: 32rpx;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8rpx;
+  transition: transform 0.3s;
+}
+
+.category-toggle text {
+  font-size: 28rpx;
+  color: #999;
+  font-weight: 500;
+}
+
+.category-toggle.expanded {
+  transform: rotate(90deg);
+}
+
+/* 联赛网格 */
+.league-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12rpx;
+  overflow: hidden;
+}
+
+.league-grid.collapsed {
+  display: none;
+}
+
+.league-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: calc(20% - 10rpx);
+  padding: 12rpx 4rpx;
+  background: #f8f9fb;
+  border-radius: 10rpx;
+  border: 2rpx solid transparent;
+  transition: all 0.2s;
+}
+
+.league-card.active {
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.1) 100%);
+  border-color: #667eea;
+  box-shadow: 0 2rpx 8rpx rgba(102, 126, 234, 0.2);
+}
+
+.league-card:active {
+  transform: scale(0.96);
+}
+
+.league-logo {
+  width: 40rpx;
+  height: 40rpx;
+  margin-bottom: 6rpx;
+  border-radius: 6rpx;
+}
+
+.league-logo-placeholder {
+  width: 40rpx;
+  height: 40rpx;
+  margin-bottom: 6rpx;
+  border-radius: 6rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  font-size: 20rpx;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.league-name {
+  font-size: 20rpx;
+  color: #333;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+  line-height: 1.2;
+}
+
+.league-card.active .league-name {
+  color: #667eea;
+  font-weight: 600;
+}
+
+/* 区块标题 */
+.section-title {
+  font-size: 26rpx;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 16rpx;
+  padding-left: 8rpx;
+}
+
+/* 赛季选择区 */
+.season-section {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  margin-top: 16rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.season-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  padding: 20rpx;
+  font-size: 22rpx;
+  color: #999;
+}
+
+.mini-spinner {
+  width: 28rpx;
+  height: 28rpx;
+  border: 3rpx solid #f0f0f0;
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.season-scroll {
+  white-space: nowrap;
+}
+
+.season-list {
+  display: inline-flex;
+  gap: 10rpx;
+  padding: 4rpx 0;
+}
+
+.season-item {
+  display: inline-flex;
+  align-items: center;
+  padding: 12rpx 20rpx;
+  background: #f5f7fa;
+  border-radius: 20rpx;
+  border: 2rpx solid transparent;
+  transition: all 0.3s;
+}
+
+.season-item.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-color: #667eea;
+}
+
+.season-item.active .season-name {
+  color: #fff;
+}
+
+.season-name {
+  font-size: 22rpx;
+  color: #666;
+  white-space: nowrap;
+}
+
+/* 排名区域 */
+.standing-section {
+  background: #fff;
+  border-radius: 16rpx;
+  padding: 20rpx;
+  margin-top: 16rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.05);
+}
+
+.standing-type-tabs {
+  display: flex;
+  gap: 10rpx;
+  margin-bottom: 16rpx;
+}
+
+.type-tab {
+  flex: 1;
+  text-align: center;
+  padding: 14rpx 0;
+  background: #f5f7fa;
+  border-radius: 10rpx;
+  font-size: 24rpx;
+  color: #666;
+  transition: all 0.3s;
+}
+
+.type-tab.active {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  font-weight: 500;
+}
+
+.standing-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10rpx;
+  padding: 40rpx;
+  font-size: 22rpx;
+  color: #999;
+}
+
+/* 排名表格 */
+.standing-table {
+  overflow-x: auto;
+}
+
+.table-header {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 6rpx;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 6rpx;
+  margin-bottom: 6rpx;
+}
+
+.table-header text {
+  font-size: 20rpx;
+  color: #fff;
+  font-weight: 500;
+  text-align: center;
+}
+
+.table-body {
+  display: flex;
+  flex-direction: column;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0.6;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.table-row {
+  display: flex;
+  align-items: center;
+  padding: 12rpx 6rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.table-row:last-child {
+  border-bottom: none;
+}
+
+.table-row.top-zone {
+  background: rgba(102, 126, 234, 0.05);
+}
+
+.table-row.bottom-zone {
+  background: rgba(255, 77, 79, 0.05);
+}
+
+.table-row text {
+  font-size: 22rpx;
+  color: #333;
+  text-align: center;
+}
+
+/* 列宽度分配 */
+.col-rank {
+  width: 50rpx;
+  font-weight: 600;
+}
+
+.col-rank.rank-top {
+  color: #667eea;
+}
+
+.col-team {
+  flex: 1;
+  min-width: 100rpx;
+  text-align: left !important;
+  padding-left: 6rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.col-played,
+.col-win,
+.col-draw,
+.col-loss,
+.col-gf,
+.col-ga,
+.col-gd {
+  width: 48rpx;
+}
+
+.col-pts {
+  width: 56rpx;
+  font-weight: 600;
+  color: #667eea !important;
+}
+
+.col-gd.positive {
+  color: #52c41a !important;
+}
+
+.col-gd.negative {
+  color: #ff4d4f !important;
+}
+
+.standing-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40rpx;
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 未选择联赛提示 */
+.discovery-tip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 100rpx 40rpx;
+}
+
+.tip-icon {
+  font-size: 72rpx;
+  margin-bottom: 20rpx;
+}
+
+.tip-text {
+  font-size: 26rpx;
+  color: #999;
+}
+
+.safe-bottom {
+  height: calc(env(safe-area-inset-bottom) + 120rpx);
 }

@@ -11,9 +11,11 @@ Page({
     loading: true,
     error: null,
     analysisResult: '',
-    parsedContent: [],
     pointsPerAnalysis: 1, // 每次分析消耗积分
-    isAdmin: false // 是否是管理员
+    isAdmin: false, // 是否是管理员
+    isVip: false, // 是否是VIP
+    generateTime: '', // 生成时间
+    streaming: false // 是否正在流式获取
   },
 
   onLoad(options) {
@@ -63,11 +65,14 @@ Page({
     this.loadAnalysis(matchId)
   },
 
-  // 检查管理员状态
+  // 检查管理员状态和VIP状态
   checkAdminStatus() {
     const userInfo = userStore.getUserInfo()
-    if (userInfo && userInfo.isAdmin) {
-      this.setData({ isAdmin: true })
+    if (userInfo) {
+      this.setData({
+        isAdmin: userInfo.isAdmin === true,
+        isVip: userInfo.isVip === true
+      })
     }
   },
 
@@ -86,13 +91,16 @@ Page({
         return
       }
 
-      // 解析 markdown 为结构化内容
-      const parsedContent = this.parseMarkdown(analysisText)
+      // 格式化生成时间
+      let generateTime = ''
+      if (result.timestamp) {
+        generateTime = this.formatTimestamp(result.timestamp)
+      }
 
       this.setData({
         loading: false,
         analysisResult: analysisText,
-        parsedContent
+        generateTime
       })
     } catch (e) {
       console.error('加载分析失败:', e)
@@ -103,57 +111,16 @@ Page({
     }
   },
 
-  // 简单解析 markdown
-  parseMarkdown(text) {
-    const lines = text.split('\n')
-    const result = []
-
-    lines.forEach(line => {
-      const trimmed = line.trim()
-      if (!trimmed) {
-        result.push({ type: 'space' })
-        return
-      }
-
-      // 标题
-      if (trimmed.startsWith('### ')) {
-        result.push({ type: 'h3', text: this.parseInline(trimmed.slice(4)) })
-      } else if (trimmed.startsWith('## ')) {
-        result.push({ type: 'h2', text: this.parseInline(trimmed.slice(3)) })
-      } else if (trimmed.startsWith('# ')) {
-        result.push({ type: 'h1', text: this.parseInline(trimmed.slice(2)) })
-      }
-      // 列表（支持多级缩进）
-      else if (/^[\-\*]\s+/.test(trimmed)) {
-        result.push({ type: 'list', text: this.parseInline(trimmed.replace(/^[\-\*]\s+/, '')) })
-      }
-      // 数字列表
-      else if (/^\d+\.\s+/.test(trimmed)) {
-        const listText = trimmed.replace(/^\d+\.\s+/, '')
-        result.push({ type: 'list', text: this.parseInline(listText) })
-      }
-      // 分隔线
-      else if (trimmed === '---' || trimmed === '***') {
-        result.push({ type: 'hr' })
-      }
-      // 普通段落
-      else {
-        result.push({ type: 'p', text: this.parseInline(trimmed) })
-      }
-    })
-
-    return result
-  },
-
-  // 解析行内样式
-  parseInline(text) {
-    // 处理加粗 **text**
-    text = text.replace(/\*\*([^*]+)\*\*/g, '【$1】')
-    // 处理代码 `text`
-    text = text.replace(/`([^`]+)`/g, '「$1」')
-    // 处理 {1:3} 比分格式
-    text = text.replace(/\{(\d+:\d+)\}/g, '[$1]')
-    return text
+  // 格式化时间戳
+  formatTimestamp(timestamp) {
+    if (!timestamp) return ''
+    const date = new Date(timestamp)
+    const year = date.getFullYear()
+    const month = String(date.getMonth() + 1).padStart(2, '0')
+    const day = String(date.getDate()).padStart(2, '0')
+    const hour = String(date.getHours()).padStart(2, '0')
+    const minute = String(date.getMinutes()).padStart(2, '0')
+    return `${year}-${month}-${day} ${hour}:${minute}`
   },
 
   onRetry() {
@@ -212,6 +179,184 @@ Page({
         }
       }
     })
+  },
+
+  // 获取最新分析（流式接口）
+  onGetLatestAnalysis() {
+    const { isVip, matchId, streaming } = this.data
+
+    // 非VIP不可用
+    if (!isVip) {
+      wx.showModal({
+        title: '会员专属',
+        content: '获取最新AI分析是VIP会员专属功能，开通会员即可使用',
+        confirmText: '开通会员',
+        cancelText: '取消',
+        success: (res) => {
+          if (res.confirm) {
+            wx.navigateTo({ url: '/pages/vip/index' })
+          }
+        }
+      })
+      return
+    }
+
+    // 防止重复点击
+    if (streaming) return
+
+    this.setData({
+      streaming: true,
+      analysisResult: '',
+      generateTime: '',
+      error: null
+    })
+
+    // 调用流式接口
+    this.requestStreamAnalysis(matchId)
+  },
+
+  // 请求流式分析
+  requestStreamAnalysis(matchId) {
+    const that = this
+    let fullText = ''
+    const baseUrl = getApp().globalData.baseUrl || ''
+
+    const requestTask = wx.request({
+      url: `${baseUrl}/api/match/stream/analysis/${matchId}`,
+      method: 'POST',
+      enableChunked: true,
+      header: {
+        'content-type': 'application/json',
+        'Authorization': wx.getStorageSync('token') || ''
+      },
+      success: (res) => {
+        console.log('流式请求完成', res)
+        // 请求完成时确保结束streaming状态
+        if (that.data.streaming) {
+          that.onStreamComplete(fullText)
+        }
+      },
+      fail: (err) => {
+        console.error('流式请求失败:', err)
+        that.setData({
+          streaming: false,
+          error: '获取分析失败，请重试'
+        })
+        wx.showToast({
+          title: '获取失败',
+          icon: 'error'
+        })
+      },
+      complete: () => {
+        // 确保streaming状态被重置
+        if (that.data.streaming) {
+          that.onStreamComplete(fullText)
+        }
+      }
+    })
+
+    // 监听分块数据
+    requestTask.onChunkReceived((res) => {
+      try {
+        // 将 ArrayBuffer 转为字符串
+        const text = that.arrayBufferToString(res.data)
+
+        // 检查是否是结束标记
+        if (text.includes('[DONE]')) {
+          that.onStreamComplete(fullText)
+          return
+        }
+
+        // 解析 SSE 格式，直接拼接内容
+        const lines = text.split('\n')
+        lines.forEach(line => {
+          if (!line) return
+          if (line.startsWith('event:') || line.startsWith('id:')) return
+          if (line.trim() === '[DONE]') return
+
+          let content = line
+          if (line.startsWith('data:')) {
+            content = line.substring(5)
+          }
+
+          // 直接拼接，不处理换行
+          fullText += content
+        })
+
+        // 格式化文本后再显示
+        const formattedText = that.formatStreamText(fullText)
+        that.setData({
+          analysisResult: formattedText
+        })
+      } catch (e) {
+        console.error('解析分块数据失败:', e)
+      }
+    })
+  },
+
+  // 格式化流式文本，智能添加换行
+  formatStreamText(text) {
+    if (!text) return ''
+
+    let result = text
+
+    // 在标题前添加换行 (#### ### ## #)
+    result = result.split('####').join('\n####')
+    result = result.split('###').join('\n###')
+    // 避免重复处理，只处理独立的 ##
+    result = result.replace(/([^#])(##)([^#])/g, '$1\n$2$3')
+
+    // 在列表项前添加换行
+    result = result.split('- **').join('\n- **')
+
+    // 在分隔线前后添加换行
+    result = result.split('---').join('\n---\n')
+
+    // 清理开头的换行
+    result = result.replace(/^\n+/, '')
+    // 清理多余的连续换行
+    result = result.replace(/\n{3,}/g, '\n\n')
+
+    return result
+  },
+
+  // ArrayBuffer 转字符串
+  arrayBufferToString(buffer) {
+    const uint8Array = new Uint8Array(buffer)
+    let str = ''
+    for (let i = 0; i < uint8Array.length; i++) {
+      str += String.fromCharCode(uint8Array[i])
+    }
+    try {
+      return decodeURIComponent(escape(str))
+    } catch (e) {
+      return str
+    }
+  },
+
+  // 流式传输完成
+  onStreamComplete(fullText) {
+    // 防止重复调用
+    if (!this.data.streaming) return
+
+    const now = new Date()
+    const generateTime = this.formatTimestamp(now.getTime())
+
+    // 使用格式化后的文本
+    const formattedText = this.formatStreamText(fullText)
+
+    this.setData({
+      streaming: false,
+      analysisResult: formattedText,
+      generateTime: generateTime
+    })
+
+    if (fullText) {
+      wx.showToast({
+        title: '分析完成',
+        icon: 'success'
+      })
+    }
   },
 
   onShareAppMessage() {

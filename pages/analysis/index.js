@@ -39,7 +39,9 @@ Page({
     tabLoading: {},
     // 情报解锁相关
     informationUnlocked: false,
-    userPoints: 0
+    userPoints: 0,
+    // VIP状态
+    isVip: false
   },
 
   onLoad(options) {
@@ -63,35 +65,47 @@ Page({
     this.loadUserPoints()
   },
 
-  // 加载用户积分
+  // 加载用户积分和VIP状态
   loadUserPoints() {
     const userInfo = userStore.getUserInfo()
+    const isVip = userInfo && userInfo.isVip === true
     this.setData({
-      userPoints: (userInfo && userInfo.point) || 0
+      userPoints: (userInfo && userInfo.point) || 0,
+      isVip: isVip,
+      // VIP用户默认解锁情报
+      informationUnlocked: isVip ? true : this.data.informationUnlocked
     })
   },
 
   // 检查情报解锁状态
   async checkInformationUnlockStatus(matchId) {
     if (!userStore.isLoggedIn()) {
-      this.setData({ informationUnlocked: false })
+      this.setData({ informationUnlocked: false, isVip: false })
       return
     }
 
     const userInfo = userStore.getUserInfo()
     if (!userInfo || !userInfo.id) {
-      this.setData({ informationUnlocked: false })
+      this.setData({ informationUnlocked: false, isVip: false })
+      return
+    }
+
+    // VIP用户直接解锁
+    const isVip = userInfo.isVip === true
+    if (isVip) {
+      this.setData({ informationUnlocked: true, isVip: true })
       return
     }
 
     try {
       const result = await userApi.checkInformationUnlock(matchId, userInfo.id)
       this.setData({
-        informationUnlocked: (result && result.unlocked) || result === true
+        informationUnlocked: (result && result.unlocked) || result === true,
+        isVip: false
       })
     } catch (e) {
       console.error('检查情报解锁状态失败:', e)
-      this.setData({ informationUnlocked: false })
+      this.setData({ informationUnlocked: false, isVip: false })
     }
   },
 
@@ -314,7 +328,7 @@ Page({
 
     // 跳转到分析页面
     wx.navigateTo({
-      url: `/pages/analysis/index?matchId=${match.matchId}`
+      url: `/pages/analysis/index?matchId=${match.sportteryMatchId}`
     })
   },
 
@@ -344,6 +358,13 @@ Page({
     }
 
     const userInfo = userStore.getUserInfo()
+
+    // VIP用户直接解锁
+    if (userInfo && userInfo.isVip) {
+      this.setData({ informationUnlocked: true })
+      return
+    }
+
     const userPoints = (userInfo && userInfo.point) || 0
     const pointsNeeded = 1
 
@@ -351,9 +372,14 @@ Page({
     if (userPoints < pointsNeeded) {
       wx.showModal({
         title: '积分不足',
-        content: `解锁情报需要消耗 ${pointsNeeded} 积分，您当前积分为 ${userPoints}，请先获取更多积分`,
-        confirmText: '我知道了',
-        showCancel: false
+        content: `解锁情报需要消耗 ${pointsNeeded} 积分，您当前积分为 ${userPoints}。\n\n开通会员可免费查看所有情报！`,
+        confirmText: '开通会员',
+        cancelText: '取消',
+        success: (res) => {
+          if (res.confirm) {
+            wx.navigateTo({ url: '/pages/vip/index' })
+          }
+        }
       })
       return
     }
@@ -361,7 +387,7 @@ Page({
     // 弹窗确认解锁
     wx.showModal({
       title: '解锁情报',
-      content: `本次解锁将消耗 ${pointsNeeded} 积分，是否继续？`,
+      content: `本次解锁将消耗 ${pointsNeeded} 积分，是否继续？\n\n提示：开通会员可免费查看所有情报`,
       confirmText: '确认',
       cancelText: '取消',
       success: async (res) => {
@@ -415,5 +441,12 @@ Page({
         duration: 2000
       })
     }
+  },
+
+  // 跳转到VIP页面
+  goToVip() {
+    wx.navigateTo({
+      url: '/pages/vip/index'
+    })
   }
 })
