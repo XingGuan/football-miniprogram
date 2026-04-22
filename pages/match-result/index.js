@@ -17,6 +17,10 @@ Page({
   },
 
   onShow() {
+    // 设置tabBar选中状态
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({ selectedPath: '/pages/match-result/index' })
+    }
     if (this.data.activeTab === 'result') {
       this.loadResults()
     } else {

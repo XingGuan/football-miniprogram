@@ -59,6 +59,10 @@ Page({
   },
 
   onShow() {
+    // 设置tabBar选中状态
+    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
+      this.getTabBar().setData({ selectedPath: '/pages/calculator-hall/index' })
+    }
     // 每次显示时刷新列表和功能开关
     this.checkFeatures()
     this.loadRecommendations()
@@ -68,12 +72,21 @@ Page({
   async checkFeatures() {
     try {
       const result = await matchApi.checkFeatures()
-      const showDragon = result=== true
-      this.setData({ showDragon })
+      const showDragon = result === true
+      // 如果开关关闭，默认显示数据发现Tab
+      const currentTab = showDragon ? this.data.currentTab : 'discovery'
+      this.setData({ showDragon, currentTab })
+      // 如果切换到数据发现且联赛列表为空，加载联赛
+      if (currentTab === 'discovery' && this.data.leagues.length === 0) {
+        this.loadLeagues()
+      }
     } catch (error) {
       console.error('检查功能开关失败:', error)
-      // 失败时默认隐藏
-      this.setData({ showDragon: false })
+      // 失败时默认隐藏，显示数据发现Tab
+      this.setData({ showDragon: false, currentTab: 'discovery' })
+      if (this.data.leagues.length === 0) {
+        this.loadLeagues()
+      }
     }
   },
 

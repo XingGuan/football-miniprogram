@@ -176,6 +176,132 @@
   padding: 0 20rpx;
 }
 
+/* Tips提示条 */
+.team-tip-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12rpx 20rpx;
+  background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+  border-top: 1rpx solid #e8ecf4;
+}
+
+.tip-label {
+  display: flex;
+  align-items: center;
+  gap: 8rpx;
+}
+
+.tip-icon {
+  font-size: 24rpx;
+}
+
+.tip-text {
+  font-size: 24rpx;
+  color: #667eea;
+  font-weight: 500;
+}
+
+.tip-arrow {
+  font-size: 28rpx;
+  color: #667eea;
+  transition: transform 0.3s ease;
+  transform: rotate(90deg);
+}
+
+.tip-arrow.expanded {
+  transform: rotate(-90deg);
+}
+
+/* 展开的详情面板 */
+.team-detail-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  background: #fafbff;
+}
+
+.team-detail-panel.show {
+  max-height: 400rpx;
+}
+
+.team-detail-item {
+  padding: 16rpx 20rpx;
+  border-bottom: 1rpx solid #eef1f8;
+}
+
+.team-detail-item:last-child {
+  border-bottom: none;
+}
+
+.detail-header {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  margin-bottom: 10rpx;
+}
+
+.detail-team-name {
+  font-size: 26rpx;
+  color: #333;
+  font-weight: 600;
+}
+
+.detail-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10rpx;
+}
+
+.tag-item {
+  font-size: 22rpx;
+  color: #666;
+  background: #fff;
+  padding: 6rpx 14rpx;
+  border-radius: 20rpx;
+  border: 1rpx solid #e5e5e5;
+  white-space: nowrap;
+}
+
+.trend-badge {
+  display: flex;
+  align-items: center;
+  gap: 4rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 20rpx;
+  font-size: 22rpx;
+}
+
+.trend-badge.up {
+  background: rgba(82, 196, 26, 0.12);
+  color: #52c41a;
+}
+
+.trend-badge.down {
+  background: rgba(255, 77, 79, 0.12);
+  color: #ff4d4f;
+}
+
+.trend-badge.stable {
+  background: rgba(102, 126, 234, 0.1);
+  color: #667eea;
+}
+
+.trend-icon {
+  font-size: 20rpx;
+  font-weight: bold;
+}
+
+.trend-text {
+  font-size: 22rpx;
+  font-weight: 500;
+}
+
+/* AI分析隐藏时的占位 */
+.odds-cell.action-cell-placeholder {
+  background: #f5f5f5;
+}
+
 /* 赔率行 - 4列 */
 .odds-row {
   display: flex;

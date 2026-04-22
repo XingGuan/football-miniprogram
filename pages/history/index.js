@@ -35,7 +35,7 @@ Page({
   onShow() {
     console.log('======== 历史记录页面 onShow ========')
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
-      this.getTabBar().setData({ selected: 2 })
+      this.getTabBar().setData({ selectedPath: '/pages/history/index' })
     }
     // 每次显示页面时刷新数据，确保显示最新内容
     if (this.data.list.length > 0) {

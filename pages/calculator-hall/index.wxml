@@ -15,7 +15,7 @@
     </view>
 
     <!-- Tab 切换 -->
-    <view class="tab-header">
+    <view class="tab-header" wx:if="{{showDragon}}">
       <view class="tab-bg" style="transform: translateX({{currentTab === 'discovery' ? '100%' : '0'}})"></view>
       <view class="tab-item {{currentTab === 'hall' ? 'active' : ''}}" data-tab="hall" bindtap="onTabChange">
         <text class="tab-icon">🏆</text>
@@ -29,7 +29,7 @@
   </view>
 
   <!-- 分享大厅 Tab -->
-  <view class="tab-content" wx:if="{{currentTab === 'hall'}}">
+  <view class="tab-content" wx:if="{{currentTab === 'hall' && showDragon}}">
     <!-- 加载状态 -->
     <view class="loading-wrapper" wx:if="{{loading}}">
       <view class="loading-spinner"></view>

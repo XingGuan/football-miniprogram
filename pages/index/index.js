@@ -36,7 +36,7 @@ Page({
   onShow() {
     // 每次显示时刷新
     if (typeof this.getTabBar === 'function' && this.getTabBar()) {
-      this.getTabBar().setData({ selected: 0 })
+      this.getTabBar().setData({ selectedPath: '/pages/index/index' })
     }
 
     // 如果从登录页返回，且有待分析的比赛
@@ -225,10 +225,14 @@ Page({
         homeTeamFull: item.homeTeamAllName,
         homeTeamId: item.homeTeamId,
         homeTeamRank: item.homeTeamRank,
+        homeTags: item.homeTags ? String(item.homeTags).split(',') : [],
+        homeFormTrend: item.homeFormTrend || '',
         awayTeam: item.awayTeamAbbName,
         awayTeamFull: item.awayTeamAllName,
         awayTeamId: item.awayTeamId,
         awayTeamRank: item.awayTeamRank,
+        awayTags: item.awayTags ? String(item.awayTags).split(',') : [],
+        awayFormTrend: item.awayFormTrend || '',
         status: item.matchStatus,
         statusName: item.matchStatusName,
         matchDate: item.matchDate,

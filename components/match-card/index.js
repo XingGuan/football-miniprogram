@@ -17,6 +17,10 @@ Component({
     clickable: {
       type: Boolean,
       value: true
+    },
+    showAiAnalysis: {
+      type: Boolean,
+      value: true
     }
   },
 
@@ -24,7 +28,8 @@ Component({
     formattedTime: '',
     statusInfo: null,
     isUnlocked: false, // 是否已解锁
-    isVip: false // 是否是VIP用户
+    isVip: false, // 是否是VIP用户
+    showTip: false // 是否展开Tips
   },
 
   lifetimes: {
@@ -213,6 +218,11 @@ Component({
 
     formatGoalLine(goalLine) {
       return matchUtils.formatGoalLine(goalLine)
+    },
+
+    // 切换Tips展开/收起
+    onToggleTip() {
+      this.setData({ showTip: !this.data.showTip })
     }
   }
 })
