@@ -1,10 +1,10 @@
 // pages/history/index.js - 历史记录页面
-const historyApi = require('../../api/history')
-const userStore = require('../../store/user')
+const historyApi = require("../../api/history");
+const userStore = require("../../store/user");
 
 Page({
   data: {
-    currentTab: 'history', // history: 历史记录, models: 模型统计
+    currentTab: "history", // history: 历史记录, models: 模型统计
     // 历史记录相关
     list: [],
     loading: false,
@@ -23,24 +23,24 @@ Page({
     statsDetail: null,
     statsLoading: false,
     statsError: null,
-    selectedModel: null
+    selectedModel: null,
   },
 
   onLoad() {
-    console.log('======== 历史记录页面 onLoad ========')
+    console.log("======== 历史记录页面 onLoad ========");
     // 默认加载历史记录
-    this.loadHistory()
+    this.loadHistory();
   },
 
   onShow() {
-    console.log('======== 历史记录页面 onShow ========')
-    if (typeof this.getTabBar === 'function' && this.getTabBar()) {
-      this.getTabBar().setData({ selected: 2 })
+    console.log("======== 历史记录页面 onShow ========");
+    if (typeof this.getTabBar === "function" && this.getTabBar()) {
+      this.getTabBar().setData({ selectedPath: "/pages/history/index" });
     }
     // 每次显示页面时刷新数据，确保显示最新内容
     if (this.data.list.length > 0) {
-      console.log('列表已有数据，执行刷新')
-      this.refreshHistory()
+      console.log("列表已有数据，执行刷新");
+      this.refreshHistory();
     }
   },
 
@@ -61,95 +61,98 @@ Page({
 
   onPullDownRefresh() {
     this.refreshHistory().finally(() => {
-      wx.stopPullDownRefresh()
-    })
+      wx.stopPullDownRefresh();
+    });
   },
 
   onReachBottom() {
     if (this.data.hasMore && !this.data.loading) {
-      this.loadMore()
+      this.loadMore();
     }
   },
 
   // 加载历史记录
   async loadHistory() {
-    console.log('开始加载历史记录', { pageNo: this.data.pageNo, pageSize: this.data.pageSize })
-    this.setData({ loading: true, error: null })
+    console.log("开始加载历史记录", {
+      pageNo: this.data.pageNo,
+      pageSize: this.data.pageSize,
+    });
+    this.setData({ loading: true, error: null });
 
     try {
-      const { pageNo, pageSize } = this.data
-      console.log('调用 API: /api/analysis/history/list', { pageNo, pageSize })
-      const result = await historyApi.getHistoryList({ pageNo, pageSize })
-      console.log('API 返回结果:', result)
+      const { pageNo, pageSize } = this.data;
+      console.log("调用 API: /api/analysis/history/list", { pageNo, pageSize });
+      const result = await historyApi.getHistoryList({ pageNo, pageSize });
+      console.log("API 返回结果:", result);
 
-      const { list = [], total = 0 } = result || {}
+      const { list = [], total = 0 } = result || {};
 
       // 按照时间倒序排列（最新的在前）
       if (Array.isArray(list)) {
         list.sort((a, b) => {
-          const timeA = new Date(a.createTime || a.matchTime || 0).getTime()
-          const timeB = new Date(b.createTime || b.matchTime || 0).getTime()
-          return timeB - timeA
-        })
+          const timeA = new Date(a.createTime || a.matchTime || 0).getTime();
+          const timeB = new Date(b.createTime || b.matchTime || 0).getTime();
+          return timeB - timeA;
+        });
       }
 
       this.setData({
         list,
         total,
         hasMore: list.length >= pageSize,
-        loading: false
-      })
+        loading: false,
+      });
     } catch (e) {
-      console.error('加载历史记录失败:', e)
+      console.error("加载历史记录失败:", e);
       this.setData({
         loading: false,
-        error: e.message || '加载失败'
-      })
+        error: e.message || "加载失败",
+      });
     }
   },
 
   // 刷新
   async refreshHistory() {
-    console.log('刷新历史记录')
+    console.log("刷新历史记录");
     this.setData({
       pageNo: 1,
-      refreshing: true
-    })
+      refreshing: true,
+    });
 
-    await this.loadHistory()
+    await this.loadHistory();
 
-    this.setData({ refreshing: false })
+    this.setData({ refreshing: false });
   },
 
   // 加载更多
   async loadMore() {
-    if (!this.data.hasMore || this.data.loading) return
+    if (!this.data.hasMore || this.data.loading) return;
 
-    const { pageNo, pageSize, list } = this.data
+    const { pageNo, pageSize, list } = this.data;
 
-    this.setData({ loading: true })
+    this.setData({ loading: true });
 
     try {
       const result = await historyApi.getHistoryList({
         pageNo: pageNo + 1,
-        pageSize
-      })
+        pageSize,
+      });
 
-      const { list: newList = [] } = result || {}
+      const { list: newList = [] } = result || {};
 
       this.setData({
         list: [...list, ...newList],
         pageNo: pageNo + 1,
         hasMore: newList.length >= pageSize,
-        loading: false
-      })
+        loading: false,
+      });
     } catch (e) {
-      console.error('加载更多失败:', e)
-      this.setData({ loading: false })
+      console.error("加载更多失败:", e);
+      this.setData({ loading: false });
       wx.showToast({
-        title: '加载失败',
-        icon: 'none'
-      })
+        title: "加载失败",
+        icon: "none",
+      });
     }
   },
 
@@ -158,25 +161,25 @@ Page({
     // 检查登录状态
     if (!userStore.isLoggedIn()) {
       wx.showToast({
-        title: '请先登录',
-        icon: 'none'
-      })
+        title: "请先登录",
+        icon: "none",
+      });
       wx.navigateTo({
-        url: '/pages/login/index'
-      })
-      return
+        url: "/pages/login/index",
+      });
+      return;
     }
 
-    const { record } = e.detail
-    const matchId = (record && record.matchId);
+    const { record } = e.detail;
+    const matchId = record && record.matchId;
     wx.navigateTo({
-      url: `/pages/history-detail/index?id=`+matchId
-    })
+      url: `/pages/history-detail/index?id=` + matchId,
+    });
   },
 
   // 重试
   onRetry() {
-    this.loadHistory()
+    this.loadHistory();
   },
 
   // 以下模型统计相关方法已禁用
@@ -191,4 +194,4 @@ Page({
   //     this.setData({ modelsLoading: false, modelsError: error.message || '加载失败' })
   //   }
   // }
-})
+});

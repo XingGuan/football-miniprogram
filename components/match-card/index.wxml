@@ -35,9 +35,48 @@
     </view>
   </view>
 
+  <!-- Tips提示 -->
+  <view class="team-tip-bar" wx:if="{{showAiAnalysis && ((match.homeTags && match.homeTags.length) || (match.awayTags && match.awayTags.length) || match.homeFormTrend || match.awayFormTrend)}}" catchtap="onToggleTip">
+    <view class="tip-label">
+      <text class="tip-icon">💡</text>
+      <text class="tip-text">Tips</text>
+    </view>
+    <text class="tip-arrow {{showTip ? 'expanded' : ''}}">›</text>
+  </view>
+
+  <!-- 展开的详情 -->
+  <view class="team-detail-panel {{showTip ? 'show' : ''}}">
+    <!-- 主队信息 -->
+    <view class="team-detail-item">
+      <view class="detail-header">
+        <text class="detail-team-name">{{match.homeTeam}}</text>
+        <view class="trend-badge {{match.homeFormTrend === '上升' ? 'up' : (match.homeFormTrend === '下降' ? 'down' : 'stable')}}" wx:if="{{match.homeFormTrend}}">
+          <text class="trend-icon">{{match.homeFormTrend === '上升' ? '↑' : (match.homeFormTrend === '下降' ? '↓' : '→')}}</text>
+          <text class="trend-text">{{match.homeFormTrend}}</text>
+        </view>
+      </view>
+      <view class="detail-tags" wx:if="{{match.homeTags && match.homeTags.length}}">
+        <text class="tag-item" wx:for="{{match.homeTags}}" wx:key="index">{{item}}</text>
+      </view>
+    </view>
+    <!-- 客队信息 -->
+    <view class="team-detail-item">
+      <view class="detail-header">
+        <text class="detail-team-name">{{match.awayTeam}}</text>
+        <view class="trend-badge {{match.awayFormTrend === '上升' ? 'up' : (match.awayFormTrend === '下降' ? 'down' : 'stable')}}" wx:if="{{match.awayFormTrend}}">
+          <text class="trend-icon">{{match.awayFormTrend === '上升' ? '↑' : (match.awayFormTrend === '下降' ? '↓' : '→')}}</text>
+          <text class="trend-text">{{match.awayFormTrend}}</text>
+        </view>
+      </view>
+      <view class="detail-tags" wx:if="{{match.awayTags && match.awayTags.length}}">
+        <text class="tag-item" wx:for="{{match.awayTags}}" wx:key="index">{{item}}</text>
+      </view>
+    </view>
+  </view>
+
   <!-- AI分析 + 欧赔 (4列) -->
   <view class="odds-row">
-    <view class="odds-cell action-cell {{isVip ? 'vip-unlocked' : (isUnlocked ? 'unlocked' : 'locked')}}" catchtap="onAnalyze">
+    <view class="odds-cell action-cell {{isVip ? 'vip-unlocked' : (isUnlocked ? 'unlocked' : 'locked')}}" catchtap="onAnalyze" wx:if="{{showAiAnalysis}}">
       <view class="action-content">
         <text class="action-tag {{isVip ? 'vip-tag-text' : ''}}">AI</text>
         <text class="action-text">分析</text>
@@ -48,6 +87,8 @@
         <text class="lock-icon" wx:elif="{{!isUnlocked}}">🔒</text>
       </view>
     </view>
+    <!-- AI分析隐藏时的占位 -->
+    <view class="odds-cell action-cell-placeholder" wx:if="{{!showAiAnalysis}}"></view>
     <view class="odds-cell">
       <text class="odds-label">主胜</text>
       <text class="odds-num">{{match.odds.home || '-'}}</text>
