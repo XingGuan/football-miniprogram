@@ -7,7 +7,8 @@
   overflow: hidden;
 }
 
-.loading-wrapper, .error-wrapper {
+.loading-wrapper,
+.error-wrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -24,9 +25,14 @@
   animation: spin 0.8s linear infinite;
 }
 
-@keyframes spin { to { transform: rotate(360deg); } }
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
 
-.loading-text, .error-text {
+.loading-text,
+.error-text {
   margin-top: 20rpx;
   font-size: 26rpx;
   color: #666;
@@ -248,14 +254,37 @@
   box-shadow: 0 1rpx 4rpx rgba(0, 0, 0, 0.12);
 }
 
-.rank-medal-icon.medal-green { background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%); }
-.rank-medal-icon.medal-blue { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-.rank-medal-icon.medal-purple { background: linear-gradient(135deg, #9d50bb 0%, #6e48aa 100%); }
-.rank-medal-icon.medal-pink { background: linear-gradient(135deg, #f857a6 0%, #ff5858 100%); }
-.rank-medal-icon.medal-orange { background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%); }
-.rank-medal-icon.medal-gold { background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%); }
-.rank-medal-icon.medal-rainbow { background: linear-gradient(135deg, #eb3349 0%, #f45c43 50%, #ffd700 100%); }
-.rank-medal-icon.medal-default { background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%); }
+.rank-medal-icon.medal-green {
+  background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%);
+}
+
+.rank-medal-icon.medal-blue {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.rank-medal-icon.medal-purple {
+  background: linear-gradient(135deg, #9d50bb 0%, #6e48aa 100%);
+}
+
+.rank-medal-icon.medal-pink {
+  background: linear-gradient(135deg, #f857a6 0%, #ff5858 100%);
+}
+
+.rank-medal-icon.medal-orange {
+  background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%);
+}
+
+.rank-medal-icon.medal-gold {
+  background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%);
+}
+
+.rank-medal-icon.medal-rainbow {
+  background: linear-gradient(135deg, #eb3349 0%, #f45c43 50%, #ffd700 100%);
+}
+
+.rank-medal-icon.medal-default {
+  background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%);
+}
 
 .rank-stats {
   font-size: 18rpx;
@@ -331,20 +360,59 @@
 
 /* 方案卡片 */
 .scheme-item {
-  background: #fff;
-  border-radius: 12rpx;
-  margin-bottom: 12rpx;
-  overflow: hidden;
-  box-shadow: 0 2rpx 12rpx rgba(0, 0, 0, 0.08);
+  font-family: -apple-system, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: var(--bg-primary);
+  color: var(--card-text-primary);
+  font-size: 14px;
+  background: #ffffff;
+  border-radius: 18rpx;
+  padding: 18rpx;
+  box-shadow: 0 2rpx 12rpx rgba(20, 30, 50, 0.06);
+  border: 1rpx solid #edf0f5;
   transition: all 0.3s ease;
   position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  margin-bottom: 12rpx;
 }
 
 .scheme-item:active {
-  transform: translateY(2rpx);
-  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8rpx 28rpx rgba(20, 30, 50, 0.1);
+  transform: translateY(-2rpx);
 }
 
+.scheme-item:hover {
+  box-shadow: var(--shadow-lg);
+  border-color: #d8dde6;
+  transform: translateY(-1rpx);
+}
+
+/* 左侧状态条（待开奖、已中奖等） */
+.scheme-item::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4rpx;
+  height: 100%;
+  border-radius: 4rpx 0 0 4rpx;
+  transition: var(--transition-slow);
+}
+
+.scheme-item.status-pending::after {
+  background: var(--pedding-text-color);
+}
+
+.scheme-item.status-won::after {
+  /* background: var(--success-color); */
+  background: var(--won-text-color);
+}
+
+.scheme-item.status-lost::after {
+  background: var(--lost-text-color);
+}
+
+/* 未中 */
 /* 顶部状态条 */
 .scheme-status-bar {
   height: 4rpx;
@@ -420,8 +488,8 @@
 }
 
 .user-medal-item {
-  width: 36rpx;
-  height: 36rpx;
+  width: 40rpx;
+  height: 40rpx;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -430,21 +498,44 @@
 }
 
 .user-medal-item .medal-icon {
-  font-size: 20rpx;
+  font-size: 30rpx;
 }
 
 /* 勋章颜色 */
-.user-medal-item.medal-green { background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%); }
-.user-medal-item.medal-blue { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-.user-medal-item.medal-purple { background: linear-gradient(135deg, #9d50bb 0%, #6e48aa 100%); }
-.user-medal-item.medal-pink { background: linear-gradient(135deg, #f857a6 0%, #ff5858 100%); }
-.user-medal-item.medal-orange { background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%); }
-.user-medal-item.medal-gold { background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%); }
-.user-medal-item.medal-rainbow { background: linear-gradient(135deg, #eb3349 0%, #f45c43 50%, #ffd700 100%); }
-.user-medal-item.medal-default { background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%); }
+.user-medal-item.medal-green {
+  /* background: linear-gradient(135deg, #56ab2f 0%, #a8e063 100%); */
+}
+
+.user-medal-item.medal-blue {
+  /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+}
+
+.user-medal-item.medal-purple {
+  /* background: linear-gradient(135deg, #9d50bb 0%, #6e48aa 100%); */
+}
+
+.user-medal-item.medal-pink {
+  /* background: linear-gradient(135deg, #f857a6 0%, #ff5858 100%); */
+}
+
+.user-medal-item.medal-orange {
+  /* background: linear-gradient(135deg, #f7971e 0%, #ffd200 100%); */
+}
+
+.user-medal-item.medal-gold {
+  /* background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%); */
+}
+
+.user-medal-item.medal-rainbow {
+  /* background: linear-gradient(135deg, #eb3349 0%, #f45c43 50%, #ffd700 100%); */
+}
+
+.user-medal-item.medal-default {
+  /* background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%); */
+}
 
 .user-name {
-  font-size: 24rpx;
+  font-size: 30rpx;
   color: #333;
   font-weight: 700;
   flex: 1;
@@ -454,37 +545,46 @@
   display: flex;
   align-items: center;
   gap: 3rpx;
-  padding: 3rpx 8rpx;
+  padding: 5rpx 12rpx;
   border-radius: 10rpx;
-  font-size: 18rpx;
+  font-size: 24rpx;
   font-weight: 600;
   flex-shrink: 0;
+  letter-spacing: 0.3rpx;
 }
 
-.badge.win {
-  background: rgba(255, 107, 107, 0.15);
-  color: #ff6b6b;
+.tag-pending {
+  background: var(--pedding-color);
+  color: var(--pedding-text-color);
 }
 
-.badge.pending {
-  background: rgba(82, 196, 26, 0.15);
-  color: #52c41a;
+.tag-won {
+  background: var(--won-color);
+  color: var(--won-text-color);
 }
 
-.badge.lose {
-  background: rgba(200, 200, 200, 0.2);
-  color: #999;
+.tag-lost {
+  background: var(--lost-color);
+  color: var(--lost-text-color);
+
+}
+
+.badge-icon,
+.badge-text {
+  vertical-align: middle;
 }
 
 .badge-icon {
   font-size: 16rpx;
+  display: inline-block;
 }
 
 .badge-text {
-  font-size: 16rpx;
+  font-size: 20rpx;
 }
 
 .user-stats-row {
+  margin-top: 14rpx;
   display: flex;
   gap: 6rpx;
 }
@@ -507,28 +607,6 @@
   border: 1rpx solid rgba(102, 126, 234, 0.15);
 }
 
-.stat-label {
-  font-size: 16rpx;
-  color: #999;
-  font-weight: 500;
-}
-
-.stat-value {
-  font-size: 20rpx;
-  font-weight: 700;
-}
-
-.stat-value.win-color {
-  color: #ff6b6b;
-}
-
-.stat-value.lose-color {
-  color: #d9d9d9;
-}
-
-.stat-value.rate-color {
-  color: #667eea;
-}
 
 /* 分割线 */
 .divider {
@@ -545,32 +623,6 @@
   gap: 10rpx;
 }
 
-.detail-row {
-  display: flex;
-  gap: 0;
-  justify-content: space-around;
-}
-
-.detail-item {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4rpx;
-  padding: 6rpx 0;
-}
-
-.detail-label {
-  font-size: 18rpx;
-  color: #999;
-  font-weight: 500;
-}
-
-.detail-value {
-  font-size: 18rpx;
-  color: #333;
-  font-weight: 800;
-}
 
 /* 查看箭头 */
 .scheme-arrow {
@@ -697,6 +749,7 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  margin-bottom: 60rpx;
 }
 
 /* ========== 数据发现 Tab ========== */
@@ -987,6 +1040,7 @@
   from {
     opacity: 0.6;
   }
+
   to {
     opacity: 1;
   }
@@ -1091,4 +1145,191 @@
 
 .safe-bottom {
   height: calc(env(safe-area-inset-bottom) + 120rpx);
+}
+
+
+/* 用户统计网格（中奖/未中/胜率） */
+.user-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30rpx;
+  margin-bottom: 10rpx;
+  margin-top: 10px;
+}
+
+.stat-item {
+  background: #f8fafc;
+  border-radius: 20rpx;
+  padding: 18rpx 12rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  height: 140rpx;
+  box-sizing: border-box;
+  border: 1px solid #f0f3f7;
+}
+
+.stat-label {
+  font-size: 22rpx;
+  line-height: 1;
+  color: var(--text-tertiary);
+  margin-top: 4rpx;
+}
+
+.stat-value {
+  font-weight: 700;
+  font-size: 40rpx;
+  line-height: 1;
+  color: var(--text-primary);
+}
+
+.stat-label-win-rate {
+  background: linear-gradient(135deg, #fffef9 0%, #fef9ea 100%);
+}
+
+.stat-label-win-rate .stat-value {
+  color: #c88830;
+}
+
+.stat-label-win-rate .stat-label {
+  color: #8b90a0;
+}
+
+.stat-value.win-color {
+  color: #ff6b6b;
+}
+
+.stat-value.lose-color {
+  color: #d9d9d9;
+}
+
+.stat-value.rate-color {
+  color: #667eea;
+}
+
+.plan-detail-item {
+  background: #f8fafc;
+  border-radius: 20rpx;
+  padding: 16rpx 12rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 120rpx;
+  box-sizing: border-box;
+}
+
+.plan-detail-value {
+  font-weight: 700;
+  font-size: 40rpx;
+  line-height: 1;
+  color: var(--text-primary);
+}
+
+.plan-detail-label {
+  font-size: 22rpx;
+  line-height: 1;
+  color: var(--text-tertiary);
+  margin-top: 4rpx;
+}
+
+
+/* 投注详情网格 */
+.plan-details-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30rpx;
+  margin-bottom: 24rpx;
+}
+
+.plan-detail-item {
+  background: #f8fafc;
+  border-radius: 20rpx;
+  padding: 20rpx 16rpx;
+  text-align: center;
+}
+
+.plan-detail-value {
+  font-weight: 700;
+  font-size: 36rpx;
+  color: var(--text-primary);
+}
+
+.amount-highlight {
+  color: var(--amount-orange);
+}
+
+/* 玩法标签 */
+.plan-tags-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20rpx;
+  margin-bottom: 14rpx;
+}
+
+.plan-play-tag {
+  background: #eef2fa;
+  color: #2c3e6b;
+  padding: 15rpx 20rpx;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  line-height: 1;
+  font-weight: 500;
+  letter-spacing: 3rpx;
+}
+
+.plan-note {
+  font-size: 28rpx;
+  color: var(--text-tertiary);
+}
+
+.open-record {
+
+  font-size: 12px;
+  margin-left: auto;
+  font-weight: 400;
+  color: #d4832a;
+}
+
+/* 底部胜率总结 */
+.plan-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.plan-winrate-display {
+  display: flex;
+  align-items: center;
+  gap: 12rpx;
+  background: #f8fafc;
+  padding: 12rpx 24rpx;
+  border-radius: 40rpx;
+  border: 2rpx solid #e8ecf2;
+}
+
+.plan-winrate-num {
+  font-weight: 800;
+  font-size: 32rpx;
+}
+
+.plan-winrate-label {
+  font-size: 22rpx;
+  color: var(--text-tertiary);
+}
+
+.plan-total-amount {
+  font-weight: 800;
+  font-size: 44rpx;
+}
+
+/* 底部导航 */
+.bottom-nav {
+  display: flex;
+  justify-content: space-around;
+  background: #fff;
+  padding: 16rpx 0 40rpx;
+  border-top: 2rpx solid var(--border-light);
 }

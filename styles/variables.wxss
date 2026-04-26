@@ -18,6 +18,14 @@ page {
   --error-color: #ff4d4f;
   --info-color: #1890ff;
 
+  --won-color: #fdecea;
+  --pedding-color: #e6f7f1;
+  --lost-color: #f4f4f5;
+
+  --pedding-text-color: #54bb21;
+  --won-text-color: #ff4d4f;
+  --lost-text-color: #848080;
+
   /* 文字颜色 */
   --text-color: #333333;
   --text-secondary: #666666;
@@ -69,4 +77,12 @@ page {
   --transition-fast: 0.15s ease;
   --transition-normal: 0.2s ease;
   --transition-slow: 0.3s ease;
+
+
+
+  --bg-primary: #f1f4f8;
+  --border-light: #e8ecf2;
+  --card-text-primary: #1a1f2e;
+  --text-tertiary: #8b90a0;
+  --amount-orange: #f07b3f;
 }

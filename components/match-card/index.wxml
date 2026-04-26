@@ -39,7 +39,7 @@
   <view class="team-tip-bar" wx:if="{{showAiAnalysis && ((match.homeTags && match.homeTags.length) || (match.awayTags && match.awayTags.length) || match.homeFormTrend || match.awayFormTrend)}}" catchtap="onToggleTip">
     <view class="tip-label">
       <text class="tip-icon">💡</text>
-      <text class="tip-text">Tips</text>
+      <text class="tip-text">Tips 球队标签</text>
     </view>
     <text class="tip-arrow {{showTip ? 'expanded' : ''}}">›</text>
   </view>

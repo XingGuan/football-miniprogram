@@ -13,6 +13,7 @@
         </button>
       </view>
     </view>
+
     <!-- Tab 切换 -->
     <view class="tab-header" wx:if="{{showDragon}}">
       <view class="tab-bg" style="transform: translateX({{currentTab === 'discovery' ? '100%' : '0'}})"></view>
@@ -26,6 +27,7 @@
       </view>
     </view>
   </view>
+
   <!-- 分享大厅 Tab -->
   <view class="tab-content" wx:if="{{currentTab === 'hall' && showDragon}}">
     <!-- 加载状态 -->
@@ -33,13 +35,16 @@
       <view class="loading-spinner"></view>
       <text class="loading-text">加载中...</text>
     </view>
+
     <!-- 错误状态 -->
     <view class="error-wrapper" wx:elif="{{error}}">
       <text class="error-text">{{error}}</text>
       <view class="retry-btn" bindtap="onRetry">重试</view>
     </view>
+
     <!-- 主内容 -->
     <view class="main-content" wx:else>
+
       <!-- 排行榜区域 -->
       <view class="rank-section" wx:if="{{rankList.length > 0 || bonusRankList.length > 0}}">
         <!-- 排行榜头部：切换按钮 + 展开收起 -->
@@ -54,6 +59,7 @@
           </view>
           <text class="rank-toggle" bindtap="onToggleRank">{{rankExpanded ? '收起' : '展开'}}</text>
         </view>
+
         <!-- 胜率排行榜内容 -->
         <view class="rank-list {{rankExpanded ? '' : 'collapsed'}}" wx:if="{{rankType === 'winRate'}}">
           <view class="rank-item" wx:for="{{rankList}}" wx:key="userName">
@@ -83,6 +89,7 @@
             <text>暂无数据</text>
           </view>
         </view>
+
         <!-- 中奖金额排行榜内容 -->
         <view class="rank-list {{rankExpanded ? '' : 'collapsed'}}" wx:if="{{rankType === 'bonus'}}">
           <view class="rank-item" wx:for="{{bonusRankList}}" wx:key="userName">
@@ -113,23 +120,27 @@
           </view>
         </view>
       </view>
+
       <!-- 空状态 -->
       <view class="empty-state" wx:if="{{recommendations.length === 0}}">
         <text class="empty-icon">📭</text>
         <text class="empty-text">暂无分享方案</text>
         <text class="empty-tip">分享你的中奖方案给大家吧</text>
       </view>
+
       <!-- 方案列表 -->
       <scroll-view class="recommendations-scroll" scroll-y wx:else>
-        <view class="scheme-item {{item.status === 1 ? 'status-won' : (item.status === 2 ? 'status-lost' : 'status-pending')}}" wx:for="{{recommendations}}" wx:key="id">
+        <view class="scheme-item {{item.status === 1 ? 'status-won' : (item.status === 2 ? 'status-lost' : 'status-pending')}}" wx:for="{{recommendations}}" wx:key="id" bindtap="onRecordTap" data-record="{{item}}">
           <!-- 顶部背景条 - 根据状态显示颜色 -->
           <!-- <view class="scheme-status-bar {{item.status === 1 ? 'win' : (item.status === 2 ? 'lose' : 'pending')}}"></view> -->
+
           <!-- 用户信息区 -->
           <view class="scheme-user-section">
             <view class="user-avatar-wrapper">
               <image class="user-avatar" src="{{item.userStats.avatar}}" mode="aspectFill" wx:if="{{item.userStats.avatar}}"></image>
               <view class="user-avatar-fallback" wx:else>{{item.userStats.userName[0]}}</view>
             </view>
+
             <view class="user-meta">
               <view class="user-header">
                 <view class="user-name-medals">
@@ -140,49 +151,76 @@
                   </view>
                 </view>
                 <view class="badge {{item.status === 1 ? 'tag-won' : (item.status === 2 ? 'tag-lost' : 'tag-pending')}}">
-                  <view class="badge-icon">
-                    {{item.status === 1 ? '✓' : (item.status === 2 ? '✗' : '⏳')}}
-                  </view>
-                  <view class="badge-text">{{item.statusDesc}}</view>
+                  <text class="badge-icon">{{item.status === 1 ? '✓' : (item.status === 2 ? '✗' : '⏳')}}</text>
+                  <text class="badge-text">{{item.statusDesc}}</text>
                 </view>
               </view>
-              <view class="user-stats-grid">
-                <view class="stat-item">
-                  <view class="stat-value">{{item.matchCount}}场</view>
-                  <view class="stat-label">已选场次</view>
+              <view class="user-stats-row">
+                <view class="stat-box">
+                  <text class="stat-label">中奖</text>
+                  <text class="stat-value win-color">{{item.userStats.winRecords}}</text>
                 </view>
-                <view class="stat-item">
-                  <view class="stat-value amount-highlight">{{item.totalAmount}}</view>
-                  <view class="stat-label">{{item.status === 'won' ? '中奖金额' : '投注金额'}}</view>
+                <view class="stat-box">
+                  <text class="stat-label">未中</text>
+                  <text class="stat-value lose-color">{{item.userStats.loseRecords}}</text>
                 </view>
-                <view class="stat-item stat-label-win-rate">
-                  <view class="stat-value">{{item.winRate}}%</view>
-                  <view class="stat-label">历史胜率</view>
+                <view class="stat-box highlight">
+                  <text class="stat-label">胜率</text>
+                  <text class="stat-value rate-color">{{item.winRate}}%</text>
                 </view>
-              </view>
-              <!-- 玩法标签 + 注数 -->
-              <view class="plan-tags-row">
-                <view class="plan-play-tag">{{item.passTypesStr}}</view>
-                <view class="plan-note">· {{item.totalBets}}注</view>
-                <view class="open-record" bindtap="onRecordTap" data-record="{{item}}">→查看方案</view>
               </view>
             </view>
           </view>
+
+          <!-- 分割线 -->
+          <view class="divider"></view>
+
+          <!-- 方案信息区 -->
+          <view class="scheme-detail-section">
+            <view class="detail-row">
+              <view class="detail-item">
+                <text class="detail-label">比赛数</text>
+                <text class="detail-value">{{item.matchCount}}场</text>
+              </view>
+              <view class="detail-item">
+                <text class="detail-label">过关</text>
+                <text class="detail-value">{{item.passTypesStr}}</text>
+              </view>
+              <view class="detail-item">
+                <text class="detail-label">投注</text>
+                <text class="detail-value">{{item.totalBets}}注</text>
+              </view>
+              <view class="detail-item">
+                <text class="detail-label">投注金额</text>
+                <text class="detail-value">{{item.totalAmount}}</text>
+              </view>
+            </view>
+          </view>
+
           <!-- 查看箭头 -->
           <view class="scheme-arrow">›</view>
         </view>
+
         <!-- 底部占位 -->
         <view class="bottom-placeholder"></view>
       </scroll-view>
     </view>
+
     <!-- 单关计划悬浮按钮 -->
-    <view class="dragon-floating-btn" wx:if="{{showDragon}}" style="left: {{dragX}}px; top: {{dragY}}px;" bindtap="onDragonAnalysis" bindtouchstart="onDragonBtnTouchStart" bindtouchmove="onDragonBtnTouchMove" bindtouchend="onDragonBtnTouchEnd">
+    <view class="dragon-floating-btn"
+          wx:if="{{showDragon}}"
+          style="left: {{dragX}}px; top: {{dragY}}px;"
+          bindtap="onDragonAnalysis"
+          bindtouchstart="onDragonBtnTouchStart"
+          bindtouchmove="onDragonBtnTouchMove"
+          bindtouchend="onDragonBtnTouchEnd">
       <view class="dragon-btn-inner">
         <text class="dragon-icon">📊</text>
         <text class="dragon-text">单关计划</text>
       </view>
     </view>
   </view>
+
   <!-- 数据发现 Tab -->
   <view class="tab-content discovery-tab" wx:if="{{currentTab === 'discovery'}}">
     <!-- 联赛列表加载中 -->
@@ -190,11 +228,13 @@
       <view class="loading-spinner"></view>
       <text class="loading-text">加载联赛中...</text>
     </view>
+
     <!-- 联赛列表错误 -->
     <view class="error-wrapper" wx:elif="{{leaguesError}}">
       <text class="error-text">{{leaguesError}}</text>
       <view class="retry-btn" bindtap="onRetryLeagues">重试</view>
     </view>
+
     <!-- 联赛列表 -->
     <scroll-view class="discovery-scroll" scroll-y wx:else>
       <!-- 联赛选择区 -->
@@ -206,13 +246,20 @@
             <text class="category-title">热门联赛</text>
           </view>
           <view class="league-grid">
-            <view class="league-card {{selectedLeague && selectedLeague.id === item.id ? 'active' : ''}}" wx:for="{{hotLeagues}}" wx:key="id" data-league="{{item}}" bindtap="onSelectLeague">
+            <view
+              class="league-card {{selectedLeague && selectedLeague.id === item.id ? 'active' : ''}}"
+              wx:for="{{hotLeagues}}"
+              wx:key="id"
+              data-league="{{item}}"
+              bindtap="onSelectLeague"
+            >
               <image class="league-logo" wx:if="{{item.logoUrl}}" src="{{item.logoUrl}}" mode="aspectFit" />
               <view class="league-logo-placeholder" wx:else>{{item.firstChar}}</view>
               <text class="league-name">{{item.leagueAbbrCnName || item.leagueName}}</text>
             </view>
           </view>
         </view>
+
         <!-- 其他联赛 -->
         <view class="league-category" wx:if="{{otherLeagues.length > 0}}">
           <view class="category-header" bindtap="onToggleOtherLeagues">
@@ -224,7 +271,13 @@
             </view>
           </view>
           <view class="league-grid {{otherLeaguesExpanded ? '' : 'collapsed'}}">
-            <view class="league-card {{selectedLeague && selectedLeague.id === item.id ? 'active' : ''}}" wx:for="{{otherLeagues}}" wx:key="id" data-league="{{item}}" bindtap="onSelectLeague">
+            <view
+              class="league-card {{selectedLeague && selectedLeague.id === item.id ? 'active' : ''}}"
+              wx:for="{{otherLeagues}}"
+              wx:key="id"
+              data-league="{{item}}"
+              bindtap="onSelectLeague"
+            >
               <image class="league-logo" wx:if="{{item.logoUrl}}" src="{{item.logoUrl}}" mode="aspectFit" />
               <view class="league-logo-placeholder" wx:else>{{item.firstChar}}</view>
               <text class="league-name">{{item.leagueAbbrCnName || item.leagueName}}</text>
@@ -232,6 +285,7 @@
           </view>
         </view>
       </view>
+
       <!-- 赛季选择区 -->
       <view class="season-section" wx:if="{{selectedLeague}}">
         <view class="section-title">{{selectedLeague.leagueName}} - 赛季</view>
@@ -241,12 +295,19 @@
         </view>
         <scroll-view class="season-scroll" scroll-x enhanced show-scrollbar="{{false}}" wx:else>
           <view class="season-list">
-            <view class="season-item {{selectedSeason && selectedSeason.id === item.id ? 'active' : ''}}" wx:for="{{seasons}}" wx:key="seasonId" data-season="{{item}}" bindtap="onSelectSeason">
+            <view
+              class="season-item {{selectedSeason && selectedSeason.id === item.id ? 'active' : ''}}"
+              wx:for="{{seasons}}"
+              wx:key="seasonId"
+              data-season="{{item}}"
+              bindtap="onSelectSeason"
+            >
               <text class="season-name">{{item.seasonName}}</text>
             </view>
           </view>
         </scroll-view>
       </view>
+
       <!-- 排名区域 -->
       <view class="standing-section" wx:if="{{selectedSeason}}">
         <!-- 排名类型切换 -->
@@ -261,6 +322,7 @@
             <text>客场</text>
           </view>
         </view>
+
         <!-- 排名表格 -->
         <view class="standing-loading" wx:if="{{standingsLoading}}">
           <view class="mini-spinner"></view>
@@ -291,9 +353,7 @@
               <text class="col-loss">{{item.lossGoalMatchCnt}}</text>
               <text class="col-gf">{{item.goalCnt}}</text>
               <text class="col-ga">{{item.lossGoalCnt}}</text>
-              <text class="col-gd {{item.netGoal > 0 ? 'positive' : ''}} {{item.netGoal < 0 ? 'negative' : ''}}">
-                {{item.netGoal > 0 ? '+' : ''}}{{item.netGoal}}
-              </text>
+              <text class="col-gd {{item.netGoal > 0 ? 'positive' : ''}} {{item.netGoal < 0 ? 'negative' : ''}}">{{item.netGoal > 0 ? '+' : ''}}{{item.netGoal}}</text>
               <text class="col-pts">{{item.points}}</text>
             </view>
           </view>
@@ -302,11 +362,13 @@
           <text>暂无排名数据</text>
         </view>
       </view>
+
       <!-- 未选择联赛时的提示 -->
       <view class="discovery-tip" wx:if="{{!selectedLeague}}">
         <text class="tip-icon">📊</text>
         <text class="tip-text">请选择联赛查看积分榜</text>
       </view>
+
       <!-- 底部安全区域 -->
       <view class="safe-bottom"></view>
     </scroll-view>
